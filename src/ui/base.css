@@ -1,0 +1,216 @@
+/* Tabwerk Design-Tokens.
+   Palette: kühles Stahlgrau mit Kobalt als einzigem Akzent. Warnfarbe nur für unsichere Jev-Antworten.
+   Radius-Regel: Bedienelemente und Flächen 8px, Registerreiter nur oben 5px.
+   Schrift: Geist für Oberfläche, Geist Mono für Adressen, Zahlen und Sicherheiten. */
+
+@font-face {
+  font-family: 'Geist';
+  src: url('/assets/fonts/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/assets/fonts/GeistMono-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light dark;
+  --bg: #eceff3;
+  --surface: #ffffff;
+  --sunken: #f5f7f9;
+  --ink: #14181d;
+  --ink-2: #4b5461;
+  --ink-3: #6b7480;
+  --line: #d6dce3;
+  --line-strong: #b9c2cc;
+  --accent: #1f4fd8;
+  --accent-ink: #ffffff;
+  --accent-soft: #e6ecfc;
+  --warn: #a14b00;
+  --warn-soft: #fbeedd;
+  --danger: #b3261e;
+  --ok: #1d7a3e;
+  --shadow: 0 1px 2px rgb(20 40 80 / 0.06), 0 4px 16px rgb(20 40 80 / 0.06);
+  --r: 8px;
+  --font: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, 'SF Mono', monospace;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1013;
+    --surface: #171a1f;
+    --sunken: #12151a;
+    --ink: #e7eaee;
+    --ink-2: #a3acb7;
+    --ink-3: #8a939e;
+    --line: #2a3038;
+    --line-strong: #3a424c;
+    --accent: #86a2ff;
+    --accent-ink: #0b1233;
+    --accent-soft: #1b2544;
+    --warn: #f2a65a;
+    --warn-soft: #33250f;
+    --danger: #ff8a80;
+    --ok: #6fd08f;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.25);
+  }
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 13.5px/1.45 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono { font-family: var(--mono); font-feature-settings: 'zero' 1; }
+.muted { color: var(--ink-2); }
+.faint { color: var(--ink-3); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Icons (Phosphor, als Maske eingefärbt) ---------- */
+.ico {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  flex: none;
+  background: currentColor;
+  -webkit-mask: var(--i) center / contain no-repeat;
+  mask: var(--i) center / contain no-repeat;
+}
+.i-search { --i: url('/assets/icons/magnifying-glass.svg'); }
+.i-groups { --i: url('/assets/icons/folders.svg'); }
+.i-sort { --i: url('/assets/icons/sort-ascending.svg'); }
+.i-copy { --i: url('/assets/icons/copy-simple.svg'); }
+.i-eye { --i: url('/assets/icons/eye.svg'); }
+.i-gear { --i: url('/assets/icons/gear-six.svg'); }
+.i-check { --i: url('/assets/icons/check.svg'); }
+.i-x { --i: url('/assets/icons/x.svg'); }
+.i-warn { --i: url('/assets/icons/warning.svg'); }
+.i-trash { --i: url('/assets/icons/trash.svg'); }
+.i-plus { --i: url('/assets/icons/plus.svg'); }
+.i-undo { --i: url('/assets/icons/arrow-counter-clockwise.svg'); }
+.i-bell { --i: url('/assets/icons/bell-ringing.svg'); }
+.i-key { --i: url('/assets/icons/key.svg'); }
+.i-plug { --i: url('/assets/icons/plugs-connected.svg'); }
+.i-open { --i: url('/assets/icons/arrow-square-out.svg'); }
+.i-pause { --i: url('/assets/icons/pause.svg'); }
+.i-play { --i: url('/assets/icons/play.svg'); }
+.i-refresh { --i: url('/assets/icons/arrows-clockwise.svg'); }
+.i-info { --i: url('/assets/icons/info.svg'); }
+.i-bolt { --i: url('/assets/icons/lightning.svg'); }
+.i-bookmark { --i: url('/assets/icons/bookmark-simple.svg'); }
+.i-history { --i: url('/assets/icons/clock-counter-clockwise.svg'); }
+.i-window { --i: url('/assets/icons/browsers.svg'); }
+
+/* ---------- Buttons ---------- */
+button, .btn {
+  font: 500 13px/1 var(--font);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: var(--r);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 150ms var(--ease), border-color 150ms var(--ease), transform 80ms;
+}
+button:hover { border-color: var(--ink-3); }
+button:active { transform: translateY(1px); }
+button:disabled { opacity: 0.5; cursor: default; transform: none; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+button.primary:hover { filter: brightness(1.08); }
+button.ghost { border-color: transparent; background: transparent; color: var(--ink-2); }
+button.ghost:hover { background: var(--sunken); color: var(--ink); }
+button.icon { width: 32px; padding: 0; }
+button.danger { color: var(--danger); }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- Formulare ---------- */
+label.field { display: grid; gap: 6px; }
+label.field > span { font-weight: 500; font-size: 12.5px; color: var(--ink-2); }
+input[type=text], input[type=url], input[type=password], input[type=number], textarea, select {
+  font: 400 13.5px/1.4 var(--font);
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: var(--r);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+}
+textarea { resize: vertical; min-height: 64px; }
+input::placeholder, textarea::placeholder { color: var(--ink-3); }
+input:focus, textarea:focus, select:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent); }
+.help { font-size: 12px; color: var(--ink-3); margin: 0; }
+.error-text { font-size: 12px; color: var(--danger); margin: 0; }
+
+/* ---------- Jev-Sicherheit: das Erkennungszeichen von Tabwerk ----------
+   Fünf Striche zeigen, wie sicher Jev ist. Unter der Schwelle wird die Zeile zum Prüffall. */
+.meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 500 11px/1 var(--mono);
+  color: var(--ink-2);
+}
+.meter .ticks { display: inline-flex; gap: 2px; }
+.meter .ticks i { width: 3px; height: 10px; border-radius: 1px; background: var(--line-strong); }
+.meter .ticks i.on { background: var(--accent); }
+.meter.unsure { color: var(--warn); }
+.meter.unsure .ticks i.on { background: var(--warn); }
+
+.flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: 600 11px/1 var(--font);
+  color: var(--warn);
+  background: var(--warn-soft);
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+.flag .ico { width: 12px; height: 12px; }
+
+/* ---------- Registerreiter für Gruppen (Chrome-Gruppenfarben) ---------- */
+.reiter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 3px;
+  border-radius: 5px 5px 0 0;
+  font: 600 12px/1.2 var(--font);
+  color: #fff;
+  background: var(--c, #5f6368);
+}
+.reiter.new::after {
+  content: 'neu';
+  font: 500 10px/1 var(--mono);
+  padding: 2px 4px;
+  border-radius: 3px;
+  background: rgb(255 255 255 / 0.22);
+}
+.reiter.none { background: transparent; color: var(--ink-2); border: 1px dashed var(--line-strong); border-bottom: 0; }
+
+/* ---------- Wächter-Formular (Popup und Kontextmenü) ---------- */
+.watch-form { display: grid; gap: 10px; }
+.watch-form .help .ico { width: 12px; height: 12px; vertical-align: -2px; }
+.quote { margin: 0; padding: 8px 10px; border-left: 2px solid var(--accent); background: var(--sunken); border-radius: 0 6px 6px 0; font-size: 12.5px; max-height: 5.5em; overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

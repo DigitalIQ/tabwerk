@@ -1,0 +1,113 @@
+body { padding: 0 16px 64px; }
+.page { max-width: 880px; margin: 0 auto; }
+
+.masthead {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 0 28px;
+}
+.masthead h1 { margin: 0; font-size: 28px; font-weight: 650; letter-spacing: -0.02em; line-height: 1.1; }
+.masthead p { margin: 4px 0 0; font-size: 14.5px; }
+.saved { margin-left: auto; font-size: 12px; color: var(--ok); }
+
+.block {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 32px;
+  padding: 28px 0;
+  border-top: 1px solid var(--line);
+}
+.lede h2 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+.lede p { margin: 0 0 8px; color: var(--ink-2); font-size: 13px; max-width: 34ch; }
+.lede p.faint { color: var(--ink-3); }
+.controls {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+.row-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--r);
+  background: var(--sunken);
+  font-size: 13px;
+}
+.status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
+.status.ok .dot { background: var(--ok); }
+.status .mono { margin-left: auto; color: var(--ink-3); font-size: 12px; }
+
+.manual { border-top: 1px solid var(--line); padding-top: 10px; }
+.provider { display: grid; gap: 10px; }
+.segmented { display: inline-flex; padding: 3px; gap: 3px; border-radius: var(--r); background: var(--sunken); border: 1px solid var(--line); justify-self: start; }
+.segmented label { cursor: pointer; }
+.segmented input { position: absolute; opacity: 0; pointer-events: none; }
+.segmented span { display: block; padding: 6px 14px; border-radius: 6px; font-weight: 500; font-size: 13px; color: var(--ink-2); }
+.segmented input:checked + span { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.segmented input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 1px; }
+.manual summary { cursor: pointer; color: var(--ink-2); font-size: 13px; }
+.manual[open] { display: grid; gap: 10px; }
+
+/* Kategorien: Reiter-Vorschau, Farbe, Name, Beschreibung */
+.cats { display: grid; gap: 10px; }
+.cat {
+  display: grid;
+  grid-template-columns: 124px 1fr auto;
+  grid-template-areas: 'tab name del' 'tab hint del';
+  gap: 6px 10px;
+  align-items: start;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--c);
+  border-radius: 0 0 var(--r) var(--r);
+}
+.cat .pick { grid-area: tab; display: grid; gap: 6px; }
+.cat .name { grid-area: name; }
+.cat .hint { grid-area: hint; font-size: 12.5px; }
+.cat .del { grid-area: del; }
+.swatches { display: flex; flex-wrap: wrap; gap: 4px; }
+.swatches button {
+  width: 20px;
+  height: 20px;
+  min-height: 0;
+  padding: 0;
+  border-radius: 5px;
+  background: var(--sw);
+  border: 2px solid transparent;
+}
+.swatches button[aria-pressed=true] { border-color: var(--ink); }
+
+.check-line { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; cursor: pointer; }
+.check-line input { margin-top: 3px; accent-color: var(--accent); }
+.check-line b { display: block; font-weight: 550; }
+.check-line small { color: var(--ink-3); font-size: 12px; }
+
+.levels { display: grid; gap: 6px; }
+.level-row { display: grid; grid-template-columns: 76px 1fr; gap: 10px; align-items: center; }
+.level-row .tag { font: 500 11.5px/1 var(--mono); color: var(--ink-2); }
+
+.range { grid-template-columns: 1fr auto; align-items: center; }
+.range > span { grid-column: 1 / -1; }
+.range input { accent-color: var(--accent); }
+.range output { min-width: 44px; text-align: right; }
+
+.usage { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.usage div { display: grid; gap: 2px; }
+.usage b { font: 600 20px/1.2 var(--mono); }
+.usage span { font-size: 12px; color: var(--ink-3); }
+
+@media (max-width: 720px) {
+  .block { grid-template-columns: 1fr; gap: 12px; }
+  .lede p { max-width: none; }
+  .cat { grid-template-columns: 1fr auto; grid-template-areas: 'tab del' 'name name' 'hint hint'; }
+  .usage { grid-template-columns: 1fr 1fr; }
+}

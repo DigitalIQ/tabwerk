@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Neuer Wächter</title>
+  <link rel="stylesheet" href="../ui/base.css">
+  <style>
+    html, body { background: var(--surface); min-height: 100%; }
+    body { padding: 18px 20px 24px; }
+    header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    h1 { margin: 0; font-size: 17px; font-weight: 650; }
+    .done { display: grid; gap: 6px; justify-items: center; text-align: center; padding: 40px 10px; color: var(--ink-2); }
+    .done .ico { width: 26px; height: 26px; color: var(--ok); }
+    .done b { color: var(--ink); }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="/icons/icon32.png" alt="" width="22" height="22">
+    <h1>Neuer Wächter</h1>
+  </header>
+  <main id="slot"></main>
+  <script type="module" src="new.js"></script>
+</body>
+</html>

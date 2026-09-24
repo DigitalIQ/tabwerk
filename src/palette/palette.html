@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tabwerk Schnellsuche</title>
+  <link rel="stylesheet" href="../ui/base.css">
+  <link rel="stylesheet" href="palette.css">
+</head>
+<body>
+  <div class="scrim" id="scrim"></div>
+  <div class="panel" role="dialog" aria-modal="true" aria-label="Schnellsuche">
+    <div class="field-row">
+      <span class="ico i-search" aria-hidden="true"></span>
+      <input id="q" type="text" autocomplete="off" spellcheck="false" placeholder="Tabs, Aktionen, Lesezeichen, Verlauf" aria-label="Suchen" aria-controls="list" aria-activedescendant="">
+      <span class="scope mono" id="scope" hidden></span>
+    </div>
+    <ul class="list" id="list" role="listbox" aria-label="Treffer"></ul>
+    <div class="status" id="status" aria-live="polite" hidden></div>
+    <footer class="keys mono">
+      <span><kbd>↑</kbd><kbd>↓</kbd> wählen</span>
+      <span><kbd>↵</kbd> öffnen</span>
+      <span><kbd>⌘</kbd><kbd>⌫</kbd> Tab schließen</span>
+      <span id="jev-key" hidden><kbd>⇧</kbd><kbd>↵</kbd> mit Jev suchen</span>
+      <span class="filters">/t /a /b /h</span>
+    </footer>
+  </div>
+  <script type="module" src="palette.js"></script>
+</body>
+</html>
