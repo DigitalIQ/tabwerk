@@ -11,10 +11,12 @@ import { nameCandidates } from './groupnames.js';
 import { timeWindow } from './timewindow.js';
 import { wakeTime, SNOOZE_PRESETS } from './snoozetime.js';
 import { beforeAction, captureWindow, listSnapshots } from './history.js';
+import { LABEL } from './reasons.js';
+import { t, tp, fmtDate } from './i18n.js';
 import * as P from './prompts.js';
 
 const ownUrl = () => chrome.runtime.getURL('');
-const off = (name) => { const e = new Error(`${name} ist in den Einstellungen ausgeschaltet.`); e.code = 'off'; return e; };
+const off = (name) => { const e = new Error(t('x_featureOff', name)); e.code = 'off'; return e; };
 
 async function need(id, name) {
   const settings = await getSettings();
@@ -30,30 +32,30 @@ async function sessionGet(key, fallback) {
 // ---------- Aufräum-Vorschlag ----------
 
 export async function suggestCleanup({ windowId, useJev = true }) {
-  const settings = await need('cleanupSuggest', 'Der Aufräum-Vorschlag');
+  const settings = await need('cleanupSuggest', t('x_featureCleanup'));
   const now = Date.now();
   const tabs = (await chrome.tabs.query({ windowId }))
-    .filter((t) => !t.pinned && !t.active && !t.audible && isWebUrl(t.url) && !hostMatches(hostOf(t.url), settings.excludedHosts));
+    .filter((tab) => !tab.pinned && !tab.active && !tab.audible && isWebUrl(tab.url) && !hostMatches(hostOf(tab.url), settings.excludedHosts));
   let scores = {};
   let cost;
   const jev = useJev && hasKey(settings);
   if (jev && tabs.length) {
-    const byKey = new Map(tabs.map((t) => [P.tabKey(t), t]));
+    const byKey = new Map(tabs.map((tab) => [P.tabKey(tab), tab]));
     const result = await decideChunked([...byKey.keys()], (keys) => P.tabState(keys.map((k) => byKey.get(k))),
       (key) => P.priorityQuestion(key, settings.priorityLevels, settings.priorityFocus));
     cost = result.cost;
     scores = Object.fromEntries(Object.entries(result.answers).map(([k, a]) => [P.idFromKey(k), a]));
   }
   const oldMs = settings.cleanupDays * 864e5;
-  const items = tabs.map((t) => {
-    const age = now - (t.lastAccessed || now);
-    const s = scores[t.id];
+  const items = tabs.map((tab) => {
+    const age = now - (tab.lastAccessed || now);
+    const s = scores[tab.id];
     const reasons = [];
-    if (age >= oldMs) reasons.push(`seit ${Math.floor(age / 864e5)} Tagen nicht benutzt`);
-    if (s && s.score < 0.75) reasons.push('Jev: kann weg');
+    if (age >= oldMs) reasons.push(tp('x_notUsedDays', Math.floor(age / 864e5)));
+    if (s && s.score < 0.75) reasons.push(t('x_jevCanGo'));
     const sure = s ? s.confidence >= settings.confidence : false;
     const preselect = (s && s.score < 0.75 && sure) || (age >= oldMs && (!s || s.score < 1.5));
-    return { id: t.id, title: t.title, url: t.url, lastAccessed: t.lastAccessed, score: s?.score, confidence: s?.confidence, reasons, preselect };
+    return { id: tab.id, title: tab.title, url: tab.url, lastAccessed: tab.lastAccessed, score: s?.score, confidence: s?.confidence, reasons, preselect };
   }).filter((i) => i.reasons.length)
     .sort((a, b) => Number(b.preselect) - Number(a.preselect) || (a.lastAccessed || 0) - (b.lastAccessed || 0));
   return { items, cost, jev, threshold: settings.confidence };
@@ -121,7 +123,7 @@ export async function guardDuplicate(tabId, url) {
   // Tabwerk öffnet selbst gerade Tabs, etwa beim Wiederherstellen.
   if ((await sessionGet('dupeQuietUntil', 0)) > Date.now()) return null;
   const key = normalizeUrl(url);
-  const other = (await chrome.tabs.query({})).find((t) => t.id !== tabId && t.url && normalizeUrl(t.url) === key);
+  const other = (await chrome.tabs.query({})).find((tab) => tab.id !== tabId && tab.url && normalizeUrl(tab.url) === key);
   if (!other) return null;
   // Zweimal hintereinander dieselbe Seite öffnen heißt: beide behalten.
   const last = await sessionGet('dupeLast', null);
@@ -134,9 +136,9 @@ export async function guardDuplicate(tabId, url) {
     chrome.notifications.create(`dupe:${tabId}:${other.id}`, {
       type: 'basic',
       iconUrl: chrome.runtime.getURL('icons/icon128.png'),
-      title: 'Diese Seite ist schon offen',
+      title: t('x_dupeAlreadyOpenTitle'),
       message: other.title || url,
-      buttons: [{ title: 'Zum offenen Tab' }, { title: 'Beide behalten' }],
+      buttons: [{ title: t('x_dupeGoToTab') }, { title: t('x_dupeKeepBoth') }],
       priority: 1,
     });
     return { asked: true };
@@ -149,8 +151,8 @@ export async function guardDuplicate(tabId, url) {
   chrome.notifications.create(`dupeinfo:${Date.now()}`, {
     type: 'basic',
     iconUrl: chrome.runtime.getURL('icons/icon128.png'),
-    title: 'Zum offenen Tab gewechselt',
-    message: 'Öffne die Seite innerhalb von 20 Sekunden noch einmal, dann bleiben beide offen.',
+    title: t('x_dupeSwitchedTitle'),
+    message: t('x_dupeSwitchedMessage'),
     priority: 0,
   });
   return { switched: other.id };
@@ -170,7 +172,7 @@ export async function onDupeButton(notificationId, buttonIndex) {
 
 export async function pauseDupeGuard({ minutes = 10 }) {
   await chrome.storage.session.set({ dupePausedUntil: Date.now() + minutes * 60e3 });
-  return { message: `Doppel-Schutz ${minutes} Minuten pausiert` };
+  return { message: tp('x_dupeGuardPaused', minutes) };
 }
 
 // ---------- Inaktive Tabs entladen ----------
@@ -183,16 +185,16 @@ export async function discardInactive({ windowId = null, all = false, dryRun = f
   const now = Date.now();
   const tabs = await chrome.tabs.query(windowId ? { windowId, discarded: false } : { discarded: false });
   let n = 0;
-  for (const t of tabs) {
-    if (t.active || t.pinned || t.audible || !isWebUrl(t.url)) continue;
-    if (now - (t.lastAccessed || now) < limit) continue;
+  for (const tab of tabs) {
+    if (tab.active || tab.pinned || tab.audible || !isWebUrl(tab.url)) continue;
+    if (now - (tab.lastAccessed || now) < limit) continue;
     if (dryRun) { n += 1; continue; }
     try {
-      await chrome.tabs.discard(t.id);
+      await chrome.tabs.discard(tab.id);
       n += 1;
     } catch {}
   }
-  return { discarded: n, message: `${n} Tabs entladen` };
+  return { discarded: n, message: tp('x_tabsDiscarded', n) };
 }
 
 // ---------- Notizen ----------
@@ -218,10 +220,10 @@ export async function setNote({ url, title, text }) {
 // Hängt Text an die Notiz des aktiven Tabs an. Eine vorhandene Notiz bleibt erhalten.
 export async function addNote({ windowId, text }) {
   const [tab] = await chrome.tabs.query({ active: true, windowId });
-  if (!tab?.url || !/^(https?|file):/.test(tab.url)) throw new Error('Notizen gehen nur auf normalen Webseiten.');
+  if (!tab?.url || !/^(https?|file):/.test(tab.url)) throw new Error(t('x_notesWebOnly'));
   const old = await getNote({ url: tab.url });
   const note = await setNote({ url: tab.url, title: tab.title, text: old ? `${old.text}\n${text.trim()}` : text });
-  return { note, message: old ? 'Notiz ergänzt' : 'Notiz gespeichert' };
+  return { note, message: old ? t('x_noteAppended') : t('x_noteSaved') };
 }
 
 export async function openNoteEditor(tab) {
@@ -238,14 +240,14 @@ export async function openNoteEditor(tab) {
 // ---------- Gruppennamen ----------
 
 export async function suggestGroupNames({ windowId, apply = true }) {
-  const settings = await need('groupNames', 'Gruppennamen vorschlagen');
+  const settings = await need('groupNames', t('x_featureGroupNames'));
   const tabs = await chrome.tabs.query({ windowId });
   const groups = (await chrome.tabGroups.query({ windowId })).filter((g) => !g.title);
-  if (!groups.length) return { groups: [], message: 'Alle Gruppen haben schon einen Namen' };
+  if (!groups.length) return { groups: [], message: t('x_allGroupsNamed') };
   const out = [];
   let cost = 0;
   for (const g of groups) {
-    const members = tabs.filter((t) => t.groupId === g.id);
+    const members = tabs.filter((tab) => tab.groupId === g.id);
     const words = nameCandidates(members);
     const options = [...new Set([...words, ...settings.categories.map((c) => c.name)])].slice(0, 20);
     if (!options.length) continue;
@@ -253,7 +255,7 @@ export async function suggestGroupNames({ windowId, apply = true }) {
     let confidence = null;
     if (hasKey(settings)) {
       const criteria = Object.fromEntries(options.map((o, i) => [`n${i}`, o]));
-      const result = await decide({ group_tabs: members.slice(0, 12).map((t) => describeTab(t)) }, {
+      const result = await decide({ group_tabs: members.slice(0, 12).map((tab) => describeTab(tab)) }, {
         name: { type: 'choice', instructions: 'Which short name describes the browser tabs in `group_tabs` best as a tab group title?', criteria },
       });
       cost += result.cost || 0;
@@ -263,7 +265,7 @@ export async function suggestGroupNames({ windowId, apply = true }) {
     if (apply) await chrome.tabGroups.update(g.id, { title: name });
     out.push({ id: g.id, name, confidence, color: g.color });
   }
-  return { groups: out, cost, message: `${out.length} Gruppen benannt` };
+  return { groups: out, cost, message: tp('x_groupsNamed', out.length) };
 }
 
 // ---------- Sitzungen ----------
@@ -274,10 +276,10 @@ export async function listSessions() {
 }
 
 export async function saveSession({ windowId, name }) {
-  await need('sessions', 'Sitzungen');
+  await need('sessions', t('x_featureSessions'));
   const win = await captureWindow(windowId);
   const groups = win.groups.map((g) => g.title).filter(Boolean);
-  const fallback = `${groups.slice(0, 2).join(', ') || hostOf(win.tabs.find((t) => isWebUrl(t.url))?.url || '') || 'Fenster'} · ${new Date().toLocaleDateString('de-DE')}`;
+  const fallback = `${groups.slice(0, 2).join(', ') || hostOf(win.tabs.find((tab) => isWebUrl(tab.url))?.url || '') || t('x_windowFallback')} · ${fmtDate(Date.now(), { dateStyle: 'short' })}`;
   const session = { id: crypto.randomUUID(), name: (name || '').trim() || fallback, t: Date.now(), windows: [win] };
   await chrome.storage.local.set({ sessions: [session, ...(await listSessions())] });
   return session;
@@ -303,28 +305,28 @@ export async function quietGuard(ms = 30e3) {
 
 export async function openSession({ id }) {
   const s = (await listSessions()).find((x) => x.id === id);
-  if (!s) throw new Error('Diese Sitzung gibt es nicht mehr.');
+  if (!s) throw new Error(t('x_sessionGone'));
   await quietGuard();
   let opened = 0;
   for (const w of s.windows) {
-    const tabs = w.tabs.filter((t) => isWebUrl(t.url));
+    const tabs = w.tabs.filter((tab) => isWebUrl(tab.url));
     if (!tabs.length) continue;
     const win = await chrome.windows.create({ url: tabs[0].url, focused: true });
     const ids = [win.tabs[0].id];
-    for (const t of tabs.slice(1)) {
-      const created = await chrome.tabs.create({ windowId: win.id, url: t.url, active: false, pinned: t.pinned });
+    for (const tab of tabs.slice(1)) {
+      const created = await chrome.tabs.create({ windowId: win.id, url: tab.url, active: false, pinned: tab.pinned });
       ids.push(created.id);
     }
     if (tabs[0].pinned) await chrome.tabs.update(ids[0], { pinned: true });
     for (const g of w.groups) {
-      const tabIds = tabs.map((t, i) => (t.groupId === g.id ? ids[i] : null)).filter(Boolean);
+      const tabIds = tabs.map((tab, i) => (tab.groupId === g.id ? ids[i] : null)).filter(Boolean);
       if (!tabIds.length) continue;
       const groupId = await chrome.tabs.group({ tabIds, createProperties: { windowId: win.id } });
       await chrome.tabGroups.update(groupId, { title: g.title, color: g.color, collapsed: g.collapsed });
     }
     opened += tabs.length;
   }
-  return { opened, message: `„${s.name}“ geöffnet` };
+  return { opened, message: t('x_sessionOpened', s.name) };
 }
 
 // ---------- Fokus-Modus ----------
@@ -335,7 +337,7 @@ export async function focusState() {
 }
 
 export async function startFocus({ windowId, minutes }) {
-  const settings = await need('focus', 'Der Fokus-Modus');
+  const settings = await need('focus', t('x_featureFocus'));
   const mins = Number(minutes) || settings.focusMinutes;
   const [active] = await chrome.tabs.query({ active: true, windowId });
   const collapsed = [];
@@ -349,9 +351,9 @@ export async function startFocus({ windowId, minutes }) {
   await chrome.storage.local.set({ focus });
   await chrome.alarms.create('focus-end', { when: focus.until });
   await chrome.action.setBadgeBackgroundColor({ color: '#1f4fd8' });
-  await chrome.action.setBadgeText({ text: 'F' });
-  const end = new Date(focus.until).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-  return { message: `Fokus bis ${end}` };
+  await chrome.action.setBadgeText({ text: t('x_focusBadge') });
+  const end = fmtDate(focus.until, { timeStyle: 'short' });
+  return { message: t('x_focusUntil', end) };
 }
 
 export async function endFocus() {
@@ -362,7 +364,7 @@ export async function endFocus() {
   await chrome.storage.local.remove('focus');
   await chrome.alarms.clear('focus-end');
   await chrome.action.setBadgeText({ text: '' });
-  return { message: 'Fokus beendet' };
+  return { message: t('x_focusEnded') };
 }
 
 export async function guardFocus(tabId, url) {
@@ -384,8 +386,8 @@ export async function allowOnce({ url }) {
 // ---------- Verlauf in Alltagssprache ----------
 
 export async function findHistory({ query }) {
-  const settings = await need('paletteHistoryJev', 'Verlauf in Alltagssprache');
-  if (!(await chrome.permissions.contains({ permissions: ['history'] }))) throw new Error('Tabwerk darf den Verlauf nicht lesen. Schalte es in den Einstellungen ein.');
+  const settings = await need('paletteHistoryJev', t('x_featureHistorySearch'));
+  if (!(await chrome.permissions.contains({ permissions: ['history'] }))) throw new Error(t('x_historyPermission'));
   const w = timeWindow(query);
   let items = await chrome.history.search({ text: '', startTime: w.from, endTime: w.to, maxResults: 3000 });
   items = items.filter((i) => isWebUrl(i.url) && !hostMatches(hostOf(i.url), settings.excludedHosts));
@@ -410,12 +412,12 @@ export async function findHistory({ query }) {
 // ---------- Volltext in offenen Tabs ----------
 
 export async function tabTexts() {
-  const settings = await need('paletteFulltext', 'Die Volltext-Suche');
-  const tabs = (await chrome.tabs.query({})).filter((t) => isWebUrl(t.url) && !t.discarded && t.status === 'complete'
-    && !hostMatches(hostOf(t.url), settings.excludedHosts));
-  const results = await Promise.allSettled(tabs.slice(0, 150).map(async (t) => {
-    const [r] = await chrome.scripting.executeScript({ target: { tabId: t.id }, func: () => (document.body?.innerText || '').slice(0, 30000) });
-    return { tabId: t.id, text: r.result || '' };
+  const settings = await need('paletteFulltext', t('x_featureFulltext'));
+  const tabs = (await chrome.tabs.query({})).filter((tab) => isWebUrl(tab.url) && !tab.discarded && tab.status === 'complete'
+    && !hostMatches(hostOf(tab.url), settings.excludedHosts));
+  const results = await Promise.allSettled(tabs.slice(0, 150).map(async (tab) => {
+    const [r] = await chrome.scripting.executeScript({ target: { tabId: tab.id }, func: () => (document.body?.innerText || '').slice(0, 30000) });
+    return { tabId: tab.id, text: r.result || '' };
   }));
   return results.filter((r) => r.status === 'fulfilled').map((r) => r.value);
 }
@@ -428,19 +430,19 @@ export async function listSnoozed() {
 }
 
 export async function snoozeTab({ windowId, tabId = null, preset }) {
-  await need('snooze', 'Schlummern');
+  await need('snooze', t('x_featureSnooze'));
   const tab = tabId ? await chrome.tabs.get(tabId).catch(() => null) : (await chrome.tabs.query({ active: true, windowId }))[0];
-  if (!tab) throw new Error('Dieser Tab ist schon geschlossen.');
-  if (!isWebUrl(tab.url)) throw new Error('Nur Webseiten lassen sich schlummern.');
+  if (!tab) throw new Error(t('x_tabAlreadyClosed'));
+  if (!isWebUrl(tab.url)) throw new Error(t('x_onlyWebSnooze'));
   const when = wakeTime(preset);
-  if (!when) throw new Error('Unbekannte Weckzeit.');
+  if (!when) throw new Error(t('x_unknownWakeTime'));
   const item = { id: crypto.randomUUID(), url: tab.url, title: tab.title, when, t: Date.now() };
   await chrome.storage.local.set({ snoozed: [...(await listSnoozed()), item] });
   await chrome.alarms.create(`snooze:${item.id}`, { when });
-  await beforeAction('Schlummern', tab.windowId);
+  await beforeAction(LABEL.snooze, tab.windowId);
   await chrome.tabs.remove(tab.id);
   const label = SNOOZE_PRESETS.find((p) => p.id === preset)?.label || '';
-  return { message: `Kommt ${label} wieder` };
+  return { message: t('x_snoozeReturn', label) };
 }
 
 export async function wakeSnoozed({ id, notify = true }) {
@@ -454,17 +456,17 @@ export async function wakeSnoozed({ id, notify = true }) {
   if (notify) {
     chrome.notifications.create(`woke:${tab.id}`, {
       type: 'basic', iconUrl: chrome.runtime.getURL('icons/icon128.png'),
-      title: 'Wieder da', message: item.title || item.url, priority: 1,
+      title: t('x_snoozeWokeTitle'), message: item.title || item.url, priority: 1,
     });
   }
-  return { ok: true, message: 'Wieder geöffnet' };
+  return { ok: true, message: t('x_snoozeReopened') };
 }
 
 // ---------- Lesezeichen mit Ordner-Vorschlag ----------
 
 export async function bookmarkWithFolder({ windowId }) {
   const settings = await getSettings();
-  if (!(await chrome.permissions.contains({ permissions: ['bookmarks'] }))) throw new Error('Tabwerk darf keine Lesezeichen anlegen. Schalte es in den Einstellungen ein.');
+  if (!(await chrome.permissions.contains({ permissions: ['bookmarks'] }))) throw new Error(t('x_bookmarkPermission'));
   const [tab] = await chrome.tabs.query({ active: true, windowId });
   const folders = [];
   const walk = (nodes, path) => {
@@ -488,24 +490,24 @@ export async function bookmarkWithFolder({ windowId }) {
     confidence = result.answers.folder.confidence;
   }
   await chrome.bookmarks.create({ parentId: folder.id, title: tab.title, url: tab.url });
-  return { folder: folder.path, confidence, message: `Gespeichert in „${folder.path}“` };
+  return { folder: folder.path, confidence, message: t('x_bookmarkSaved', folder.path) };
 }
 
 // ---------- Statistik ----------
 
 export async function stats() {
-  await need('stats', 'Die Statistik');
+  await need('stats', t('x_featureStats'));
   const windows = await chrome.windows.getAll({ populate: true, windowTypes: ['normal'] });
   const tabs = windows.flatMap((w) => w.tabs);
   const byHost = new Map();
-  for (const t of tabs) {
-    const h = isWebUrl(t.url) ? hostOf(t.url) : 'Browser-Seiten';
+  for (const tab of tabs) {
+    const h = isWebUrl(tab.url) ? hostOf(tab.url) : t('x_browserPages');
     byHost.set(h, (byHost.get(h) || 0) + 1);
   }
   const { openedAt = {} } = await chrome.storage.session.get('openedAt');
-  const oldest = tabs.filter((t) => isWebUrl(t.url))
+  const oldest = tabs.filter((tab) => isWebUrl(tab.url))
     .sort((a, b) => (a.lastAccessed || 0) - (b.lastAccessed || 0)).slice(0, 8)
-    .map((t) => ({ id: t.id, windowId: t.windowId, title: t.title, url: t.url, lastAccessed: t.lastAccessed, openedAt: openedAt[t.id] }));
+    .map((tab) => ({ id: tab.id, windowId: tab.windowId, title: tab.title, url: tab.url, lastAccessed: tab.lastAccessed, openedAt: openedAt[tab.id] }));
   // Höchste Tab-Zahl pro Tag aus dem Verlauf.
   const days = new Map();
   for (const e of await listSnapshots()) {
@@ -516,7 +518,7 @@ export async function stats() {
     total: tabs.length,
     windows: windows.map((w, i) => ({ n: i + 1, tabs: w.tabs.length, focused: w.focused })),
     groups: (await chrome.tabGroups.query({})).length,
-    discarded: tabs.filter((t) => t.discarded).length,
+    discarded: tabs.filter((tab) => tab.discarded).length,
     hosts: [...byHost].sort((a, b) => b[1] - a[1]).slice(0, 12),
     oldest,
     daily: [...days].sort(([a], [b]) => a.localeCompare(b)).slice(-14),

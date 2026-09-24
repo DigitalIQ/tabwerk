@@ -1,0 +1,2398 @@
+{
+  "act_bookmarkAdd": {
+    "message": "Bookmark for this tab"
+  },
+  "act_bookmarkAddWords": {
+    "message": "bookmark save folder"
+  },
+  "act_discardNow": {
+    "message": "Discard inactive tabs now"
+  },
+  "act_discardNowWords": {
+    "message": "discard memory"
+  },
+  "act_dupeguardPause": {
+    "message": "Pause duplicate guard for 10 minutes"
+  },
+  "act_dupeguardPauseWords": {
+    "message": "duplicate guard pause"
+  },
+  "act_dupesClose": {
+    "message": "Close duplicate tabs"
+  },
+  "act_dupesClosed_one": {
+    "message": "$1 duplicate tab closed"
+  },
+  "act_dupesClosed_other": {
+    "message": "$1 duplicate tabs closed"
+  },
+  "act_dupesCloseWords": {
+    "message": "duplicates close"
+  },
+  "act_focusEnd": {
+    "message": "End focus"
+  },
+  "act_focusEndWords": {
+    "message": "focus stop end"
+  },
+  "act_focusStart": {
+    "message": "Start focus"
+  },
+  "act_focusStartWords": {
+    "message": "focus concentration"
+  },
+  "act_formsFill": {
+    "message": "Fill in form"
+  },
+  "act_formsFillWords": {
+    "message": "form fill"
+  },
+  "act_formsSave": {
+    "message": "Save form"
+  },
+  "act_formsSaveWords": {
+    "message": "form save"
+  },
+  "act_formsTest": {
+    "message": "Fill form with test data"
+  },
+  "act_formsTestWords": {
+    "message": "form test fake dummy"
+  },
+  "act_groupsAuto": {
+    "message": "Group tabs (safe suggestions only)"
+  },
+  "act_groupsAutoResult_one": {
+    "message": "$1 tab sorted in, $2 left open"
+  },
+  "act_groupsAutoResult_other": {
+    "message": "$1 tabs sorted in, $2 left open"
+  },
+  "act_groupsAutoWords": {
+    "message": "group organize"
+  },
+  "act_groupsCollapse": {
+    "message": "Collapse all groups"
+  },
+  "act_groupsCollapseWords": {
+    "message": "collapse"
+  },
+  "act_groupsDissolved": {
+    "message": "Groups dissolved"
+  },
+  "act_groupsExpand": {
+    "message": "Expand all groups"
+  },
+  "act_groupsExpandWords": {
+    "message": "expand"
+  },
+  "act_groupsNames": {
+    "message": "Suggest names for untitled groups"
+  },
+  "act_groupsNamesWords": {
+    "message": "name groups"
+  },
+  "act_groupsOrderOk": {
+    "message": "Order is already fine"
+  },
+  "act_groupsPriority": {
+    "message": "Sort groups by priority"
+  },
+  "act_groupsPriorityWords": {
+    "message": "groups priority sort"
+  },
+  "act_groupsSorted": {
+    "message": "Groups sorted"
+  },
+  "act_groupsUngroup": {
+    "message": "Ungroup all"
+  },
+  "act_groupsUngroupWords": {
+    "message": "ungroup"
+  },
+  "act_linksCopied": {
+    "message": "Link list copied"
+  },
+  "act_linksCountCopied_one": {
+    "message": "$1 link copied"
+  },
+  "act_linksCountCopied_other": {
+    "message": "$1 links copied"
+  },
+  "act_linksGroup": {
+    "message": "Copy tabs of this group as Markdown"
+  },
+  "act_linksGroupWords": {
+    "message": "links group copy"
+  },
+  "act_linksMd": {
+    "message": "Copy tabs of this window as Markdown"
+  },
+  "act_linksMdWords": {
+    "message": "links copy list"
+  },
+  "act_linksText": {
+    "message": "Copy tabs of this window as text"
+  },
+  "act_linksTextWords": {
+    "message": "links text mail"
+  },
+  "act_noGroups": {
+    "message": "No groups"
+  },
+  "act_noteEdit": {
+    "message": "Note for this tab"
+  },
+  "act_noteEditWords": {
+    "message": "note remember"
+  },
+  "act_options": {
+    "message": "Tabwerk settings"
+  },
+  "act_optionsWords": {
+    "message": "settings options"
+  },
+  "act_saved": {
+    "message": "Saved"
+  },
+  "act_sessionSave": {
+    "message": "Save window as session"
+  },
+  "act_sessionSavedAs": {
+    "message": "Saved as “$1”",
+    "description": "$1 is the session name"
+  },
+  "act_sessionSaveWords": {
+    "message": "session save"
+  },
+  "act_shortcuts": {
+    "message": "Change keyboard shortcuts"
+  },
+  "act_shortcutsWords": {
+    "message": "shortcut hotkey"
+  },
+  "act_snapshot": {
+    "message": "Back up now"
+  },
+  "act_snapshotWords": {
+    "message": "backup snapshot"
+  },
+  "act_snoozePreset": {
+    "message": "Snooze tab: $1",
+    "description": "$1 is a time phrase such as 'in 1 Stunde'"
+  },
+  "act_snoozeWords": {
+    "message": "snooze later"
+  },
+  "act_sortedByOpened": {
+    "message": "Sorted by open time"
+  },
+  "act_sortedByPriority": {
+    "message": "Sorted by priority"
+  },
+  "act_sortedByRecent": {
+    "message": "Sorted by recent use"
+  },
+  "act_sortedBySite": {
+    "message": "Sorted by website"
+  },
+  "act_sortedByTitle": {
+    "message": "Sorted by title"
+  },
+  "act_sortOpened": {
+    "message": "Sort by time opened"
+  },
+  "act_sortOpenedWords": {
+    "message": "sort opened old"
+  },
+  "act_sortPriority": {
+    "message": "Sort tabs by priority"
+  },
+  "act_sortPriorityWords": {
+    "message": "sort priority important"
+  },
+  "act_sortRecent": {
+    "message": "Sort by last used"
+  },
+  "act_sortRecentWords": {
+    "message": "sort recently used"
+  },
+  "act_sortSite": {
+    "message": "Sort by website"
+  },
+  "act_sortSiteWords": {
+    "message": "sort website domain"
+  },
+  "act_sortTitle": {
+    "message": "Sort by title"
+  },
+  "act_sortTitleWords": {
+    "message": "sort title alphabet"
+  },
+  "act_statsOpen": {
+    "message": "Open statistics"
+  },
+  "act_statsOpenWords": {
+    "message": "stats numbers overview"
+  },
+  "act_tabClose": {
+    "message": "Close tab"
+  },
+  "act_tabCloseWords": {
+    "message": "close tab"
+  },
+  "act_tabDetach": {
+    "message": "Move tab to new window"
+  },
+  "act_tabDetachWords": {
+    "message": "detach move window"
+  },
+  "act_tabDuplicate": {
+    "message": "Duplicate tab"
+  },
+  "act_tabDuplicateWords": {
+    "message": "duplicate copy clone"
+  },
+  "act_tabMute": {
+    "message": "Mute or unmute tab"
+  },
+  "act_tabMuteWords": {
+    "message": "mute unmute sound"
+  },
+  "act_tabNew": {
+    "message": "New tab"
+  },
+  "act_tabNewWords": {
+    "message": "new tab open"
+  },
+  "act_tabPin": {
+    "message": "Pin or unpin tab"
+  },
+  "act_tabPinWords": {
+    "message": "pin unpin"
+  },
+  "act_tabReload": {
+    "message": "Reload tab"
+  },
+  "act_tabReloadWords": {
+    "message": "reload refresh"
+  },
+  "act_undo": {
+    "message": "Undo"
+  },
+  "act_undoNothing": {
+    "message": "Nothing to undo"
+  },
+  "act_undoRestored": {
+    "message": "Restored state before “$1”",
+    "description": "$1 is an action label such as 'Sort'"
+  },
+  "act_undoWords": {
+    "message": "undo revert"
+  },
+  "act_unknownAction": {
+    "message": "Unknown action."
+  },
+  "act_unlockAlways": {
+    "message": "Always allow copy on this website"
+  },
+  "act_unlockAlwaysWords": {
+    "message": "always unlock website"
+  },
+  "act_unlockTab": {
+    "message": "Allow copy and right-click"
+  },
+  "act_unlockTabWords": {
+    "message": "unlock copy right-click"
+  },
+  "act_windowIncognito": {
+    "message": "New incognito window"
+  },
+  "act_windowIncognitoWords": {
+    "message": "incognito private"
+  },
+  "act_windowNew": {
+    "message": "New window"
+  },
+  "act_windowNewWords": {
+    "message": "new window"
+  },
+  "bg_bookmarkFolderMenu": {
+    "message": "Bookmark with folder suggestion"
+  },
+  "bg_bookmarkPlainMenu": {
+    "message": "Add bookmark"
+  },
+  "bg_done": {
+    "message": "Done"
+  },
+  "bg_focusBadge": {
+    "message": "F",
+    "description": "Single-letter toolbar badge for focus mode. Keep it to one character."
+  },
+  "bg_formFillMenu": {
+    "message": "Fill in form …"
+  },
+  "bg_formSaveMenu": {
+    "message": "Save form"
+  },
+  "bg_formTestMenu": {
+    "message": "Fill with test data"
+  },
+  "bg_noteMenu": {
+    "message": "Note for this tab …"
+  },
+  "bg_snoozeMenu": {
+    "message": "Let tab snooze"
+  },
+  "bg_undoNothing": {
+    "message": "Nothing to undo"
+  },
+  "bg_undoRestored": {
+    "message": "Restored state before “$1”",
+    "description": "$1 is an action label such as 'Sort'"
+  },
+  "bg_unlockMenu": {
+    "message": "Allow copy and right-click"
+  },
+  "bg_watchLink": {
+    "message": "Watch linked page …"
+  },
+  "bg_watchPage": {
+    "message": "Watch this page …"
+  },
+  "bg_watchSelection": {
+    "message": "Watch “%s” …",
+    "description": "%s is filled in by Chrome with the selected text. Keep %s as-is."
+  },
+  "bm_untitledGroup": {
+    "message": "Group"
+  },
+  "cmdFillForm": {
+    "message": "Fill in form"
+  },
+  "cmdNote": {
+    "message": "Note for the current tab"
+  },
+  "cmdOpen": {
+    "message": "Open Tabwerk"
+  },
+  "cmdPalette": {
+    "message": "Open quick search"
+  },
+  "cmdUndo": {
+    "message": "Undo the last Tabwerk action"
+  },
+  "dom_agoNever": {
+    "message": "never"
+  },
+  "dom_costUnknown": {
+    "message": "Cost unknown"
+  },
+  "dom_meterSure": {
+    "message": "sure"
+  },
+  "dom_meterTitle": {
+    "message": "Jev is $1 $2",
+    "description": "$1 is a formatted percent, $2 is the confidence reason (e.g. 'sure')"
+  },
+  "dom_noResponse": {
+    "message": "No response from the background service."
+  },
+  "dur_hours_one": {
+    "message": "$1 hour"
+  },
+  "dur_hours_other": {
+    "message": "$1 hours"
+  },
+  "dur_minutes_one": {
+    "message": "$1 minute"
+  },
+  "dur_minutes_other": {
+    "message": "$1 minutes"
+  },
+  "extActionTitle": {
+    "message": "Tabwerk"
+  },
+  "extDescription": {
+    "message": "Many tabs, clearly organized: quick search, groups, cleanup, undo history and page watchers."
+  },
+  "extName": {
+    "message": "Tabwerk",
+    "description": "Name of the extension. Do not translate."
+  },
+  "focus_back": {
+    "message": "Back"
+  },
+  "focus_endFocus": {
+    "message": "End focus"
+  },
+  "focus_minutesLeft_one": {
+    "message": "$1 minute"
+  },
+  "focus_minutesLeft_other": {
+    "message": "$1 minutes"
+  },
+  "focus_openAnyway": {
+    "message": "Open anyway"
+  },
+  "focus_pageTitle": {
+    "message": "Blocked during focus"
+  },
+  "focus_secondsLeft_one": {
+    "message": "$1 second"
+  },
+  "focus_secondsLeft_other": {
+    "message": "$1 seconds"
+  },
+  "focus_waitingTitle": {
+    "message": "This page waits until focus is over."
+  },
+  "form_cannotReadPage": {
+    "message": "Tabwerk can't read this page right now. Open quick search with the keyboard shortcut, or use the context menu on the page."
+  },
+  "form_disabled": {
+    "message": "Forms are turned off in settings."
+  },
+  "form_filledEmpty": {
+    "message": ", $1 left empty",
+    "description": "Appended to form_filledFields as $3"
+  },
+  "form_filledFields_one": {
+    "message": "$1 field filled$2",
+    "description": "$2 is an optional appended clause, or empty"
+  },
+  "form_filledFields_other": {
+    "message": "$1 fields filled$2",
+    "description": "$2 is an optional appended clause, or empty"
+  },
+  "form_filledTestData_one": {
+    "message": "$1 field filled with test data"
+  },
+  "form_filledTestData_other": {
+    "message": "$1 fields filled with test data"
+  },
+  "form_filledViaJev": {
+    "message": ", $1 of them with Jev",
+    "description": "Appended to form_filledFields as $2"
+  },
+  "form_noFilledField": {
+    "message": "This page has no filled-in form field."
+  },
+  "form_noProfileSaved": {
+    "message": "No form has been saved for this website yet."
+  },
+  "form_onlyNormalPages": {
+    "message": "Forms only work on regular web pages."
+  },
+  "form_savedFields_one": {
+    "message": "$1 field saved$2",
+    "description": "$2 is an optional appended clause about skipped protected fields, or empty"
+  },
+  "form_savedFields_other": {
+    "message": "$1 fields saved$2",
+    "description": "$2 is an optional appended clause about skipped protected fields, or empty"
+  },
+  "form_skippedProtected": {
+    "message": ", $1 protected fields skipped",
+    "description": "Appended to form_savedFields as $2"
+  },
+  "form_testDataDisabled": {
+    "message": "Test data is turned off in settings."
+  },
+  "ft_area_backup": {
+    "message": "Backup"
+  },
+  "ft_area_bookmarksForms": {
+    "message": "Bookmarks and forms"
+  },
+  "ft_area_cleanup": {
+    "message": "Clean up"
+  },
+  "ft_area_organize": {
+    "message": "Organize"
+  },
+  "ft_area_search": {
+    "message": "Search"
+  },
+  "ft_area_watch": {
+    "message": "Watch"
+  },
+  "ft_autoGroup_hint": {
+    "message": "By your rules, like “github.com = Development”."
+  },
+  "ft_autoGroup_label": {
+    "message": "Sort new tabs automatically"
+  },
+  "ft_autoGroupJev_hint": {
+    "message": "Only with high confidence, otherwise the tab stays without a group."
+  },
+  "ft_autoGroupJev_label": {
+    "message": "Ask Jev when no rule fits"
+  },
+  "ft_bookmarkFolder_hint": {
+    "message": "Jev picks the matching folder when you save."
+  },
+  "ft_bookmarkFolder_label": {
+    "message": "Suggest bookmark folder"
+  },
+  "ft_cleanup_hint": {
+    "message": "Find identical addresses and close them individually."
+  },
+  "ft_cleanup_label": {
+    "message": "Find duplicates"
+  },
+  "ft_cleanupSuggest_hint": {
+    "message": "Marks old and unimportant tabs for closing. More accurate with Jev."
+  },
+  "ft_cleanupSuggest_label": {
+    "message": "Cleanup suggestion"
+  },
+  "ft_copyLinks_hint": {
+    "message": "As Markdown or plain text, for notes and emails."
+  },
+  "ft_copyLinks_label": {
+    "message": "Copy tabs as a link list"
+  },
+  "ft_copyUnlock_hint": {
+    "message": "Lifts blocks on copying, pasting, selecting, and right-click. For one tab, or always for a website."
+  },
+  "ft_copyUnlock_label": {
+    "message": "Allow copying"
+  },
+  "ft_discard_hint": {
+    "message": "Saves memory. The tab stays visible and reloads when clicked."
+  },
+  "ft_discard_label": {
+    "message": "Unload inactive tabs"
+  },
+  "ft_dupeGuard_hint": {
+    "message": "Jumps to the already open tab. Opening twice in a row keeps both."
+  },
+  "ft_dupeGuard_label": {
+    "message": "Catch duplicates when opening"
+  },
+  "ft_find_hint": {
+    "message": "Find a tab by description, in the popup."
+  },
+  "ft_find_label": {
+    "message": "Find with Jev"
+  },
+  "ft_focus_hint": {
+    "message": "Collapses other groups and blocks distracting sites for a while."
+  },
+  "ft_focus_label": {
+    "message": "Focus mode"
+  },
+  "ft_forms_hint": {
+    "message": "Tabwerk never saves password, card, or account fields."
+  },
+  "ft_forms_label": {
+    "message": "Save and fill forms"
+  },
+  "ft_formsJev_hint": {
+    "message": "Jev sees only field names and labels, never values."
+  },
+  "ft_formsJev_label": {
+    "message": "Match unknown fields with Jev"
+  },
+  "ft_formsSensitive_hint": {
+    "message": "Also saves password, card, account, IBAN, and TAN fields. Tabwerk stores them unencrypted in Chrome and includes them in exports. Jev never sees values."
+  },
+  "ft_formsSensitive_label": {
+    "message": "Also save protected fields"
+  },
+  "ft_formsTestData_hint": {
+    "message": "Made-up names, addresses, and numbers, for developers."
+  },
+  "ft_formsTestData_label": {
+    "message": "Fill with test data"
+  },
+  "ft_groupNames_hint": {
+    "message": "For groups without a title, Jev picks a short name from words in the tab titles."
+  },
+  "ft_groupNames_label": {
+    "message": "Suggest group names"
+  },
+  "ft_groups_hint": {
+    "message": "Jev suggests a group for every tab."
+  },
+  "ft_groups_label": {
+    "message": "Group suggestions"
+  },
+  "ft_history_hint": {
+    "message": "Backs up windows, tabs, and groups after every change."
+  },
+  "ft_history_label": {
+    "message": "History"
+  },
+  "ft_notes_hint": {
+    "message": "Via right-click, keyboard shortcut, or quick search."
+  },
+  "ft_notes_label": {
+    "message": "Notes on tabs"
+  },
+  "ft_palette_hint": {
+    "message": "Search with a keyboard shortcut over any page."
+  },
+  "ft_palette_label": {
+    "message": "Quick search"
+  },
+  "ft_paletteFulltext_hint": {
+    "message": "Also searches the visible text of pages. Needs read access to all websites."
+  },
+  "ft_paletteFulltext_label": {
+    "message": "Full text in open tabs"
+  },
+  "ft_paletteHistoryJev_hint": {
+    "message": "With /h and Shift+Enter: “the article about solar power from last week”."
+  },
+  "ft_paletteHistoryJev_label": {
+    "message": "History in everyday language"
+  },
+  "ft_sessions_hint": {
+    "message": "Save windows under a name and open them later."
+  },
+  "ft_sessions_label": {
+    "message": "Named sessions"
+  },
+  "ft_similar_hint": {
+    "message": "Jev compares tabs on the same website."
+  },
+  "ft_similar_label": {
+    "message": "Find matching content"
+  },
+  "ft_snooze_hint": {
+    "message": "Close a tab and reopen it at the chosen time."
+  },
+  "ft_snooze_label": {
+    "message": "Snooze tabs"
+  },
+  "ft_sort_hint": {
+    "message": "By website, usage, title, and with Jev by priority."
+  },
+  "ft_sort_label": {
+    "message": "Sort"
+  },
+  "ft_stats_hint": {
+    "message": "Tabs per window and website, oldest tabs, count over time."
+  },
+  "ft_stats_label": {
+    "message": "Statistics"
+  },
+  "ft_transfer_hint": {
+    "message": "Back up everything as a file, sessions also as a bookmarks file."
+  },
+  "ft_transfer_label": {
+    "message": "Export and import"
+  },
+  "ft_undo_hint": {
+    "message": "Jumps back to the state before the last Tabwerk action."
+  },
+  "ft_undo_label": {
+    "message": "Undo"
+  },
+  "ft_watchDiff_hint": {
+    "message": "Shows new and removed lines from every check."
+  },
+  "ft_watchDiff_label": {
+    "message": "Show changes"
+  },
+  "ft_watches_hint": {
+    "message": "Watch pages and report matching changes."
+  },
+  "ft_watches_label": {
+    "message": "Watchers"
+  },
+  "ft_watchNumbers_hint": {
+    "message": "Code compares exactly, Jev picks the right number on the page."
+  },
+  "ft_watchNumbers_label": {
+    "message": "Compare numbers and prices"
+  },
+  "hist_reasonAuto": {
+    "message": "Automatic"
+  },
+  "hist_reasonBefore": {
+    "message": "Before $1",
+    "description": "$1 is an action name such as 'Sort'"
+  },
+  "hist_reasonChanged": {
+    "message": "Tabs changed"
+  },
+  "hist_reasonFirst": {
+    "message": "First backup"
+  },
+  "hist_reasonManual": {
+    "message": "Saved manually"
+  },
+  "hist_reasonRestored": {
+    "message": "Restored"
+  },
+  "hist_reasonStartup": {
+    "message": "Browser start"
+  },
+  "hist_snapshotCorrupted": {
+    "message": "This backup is corrupted."
+  },
+  "hist_snapshotGone": {
+    "message": "This backup no longer exists."
+  },
+  "hist_windowNotInSnapshot": {
+    "message": "This window is not part of the backup."
+  },
+  "jev_httpError": {
+    "message": "$1 reports error $2.",
+    "description": "$1 is a provider name, $2 an HTTP status code"
+  },
+  "jev_incompleteAnswers": {
+    "message": "Jev did not answer all questions."
+  },
+  "jev_invalidKey": {
+    "message": "The key is invalid."
+  },
+  "jev_noCredit": {
+    "message": "The $1 balance is empty.",
+    "description": "$1 is a provider name"
+  },
+  "jev_noKey": {
+    "message": "No $1 key. Open settings.",
+    "description": "$1 is a provider name such as OpenRouter"
+  },
+  "jev_tooManyRequests": {
+    "message": "Too many requests. Wait a moment."
+  },
+  "jev_unknownModel": {
+    "message": "Unknown model: $1"
+  },
+  "jev_unreachable": {
+    "message": "$1 is unreachable.",
+    "description": "$1 is a provider name"
+  },
+  "jev_unreadableResponse": {
+    "message": "Jev did not send a readable answer."
+  },
+  "lang_auto": {
+    "message": "Same as browser"
+  },
+  "lang_de": {
+    "message": "Deutsch",
+    "description": "Always the language's own name"
+  },
+  "lang_en": {
+    "message": "English",
+    "description": "Always the language's own name"
+  },
+  "lbl_cleanup": {
+    "message": "Clean up"
+  },
+  "lbl_closeDupes": {
+    "message": "Close duplicates"
+  },
+  "lbl_group": {
+    "message": "Group"
+  },
+  "lbl_restore": {
+    "message": "Restore"
+  },
+  "lbl_snooze": {
+    "message": "Snooze"
+  },
+  "lbl_sort": {
+    "message": "Sort"
+  },
+  "lbl_sortGroups": {
+    "message": "Sort groups"
+  },
+  "lbl_ungroup": {
+    "message": "Ungroup"
+  },
+  "note_heading": {
+    "message": "Note for this tab"
+  },
+  "note_label": {
+    "message": "Note"
+  },
+  "note_pageTitle": {
+    "message": "Note"
+  },
+  "note_placeholder": {
+    "message": "What was this about? What's still open?"
+  },
+  "note_remove": {
+    "message": "Delete"
+  },
+  "note_save": {
+    "message": "Save"
+  },
+  "note_saveHint": {
+    "message": "⌘↵ saves"
+  },
+  "opt_add": {
+    "message": "Add"
+  },
+  "opt_addCategory": {
+    "message": "Add category"
+  },
+  "opt_authCancelled": {
+    "message": "Sign-in was cancelled."
+  },
+  "opt_autoGroupRulesLabel": {
+    "message": "Rules, one per line: domain = group"
+  },
+  "opt_autoGroupRulesPlaceholder": {
+    "message": "github.com = Development\nyoutube.com = Media"
+  },
+  "opt_backupsDeleted_one": {
+    "message": "$1 backup deleted."
+  },
+  "opt_backupsDeleted_other": {
+    "message": "$1 backups deleted."
+  },
+  "opt_backupsLabel_one": {
+    "message": "backup"
+  },
+  "opt_backupsLabel_other": {
+    "message": "backups"
+  },
+  "opt_categoryHintAriaLabel": {
+    "message": "Description for Jev"
+  },
+  "opt_categoryHintPlaceholder": {
+    "message": "What's the group for? E.g. online shops and orders"
+  },
+  "opt_categoryNoName": {
+    "message": "Unnamed"
+  },
+  "opt_changeShortcut": {
+    "message": "Change shortcut"
+  },
+  "opt_cleanupDaysPrefix": {
+    "message": "Old from"
+  },
+  "opt_cleanupDaysSuffix": {
+    "message": "days unused"
+  },
+  "opt_clearHistory": {
+    "message": "Clear history"
+  },
+  "opt_clearHistoryConfirm": {
+    "message": "Really clear it"
+  },
+  "opt_clearHistoryNote": {
+    "message": "After that, there's no going back to earlier states."
+  },
+  "opt_colorAriaLabel": {
+    "message": "Color $1",
+    "description": "$1 is a color name such as blue or green"
+  },
+  "opt_colorGroupLabel": {
+    "message": "Color"
+  },
+  "opt_colorModeLabel": {
+    "message": "Color mode"
+  },
+  "opt_confidenceHelp": {
+    "message": "Below that, Tabwerk marks the tab “check” and deselects it."
+  },
+  "opt_confidenceLabel": {
+    "message": "Preselect suggestions from"
+  },
+  "opt_confirmEnableWarn": {
+    "message": "Turn it on anyway?"
+  },
+  "opt_connectedWith": {
+    "message": "Connected to $1",
+    "description": "$1 is the provider name"
+  },
+  "opt_connectHelp": {
+    "message": "Connecting opens OpenRouter. You sign in there and grant Tabwerk its own key."
+  },
+  "opt_connectionDesc": {
+    "message": "Tabwerk asks Jev through OpenRouter or directly through TypeSafe, the maker of Jev. The key stays on this computer."
+  },
+  "opt_connectionNoKey": {
+    "message": "Without a key, every feature that only needs code still works: quick search, duplicates, sorting without priority, history."
+  },
+  "opt_connectionTitle": {
+    "message": "Connection"
+  },
+  "opt_connectOpenRouter": {
+    "message": "Connect with OpenRouter"
+  },
+  "opt_copyUnlockHelp": {
+    "message": "For one tab: right-click, “Allow copy and right-click”. On these websites it happens on every load:"
+  },
+  "opt_costsEstimatedLabel": {
+    "message": "costs, partly estimated"
+  },
+  "opt_costsReportedLabel": {
+    "message": "reported costs"
+  },
+  "opt_delete": {
+    "message": "Delete"
+  },
+  "opt_discardAfterPrefix": {
+    "message": "Unload after"
+  },
+  "opt_discardAfterSuffix": {
+    "message": "minutes unused"
+  },
+  "opt_dupeGuardAllowLabel": {
+    "message": "Always allow duplicates for these websites"
+  },
+  "opt_dupeGuardAsk": {
+    "message": "Ask with a notification"
+  },
+  "opt_dupeGuardHelp": {
+    "message": "Opening twice within 20 seconds keeps both tabs. Quick search can pause the protection for 10 minutes."
+  },
+  "opt_dupeGuardModeLabel": {
+    "message": "When a page is already open"
+  },
+  "opt_dupeGuardSwitch": {
+    "message": "Jump to the open tab"
+  },
+  "opt_enterKey": {
+    "message": "Enter a key."
+  },
+  "opt_excludedHelp": {
+    "message": "One website per line. Subdomains count too."
+  },
+  "opt_excludedLabel": {
+    "message": "Never send these websites to Jev"
+  },
+  "opt_exportAll": {
+    "message": "Export everything"
+  },
+  "opt_exportBookmarks": {
+    "message": "Sessions as a bookmark file"
+  },
+  "opt_exported": {
+    "message": "Exported."
+  },
+  "opt_featuresDesc": {
+    "message": "Turn on what you need. Indented features depend on the one above and only work when that one is on."
+  },
+  "opt_featuresJevErlaubnis": {
+    "message": "“Jev” means: needs a key. “Permission” means: Chrome asks once when you turn it on."
+  },
+  "opt_featuresTitle": {
+    "message": "Features"
+  },
+  "opt_fieldsCount_one": {
+    "message": "$1 field"
+  },
+  "opt_fieldsCount_other": {
+    "message": "$1 fields"
+  },
+  "opt_focusBlockLabel": {
+    "message": "Blocked during focus"
+  },
+  "opt_focusDurationPrefix": {
+    "message": "Duration"
+  },
+  "opt_focusDurationSuffix": {
+    "message": "minutes"
+  },
+  "opt_formsDesc": {
+    "message": "You fill in saved forms again through quick search with /f, by right-click, or with a keyboard shortcut."
+  },
+  "opt_formsFaint": {
+    "message": "Tabwerk never saves password, card, account or TAN fields."
+  },
+  "opt_formsTitle": {
+    "message": "Forms"
+  },
+  "opt_groupNameAriaLabel": {
+    "message": "Group name"
+  },
+  "opt_groupsDesc": {
+    "message": "Jev suggests these categories for new groups. It already knows existing groups in the window."
+  },
+  "opt_groupsDescFaint": {
+    "message": "The description can be in English. That's where Jev is most accurate."
+  },
+  "opt_groupsTitle": {
+    "message": "Groups"
+  },
+  "opt_hideValues": {
+    "message": "Hide values"
+  },
+  "opt_historyDesc": {
+    "message": "Tabwerk backs up windows, tabs and groups after every change. You'll find the history in the popup."
+  },
+  "opt_historyFaint": {
+    "message": "Full detail for the last 24 hours, hourly up to 7 days, daily up to 90 days."
+  },
+  "opt_historyTitle": {
+    "message": "History"
+  },
+  "opt_importFailed": {
+    "message": "Import failed: $1",
+    "description": "$1 is the error message"
+  },
+  "opt_importFile": {
+    "message": "Import file"
+  },
+  "opt_importSummary": {
+    "message": "Imported: $1 sessions, $2 watches, $3 backups. Reload the page to see everything.",
+    "description": "$1 sessions, $2 watches, $3 backups, all already formatted numbers"
+  },
+  "opt_keyMustStartWith": {
+    "message": "A $1 key starts with $2.",
+    "description": "$1 is the provider name, $2 is the required key prefix"
+  },
+  "opt_keySuffix": {
+    "message": "Key …$1",
+    "description": "$1 is the last four characters of the key"
+  },
+  "opt_languageDesc": {
+    "message": "Choose the language Tabwerk speaks to you in."
+  },
+  "opt_languageHelp": {
+    "message": "This sets the language for Tabwerk. Right-click menu entries switch right away; the extension's name in Chrome always follows the browser language."
+  },
+  "opt_languageLabel": {
+    "message": "Language"
+  },
+  "opt_languageTitle": {
+    "message": "Language"
+  },
+  "opt_levelHigh": {
+    "message": "high"
+  },
+  "opt_levelLater": {
+    "message": "later"
+  },
+  "opt_levelLow": {
+    "message": "low"
+  },
+  "opt_levelRelevant": {
+    "message": "relevant"
+  },
+  "opt_levelsHelp": {
+    "message": "Levels from unimportant to important. Jev reads them literally."
+  },
+  "opt_manualKeyToggle": {
+    "message": "Enter a key yourself"
+  },
+  "opt_modelHelp": {
+    "message": "jev-latest switches to new versions on its own. Confidence values can then shift slightly."
+  },
+  "opt_modelLabel": {
+    "message": "Model"
+  },
+  "opt_needsJevKey": {
+    "message": "Needs a key for Jev"
+  },
+  "opt_noKeyFor": {
+    "message": "No $1 key",
+    "description": "$1 is the provider name"
+  },
+  "opt_noOAuthCode": {
+    "message": "OpenRouter did not return a code."
+  },
+  "opt_noProfilesYet": {
+    "message": "Nothing saved yet. On a page with a filled-in form: right-click, “Save form”."
+  },
+  "opt_noSessionsYet": {
+    "message": "There's no session yet."
+  },
+  "opt_noShortcut": {
+    "message": "No keyboard shortcut set. Maybe another extension already uses it."
+  },
+  "opt_notifyAtHelp": {
+    "message": "Also applies to “check similar” among duplicates."
+  },
+  "opt_notifyAtLabel": {
+    "message": "Watchers report from"
+  },
+  "opt_oauthRejected": {
+    "message": "OpenRouter rejected the code ($1).",
+    "description": "$1 is an HTTP status code"
+  },
+  "opt_oldestBackupLabel": {
+    "message": "oldest backup"
+  },
+  "opt_openrouterKeyLabel": {
+    "message": "OpenRouter key"
+  },
+  "opt_openStats": {
+    "message": "Open statistics"
+  },
+  "opt_orKeyPlaceholder": {
+    "message": "sk-or-v1-…"
+  },
+  "opt_paletteBookmarksHint": {
+    "message": "Chrome asks for permission once."
+  },
+  "opt_paletteBookmarksLabel": {
+    "message": "Search bookmarks"
+  },
+  "opt_paletteDesc": {
+    "message": "Opens with a keyboard shortcut over any page, similar to Spotlight. Searches tabs, actions, bookmarks and history."
+  },
+  "opt_paletteFree": {
+    "message": "Search runs in code on every keystroke. It costs nothing."
+  },
+  "opt_paletteHistoryHint": {
+    "message": "The last 90 days. Chrome asks for permission once."
+  },
+  "opt_paletteHistoryLabel": {
+    "message": "Search history"
+  },
+  "opt_paletteJevHint": {
+    "message": "Only on keypress, never while typing. Jev then searches all open tabs."
+  },
+  "opt_paletteJevLabel": {
+    "message": "Ask Jev with Shift+Enter"
+  },
+  "opt_paletteNoPermission": {
+    "message": "Without permission, Tabwerk can't search here."
+  },
+  "opt_paletteTitle": {
+    "message": "Quick search"
+  },
+  "opt_permissionTag": {
+    "message": "Permission"
+  },
+  "opt_priorityDesc": {
+    "message": "When sorting by priority, Jev assigns each tab a level. Important tabs move to the front."
+  },
+  "opt_priorityFocusHelp": {
+    "message": "You can also leave this empty. Then Jev rates only by the levels."
+  },
+  "opt_priorityFocusLabel": {
+    "message": "What are you working on right now?"
+  },
+  "opt_priorityFocusPlaceholder": {
+    "message": "I'm writing the quarterly report today. Everything related to it is important."
+  },
+  "opt_priorityTitle": {
+    "message": "Priority"
+  },
+  "opt_privacyDesc": {
+    "message": "Jev receives the tab title, website and path. Tabwerk doesn't send along parameters after “?” or anchors after “#”."
+  },
+  "opt_privacyFaint": {
+    "message": "Watchers only send changed lines of the watched page."
+  },
+  "opt_privacyTitle": {
+    "message": "Privacy"
+  },
+  "opt_providerAriaLabel": {
+    "message": "Provider"
+  },
+  "opt_providerTypesafeDirect": {
+    "message": "TypeSafe direct"
+  },
+  "opt_remove": {
+    "message": "Remove"
+  },
+  "opt_removeKey": {
+    "message": "Remove key"
+  },
+  "opt_removeNamed": {
+    "message": "Remove $1",
+    "description": "$1 is a website host or category name"
+  },
+  "opt_rename": {
+    "message": "Rename"
+  },
+  "opt_renamePrompt": {
+    "message": "New name"
+  },
+  "opt_requestsInMonth_one": {
+    "message": "request in $2",
+    "description": "$1 is the request count (unused in this text), $2 is the formatted month and year"
+  },
+  "opt_requestsInMonth_other": {
+    "message": "requests in $2",
+    "description": "$1 is the request count (unused in this text), $2 is the formatted month and year"
+  },
+  "opt_requestsWithoutCostLabel_one": {
+    "message": "request without a cost"
+  },
+  "opt_requestsWithoutCostLabel_other": {
+    "message": "requests without a cost"
+  },
+  "opt_saved": {
+    "message": "Saved"
+  },
+  "opt_saveKey": {
+    "message": "Save key"
+  },
+  "opt_sessionsSavedAsBookmarks_one": {
+    "message": "$1 session saved as a bookmark file."
+  },
+  "opt_sessionsSavedAsBookmarks_other": {
+    "message": "$1 sessions saved as a bookmark file."
+  },
+  "opt_shortcutSet": {
+    "message": "Keyboard shortcut"
+  },
+  "opt_showValues": {
+    "message": "Show values"
+  },
+  "opt_storageUsedLabel": {
+    "message": "storage used by Tabwerk"
+  },
+  "opt_tagline": {
+    "message": "Jev makes small decisions about your tabs. You decide by what."
+  },
+  "opt_testConnection": {
+    "message": "Test connection"
+  },
+  "opt_themeDark": {
+    "message": "Always dark"
+  },
+  "opt_themeHelp": {
+    "message": "“Automatic by website” measures the background color of the page behind the search."
+  },
+  "opt_themeLight": {
+    "message": "Always light"
+  },
+  "opt_themeSite": {
+    "message": "Automatic by website"
+  },
+  "opt_themeSystem": {
+    "message": "Same as system"
+  },
+  "opt_thresholdsDesc": {
+    "message": "Jev states how confident it is for every answer. That confidence isn't a guarantee, but it's a good filter."
+  },
+  "opt_thresholdsTitle": {
+    "message": "Thresholds"
+  },
+  "opt_title": {
+    "message": "Tabwerk settings"
+  },
+  "opt_transferDesc": {
+    "message": "Saves settings, sessions, watchers, notes, snoozed tabs, forms and history into one file."
+  },
+  "opt_transferFaint": {
+    "message": "Import merges. Existing data stays intact."
+  },
+  "opt_transferTitle": {
+    "message": "Export and import"
+  },
+  "opt_typesafeHelp": {
+    "message": "You create the key at console.typesafe.ai. TypeSafe doesn't report costs; Tabwerk estimates them from the tokens read."
+  },
+  "opt_typesafeKeyLabel": {
+    "message": "TypeSafe key"
+  },
+  "opt_typesafeKeyPlaceholder": {
+    "message": "Key from the TypeSafe console"
+  },
+  "opt_usageDesc": {
+    "message": "Jev charges per token read. Answers are free."
+  },
+  "opt_usageTitle": {
+    "message": "Usage"
+  },
+  "opt_usesJev": {
+    "message": "Uses Jev"
+  },
+  "opt_websiteAriaLabel": {
+    "message": "Website"
+  },
+  "opt_xFormsHint": {
+    "message": "The file then contains your form data in plain text."
+  },
+  "opt_xFormsLabel": {
+    "message": "Include forms"
+  },
+  "opt_xHistoryHint": {
+    "message": "Makes the file larger."
+  },
+  "opt_xHistoryLabel": {
+    "message": "Include history"
+  },
+  "opt_xKeysHint": {
+    "message": "Only for moving your own data. Don't pass the file on."
+  },
+  "opt_xKeysLabel": {
+    "message": "Include keys"
+  },
+  "pal_dialogLabel": {
+    "message": "Quick search"
+  },
+  "pal_fieldsCount_one": {
+    "message": "$1 field"
+  },
+  "pal_fieldsCount_other": {
+    "message": "$1 fields"
+  },
+  "pal_fillingForm": {
+    "message": "Filling in …"
+  },
+  "pal_jevDeciding": {
+    "message": "Jev is deciding …"
+  },
+  "pal_jevHint": {
+    "message": "asks Jev"
+  },
+  "pal_jevNoHistoryHits": {
+    "message": "Jev found nothing in the period “$1”.",
+    "description": "$1 is a time period such as 'diese Woche'"
+  },
+  "pal_jevNoTabHits": {
+    "message": "Jev found no matching tab."
+  },
+  "pal_jevPercent": {
+    "message": "Jev $1%",
+    "description": "$1 is a rounded percentage"
+  },
+  "pal_jevSearchingHistory": {
+    "message": "Jev is searching history …"
+  },
+  "pal_jevSearchingTabs": {
+    "message": "Jev is searching all open tabs …"
+  },
+  "pal_kbdCloseTab": {
+    "message": "close tab"
+  },
+  "pal_kbdJevSearch": {
+    "message": "search with Jev"
+  },
+  "pal_kbdOpen": {
+    "message": "open"
+  },
+  "pal_kbdSelect": {
+    "message": "select"
+  },
+  "pal_kindAction": {
+    "message": "Action"
+  },
+  "pal_kindBookmark": {
+    "message": "Bookmark"
+  },
+  "pal_kindForm": {
+    "message": "Form"
+  },
+  "pal_kindHistory": {
+    "message": "History"
+  },
+  "pal_kindJev": {
+    "message": "Jev"
+  },
+  "pal_kindNewnote": {
+    "message": "Note"
+  },
+  "pal_kindNote": {
+    "message": "Note"
+  },
+  "pal_kindSession": {
+    "message": "Session"
+  },
+  "pal_kindSnooze": {
+    "message": "Snoozed"
+  },
+  "pal_kindTab": {
+    "message": "Tab"
+  },
+  "pal_needJevKey": {
+    "message": "This action needs a Jev key for Tabwerk. Add it in settings."
+  },
+  "pal_needPermission": {
+    "message": "This needs permission for this website first."
+  },
+  "pal_newNoteAppend": {
+    "message": "will be appended to the existing note"
+  },
+  "pal_newNoteOpen": {
+    "message": "Open note window for this tab"
+  },
+  "pal_newNoteSave": {
+    "message": "Save as note: “$1”",
+    "description": "$1 is the note text the user typed"
+  },
+  "pal_noResults": {
+    "message": "No matches."
+  },
+  "pal_noResultsJev": {
+    "message": "No matches. Shift+Enter asks Jev."
+  },
+  "pal_notePrefix": {
+    "message": "✎ $1",
+    "description": "$1 is the note text"
+  },
+  "pal_resultsLabel": {
+    "message": "Results"
+  },
+  "pal_running": {
+    "message": "Running …"
+  },
+  "pal_scopeAction": {
+    "message": "actions only"
+  },
+  "pal_scopeBookmark": {
+    "message": "bookmarks only"
+  },
+  "pal_scopeForm": {
+    "message": "forms only"
+  },
+  "pal_scopeHistory": {
+    "message": "history only"
+  },
+  "pal_scopeNewNote": {
+    "message": "new note"
+  },
+  "pal_scopeNote": {
+    "message": "notes only"
+  },
+  "pal_scopeSession": {
+    "message": "sessions only"
+  },
+  "pal_scopeSnooze": {
+    "message": "snoozed only"
+  },
+  "pal_scopeTab": {
+    "message": "tabs only"
+  },
+  "pal_searchLabel": {
+    "message": "Search"
+  },
+  "pal_searchPlaceholder": {
+    "message": "Tabs, actions, bookmarks, history"
+  },
+  "pal_snippet": {
+    "message": "“…$1…”",
+    "description": "$1 is an excerpt of page text found by full-text search"
+  },
+  "pal_snoozeWakesAt": {
+    "message": "returns $1",
+    "description": "$1 is a formatted date/time"
+  },
+  "pal_tabInWindow": {
+    "message": "Tab · window $1",
+    "description": "$1 is a window number"
+  },
+  "pal_tabsCount_one": {
+    "message": "$1 tab"
+  },
+  "pal_tabsCount_other": {
+    "message": "$1 tabs"
+  },
+  "pal_title": {
+    "message": "Tabwerk quick search"
+  },
+  "popup_active": {
+    "message": "active"
+  },
+  "popup_allMarkedWarning": {
+    "message": "All tabs of this page are marked. That closes the page entirely."
+  },
+  "popup_allWindows": {
+    "message": "All windows"
+  },
+  "popup_alreadyInOrder": {
+    "message": "Already in this order."
+  },
+  "popup_andMoreCount_one": {
+    "message": "and $1 more"
+  },
+  "popup_andMoreCount_other": {
+    "message": "and $1 more"
+  },
+  "popup_areas": {
+    "message": "Areas"
+  },
+  "popup_changeTarget": {
+    "message": "Change target"
+  },
+  "popup_checking": {
+    "message": "checking"
+  },
+  "popup_checkNow": {
+    "message": "Check now"
+  },
+  "popup_checksEvery": {
+    "message": "checks every $1",
+    "description": "$1 is a duration description, e.g. '1 Stunde'"
+  },
+  "popup_checkSimilar": {
+    "message": "Check similar"
+  },
+  "popup_closeCount_one": {
+    "message": "Close $1"
+  },
+  "popup_closeCount_other": {
+    "message": "Close $1"
+  },
+  "popup_closedTabs_one": {
+    "message": "$1 tab closed"
+  },
+  "popup_closedTabs_other": {
+    "message": "$1 tabs closed"
+  },
+  "popup_closeHereCount_one": {
+    "message": "Close $1 here"
+  },
+  "popup_closeHereCount_other": {
+    "message": "Close $1 here"
+  },
+  "popup_closeMarkedCount_one": {
+    "message": "Close $1 marked"
+  },
+  "popup_closeMarkedCount_other": {
+    "message": "Close $1 marked"
+  },
+  "popup_closeTab": {
+    "message": "Close $1",
+    "description": "$1 is a tab title"
+  },
+  "popup_confirmRestore": {
+    "message": "Really restore"
+  },
+  "popup_connect": {
+    "message": "Connect"
+  },
+  "popup_delete": {
+    "message": "Delete"
+  },
+  "popup_diffSummary": {
+    "message": "Changes $1: +$2 −$3 lines",
+    "description": "$1 relative time, $2 added lines, $3 removed lines"
+  },
+  "popup_done": {
+    "message": "Done."
+  },
+  "popup_dupeIntro": {
+    "message": "What's marked will close. One tab per page stays preselected open."
+  },
+  "popup_dupesTab": {
+    "message": "Duplicates"
+  },
+  "popup_filedCount_one": {
+    "message": "$1 tab filed."
+  },
+  "popup_filedCount_other": {
+    "message": "$1 tabs filed."
+  },
+  "popup_fileInCount_one": {
+    "message": "$1 tab to file"
+  },
+  "popup_fileInCount_other": {
+    "message": "$1 tabs to file"
+  },
+  "popup_fileTab": {
+    "message": "File $1",
+    "description": "$1 is a tab title"
+  },
+  "popup_findHelp": {
+    "message": "Describe the tab in your own words. Jev picks from all open tabs."
+  },
+  "popup_findLabel": {
+    "message": "Which tab are you looking for?"
+  },
+  "popup_findOldTabs": {
+    "message": "Find old and unimportant tabs."
+  },
+  "popup_findPlaceholder": {
+    "message": "e.g. the article about clear reports"
+  },
+  "popup_groupsAbbrCount_one": {
+    "message": "$1 grp."
+  },
+  "popup_groupsAbbrCount_other": {
+    "message": "$1 grp."
+  },
+  "popup_groupsCount_one": {
+    "message": "$1 group"
+  },
+  "popup_groupsCount_other": {
+    "message": "$1 groups"
+  },
+  "popup_groupsSorted": {
+    "message": "Groups sorted, most important first:"
+  },
+  "popup_historyHelp": {
+    "message": "Tabwerk backs up after every change. Without the checkbox you only see this window and only reset this one."
+  },
+  "popup_jevDeciding": {
+    "message": "Jev is deciding"
+  },
+  "popup_jevRatingFirst": {
+    "message": "Jev's rating, most important first:"
+  },
+  "popup_lastValue": {
+    "message": "last $1"
+  },
+  "popup_levelClose": {
+    "message": "close"
+  },
+  "popup_levelLater": {
+    "message": "later"
+  },
+  "popup_levelNow": {
+    "message": "now"
+  },
+  "popup_levelNumber": {
+    "message": "Level $1"
+  },
+  "popup_levelRelevant": {
+    "message": "relevant"
+  },
+  "popup_markedWillCloseHint": {
+    "message": "What's marked will close. Everything stays in the history."
+  },
+  "popup_matchingChange": {
+    "message": "Matching change"
+  },
+  "popup_meterSureSameContent": {
+    "message": "sure the content is the same"
+  },
+  "popup_meterSureTab": {
+    "message": "sure this is the right tab"
+  },
+  "popup_multipleOpenCount_one": {
+    "message": "$1 page open multiple times"
+  },
+  "popup_multipleOpenCount_other": {
+    "message": "$1 pages open multiple times"
+  },
+  "popup_named": {
+    "message": "Named:"
+  },
+  "popup_nameGroups": {
+    "message": "Name groups without a title"
+  },
+  "popup_newNameLabel": {
+    "message": "New name"
+  },
+  "popup_newWatch": {
+    "message": "New watcher"
+  },
+  "popup_noDupes": {
+    "message": "No duplicate tabs."
+  },
+  "popup_noDupesHint": {
+    "message": "With “$1” Jev looks for the same content at a different address.",
+    "description": "$1 is the button label for checking similar tabs"
+  },
+  "popup_noKeyError": {
+    "message": "No key for Jev. Connect Tabwerk in settings."
+  },
+  "popup_noKeyNotice": {
+    "message": "Without a key for Jev, Tabwerk decides by code only."
+  },
+  "popup_noMatchingTab": {
+    "message": "No matching tab: $1"
+  },
+  "popup_noSameContent": {
+    "message": "No matching content found."
+  },
+  "popup_noSameContentHint": {
+    "message": "Jev compared tabs from the same website."
+  },
+  "popup_noSessionsYet": {
+    "message": "No session yet."
+  },
+  "popup_noSessionsYetHint": {
+    "message": "Save this window under a name. Later you open it again, with all groups."
+  },
+  "popup_noSnapshotsYet": {
+    "message": "No backup yet."
+  },
+  "popup_noSnapshotsYetHint": {
+    "message": "As soon as a tab changes, Tabwerk creates the first one."
+  },
+  "popup_noTabMatch": {
+    "message": "No tab matches."
+  },
+  "popup_noTabMatchHint": {
+    "message": "Describe it differently, for example by website."
+  },
+  "popup_nothingMarked": {
+    "message": "nothing marked"
+  },
+  "popup_nothingToClean": {
+    "message": "Nothing to clean up."
+  },
+  "popup_nothingToCleanHint": {
+    "message": "No tab is old or, according to Jev, unnecessary."
+  },
+  "popup_nothingToGroup": {
+    "message": "Nothing to group."
+  },
+  "popup_nothingToGroupHint": {
+    "message": "All tabs already have a group."
+  },
+  "popup_noTitle": {
+    "message": "No title"
+  },
+  "popup_noWatchers": {
+    "message": "No watcher yet."
+  },
+  "popup_noWatchersHint": {
+    "message": "Create one below. Tabwerk checks the page and lets you know when your condition is met."
+  },
+  "popup_oldMeansHint_one": {
+    "message": "Old means: unused for more than $1 day. Jev also weighs whether the tab fits your focus."
+  },
+  "popup_oldMeansHint_other": {
+    "message": "Old means: unused for more than $1 days. Jev also weighs whether the tab fits your focus."
+  },
+  "popup_onlyUngrouped": {
+    "message": "Only tabs without a group"
+  },
+  "popup_open": {
+    "message": "Open"
+  },
+  "popup_openPage": {
+    "message": "Open page"
+  },
+  "popup_orderAlreadyFine": {
+    "message": "The order is already right:"
+  },
+  "popup_pause": {
+    "message": "Pause"
+  },
+  "popup_pinned": {
+    "message": "pinned"
+  },
+  "popup_proposeGet": {
+    "message": "Get suggestion"
+  },
+  "popup_rename": {
+    "message": "Rename"
+  },
+  "popup_requests_one": {
+    "message": "$1 request"
+  },
+  "popup_requests_other": {
+    "message": "$1 requests"
+  },
+  "popup_resetAllButton": {
+    "message": "Reset all windows"
+  },
+  "popup_resetWindowButton": {
+    "message": "Reset window"
+  },
+  "popup_restoreAllWarning": {
+    "message": "All windows. Tabs that weren't open back then stay open and move to the end."
+  },
+  "popup_restoreBefore": {
+    "message": "Restore state before “$1”",
+    "description": "$1 is an action name"
+  },
+  "popup_restoreDone": {
+    "message": "Done. $1 tabs back in place, $2 newly opened$3.",
+    "description": "$3 is an optional failure clause, may be empty"
+  },
+  "popup_restoreFailedSuffix": {
+    "message": ", $1 not possible",
+    "description": "$1 is a count of tabs that couldn't be restored"
+  },
+  "popup_restoreWindowOnlyWarning": {
+    "message": "Only this window. Tabs that weren't open back then stay open and move to the end."
+  },
+  "popup_resume": {
+    "message": "Resume"
+  },
+  "popup_reviewCount": {
+    "message": "$1 to review"
+  },
+  "popup_sameAddress": {
+    "message": "same address"
+  },
+  "popup_saveWindow": {
+    "message": "Save window"
+  },
+  "popup_searchSubmit": {
+    "message": "Search"
+  },
+  "popup_sessionNameLabel": {
+    "message": "Session name"
+  },
+  "popup_sessionNamePlaceholder": {
+    "message": "Name, e.g. plan the move"
+  },
+  "popup_sessionsTab": {
+    "message": "Sessions"
+  },
+  "popup_settings": {
+    "message": "Settings"
+  },
+  "popup_similarIntro": {
+    "message": "Same content, different address. What's marked will close."
+  },
+  "popup_snapNow": {
+    "message": "Back up now"
+  },
+  "popup_snapshotGone": {
+    "message": "This backup no longer exists."
+  },
+  "popup_snapshotsTab": {
+    "message": "Backups"
+  },
+  "popup_sortByLegend": {
+    "message": "Sort by"
+  },
+  "popup_sorted": {
+    "message": "Sorted."
+  },
+  "popup_sortGroupsHint": {
+    "message": "Jev rates each group, important groups first"
+  },
+  "popup_sortGroupsLabel": {
+    "message": "Groups by priority"
+  },
+  "popup_sortHelp": {
+    "message": "This window only. Pinned tabs stay put, groups stay together."
+  },
+  "popup_sortOpened": {
+    "message": "Opened"
+  },
+  "popup_sortOpenedHint": {
+    "message": "Oldest tabs first"
+  },
+  "popup_sortPriority": {
+    "message": "Priority"
+  },
+  "popup_sortPriorityHint": {
+    "message": "Jev rates each tab by your focus"
+  },
+  "popup_sortRecent": {
+    "message": "Last used"
+  },
+  "popup_sortRecentHint": {
+    "message": "Recently used tabs first"
+  },
+  "popup_sortSite": {
+    "message": "Website"
+  },
+  "popup_sortSiteHint": {
+    "message": "Same domains next to each other"
+  },
+  "popup_sortTitle": {
+    "message": "Title"
+  },
+  "popup_sortTitleHint": {
+    "message": "Alphabetical"
+  },
+  "popup_statusBaseline": {
+    "message": "Baseline saved"
+  },
+  "popup_statusError": {
+    "message": "Error"
+  },
+  "popup_statusMatch": {
+    "message": "matching change"
+  },
+  "popup_statusNoise": {
+    "message": "changed, doesn't match"
+  },
+  "popup_statusSame": {
+    "message": "no change"
+  },
+  "popup_suggestTab": {
+    "message": "Suggestion"
+  },
+  "popup_tabFind": {
+    "message": "Find"
+  },
+  "popup_tabGroups": {
+    "message": "Groups"
+  },
+  "popup_tabHistory": {
+    "message": "History"
+  },
+  "popup_tabsCount_one": {
+    "message": "$1 tab"
+  },
+  "popup_tabsCount_other": {
+    "message": "$1 tabs"
+  },
+  "popup_tabSort": {
+    "message": "Sort"
+  },
+  "popup_tabWatch": {
+    "message": "Watchers"
+  },
+  "popup_thisMarker": {
+    "message": " (this one)"
+  },
+  "popup_thisWindow": {
+    "message": "This window"
+  },
+  "popup_today": {
+    "message": "Today"
+  },
+  "popup_tooFewGroups": {
+    "message": "Fewer than two groups."
+  },
+  "popup_tooFewGroupsHint": {
+    "message": "Group a few tabs first."
+  },
+  "popup_undo": {
+    "message": "Undo"
+  },
+  "popup_undoBringBackHint": {
+    "message": "Undo brings them back."
+  },
+  "popup_undoClosedHint": {
+    "message": "Undo brings closed tabs back."
+  },
+  "popup_undoRestoreHint": {
+    "message": "Undo restores the previous state."
+  },
+  "popup_unsureHint": {
+    "message": "Jev isn't sure here. These tabs are deselected."
+  },
+  "popup_usageTitle": {
+    "message": "Jev requests and reported costs in $1",
+    "description": "$1 is a month name"
+  },
+  "popup_useJev": {
+    "message": "Rate with Jev"
+  },
+  "popup_viaCode": {
+    "message": "By code"
+  },
+  "popup_windowNumber": {
+    "message": "Window $1"
+  },
+  "popup_windowsCount_one": {
+    "message": "$1 window"
+  },
+  "popup_windowsCount_other": {
+    "message": "$1 windows"
+  },
+  "popup_withoutJev": {
+    "message": "without Jev"
+  },
+  "popup_yesterday": {
+    "message": "Yesterday"
+  },
+  "set_categoryDevelopment": {
+    "message": "Development"
+  },
+  "set_categoryMedia": {
+    "message": "Media"
+  },
+  "set_categoryOrganization": {
+    "message": "Organization"
+  },
+  "set_categoryResearch": {
+    "message": "Research"
+  },
+  "set_categoryShopping": {
+    "message": "Shopping"
+  },
+  "set_categoryWork": {
+    "message": "Work"
+  },
+  "set_modelFixed": {
+    "message": "jev-1.13 (fixed version)"
+  },
+  "set_modelLatest": {
+    "message": "jev-latest (always the newest version)"
+  },
+  "snooze_inOneHour": {
+    "message": "in 1 hour"
+  },
+  "snooze_inOneWeek": {
+    "message": "in 1 week"
+  },
+  "snooze_todayEvening": {
+    "message": "today at 6 PM"
+  },
+  "snooze_tomorrowMorning": {
+    "message": "tomorrow at 9 AM"
+  },
+  "snooze_weekdayMorning": {
+    "message": "$1 at 9 AM",
+    "description": "$1 is a weekday name, e.g. Monday"
+  },
+  "stats_asOf": {
+    "message": "As of $1",
+    "description": "$1 is a formatted time"
+  },
+  "stats_dailyChartLabel_one": {
+    "message": "Highest tab count per day, $1 day"
+  },
+  "stats_dailyChartLabel_other": {
+    "message": "Highest tab count per day, $1 days"
+  },
+  "stats_dailyHeading": {
+    "message": "Highest tab count per day"
+  },
+  "stats_dailyHelp": {
+    "message": "From history, last 14 days."
+  },
+  "stats_dayColumnTitle_one": {
+    "message": "$2: at most $1 tab",
+    "description": "$1 is the tab count (from tp), $2 is a formatted date"
+  },
+  "stats_dayColumnTitle_other": {
+    "message": "$2: at most $1 tabs",
+    "description": "$1 is the tab count (from tp), $2 is a formatted date"
+  },
+  "stats_dayHeader": {
+    "message": "Day"
+  },
+  "stats_discarded_one": {
+    "message": "tab discarded"
+  },
+  "stats_discarded_other": {
+    "message": "tabs discarded"
+  },
+  "stats_groups_one": {
+    "message": "group"
+  },
+  "stats_groups_other": {
+    "message": "groups"
+  },
+  "stats_heading": {
+    "message": "Statistics"
+  },
+  "stats_hostTabsTitle_one": {
+    "message": "$2: $1 tab",
+    "description": "$1 is the tab count (from tp), $2 is the host name"
+  },
+  "stats_hostTabsTitle_other": {
+    "message": "$2: $1 tabs",
+    "description": "$1 is the tab count (from tp), $2 is the host name"
+  },
+  "stats_noHistory": {
+    "message": "No history backups yet."
+  },
+  "stats_oldestHeading": {
+    "message": "Least recently used"
+  },
+  "stats_overviewLabel": {
+    "message": "Overview"
+  },
+  "stats_pageTitle": {
+    "message": "Tabwerk statistics"
+  },
+  "stats_tabsHeader": {
+    "message": "Tabs"
+  },
+  "stats_tabsOpen_one": {
+    "message": "tab open"
+  },
+  "stats_tabsOpen_other": {
+    "message": "tabs open"
+  },
+  "stats_topHostsHeading": {
+    "message": "Websites with the most tabs"
+  },
+  "stats_windows_one": {
+    "message": "window"
+  },
+  "stats_windows_other": {
+    "message": "windows"
+  },
+  "tabs_noGroup": {
+    "message": "No group"
+  },
+  "tabs_tabAlreadyClosed": {
+    "message": "This tab is already closed."
+  },
+  "tabs_untitledGroup": {
+    "message": "Untitled"
+  },
+  "tw_dayBeforeYesterday": {
+    "message": "the day before yesterday"
+  },
+  "tw_daysAgo_one": {
+    "message": "$1 day ago"
+  },
+  "tw_daysAgo_other": {
+    "message": "$1 days ago"
+  },
+  "tw_last90Days": {
+    "message": "last 90 days"
+  },
+  "tw_lastMonth": {
+    "message": "last month"
+  },
+  "tw_lastWeek": {
+    "message": "last week"
+  },
+  "tw_thisWeek": {
+    "message": "this week"
+  },
+  "tw_today": {
+    "message": "today"
+  },
+  "tw_yesterday": {
+    "message": "yesterday"
+  },
+  "unlock_alwaysAllowed": {
+    "message": "Always allowed on $1",
+    "description": "$1 is a host name"
+  },
+  "unlock_cannotModifyPage": {
+    "message": "Tabwerk can't change this page right now. Use the context menu or the quick search shortcut."
+  },
+  "unlock_disabled": {
+    "message": "“Allow copying” is turned off in settings."
+  },
+  "unlock_noLongerAuto": {
+    "message": "No longer automatic on $1",
+    "description": "$1 is a host name"
+  },
+  "unlock_nowAllowed": {
+    "message": "Copying and right-click are now allowed"
+  },
+  "unlock_onlyNormalPages": {
+    "message": "This only works on regular web pages."
+  },
+  "watch_noNumberOnPage": {
+    "message": "The page has no number with a currency or percent sign."
+  },
+  "watch_notifyTitle": {
+    "message": "$1: matching change",
+    "description": "$1 is the watched website's host name"
+  },
+  "watch_numberNotFound": {
+    "message": "Jev can't find the intended number on the page."
+  },
+  "watch_pageError": {
+    "message": "The page responds with $1.",
+    "description": "$1 is an HTTP status code"
+  },
+  "watch_permissionDenied": {
+    "message": "Tabwerk isn't allowed to read this website. Set up the watcher again."
+  },
+  "wf_checkEvery": {
+    "message": "Check every",
+    "description": "Aria label used as a test selector, German text must stay exact"
+  },
+  "wf_compareLabel": {
+    "message": "Compare"
+  },
+  "wf_conditionPlaceholder": {
+    "message": "the headphones are back in stock"
+  },
+  "wf_createWatch": {
+    "message": "Create watcher"
+  },
+  "wf_customInterval": {
+    "message": "Custom interval",
+    "description": "Aria label used as a test selector, German text must stay exact"
+  },
+  "wf_customIntervalLabel": {
+    "message": "Custom interval (hh:mm:ss, at least 00:00:30)"
+  },
+  "wf_customOption": {
+    "message": "Custom…"
+  },
+  "wf_exactCompare": {
+    "message": "Compare number or price exactly"
+  },
+  "wf_hhmmssPlaceholder": {
+    "message": "hh:mm:ss"
+  },
+  "wf_intervalTooShort": {
+    "message": "Chrome checks at most every 30 seconds. You entered $1.",
+    "description": "$1 is the duration the user entered, e.g. 00:00:10"
+  },
+  "wf_invalidInterval": {
+    "message": "Write the interval as hh:mm:ss, for example 00:10:00."
+  },
+  "wf_invalidLimit": {
+    "message": "Enter the limit as a number, for example 199.99."
+  },
+  "wf_invalidUrl": {
+    "message": "Enter an address starting with http:// or https://."
+  },
+  "wf_limit": {
+    "message": "Limit"
+  },
+  "wf_limitPlaceholder": {
+    "message": "199.99"
+  },
+  "wf_missingCondition": {
+    "message": "Describe what Tabwerk should watch for."
+  },
+  "wf_noPermission": {
+    "message": "Without read permission for this website, Tabwerk can't check it."
+  },
+  "wf_notifyWhen": {
+    "message": "Let me know when …"
+  },
+  "wf_numericHint": {
+    "message": "Jev doesn't calculate exactly. For numbers and prices it notices the change but doesn't compare amounts."
+  },
+  "wf_opAbove": {
+    "message": "above"
+  },
+  "wf_opAtleast": {
+    "message": "at least"
+  },
+  "wf_opAtmost": {
+    "message": "at most"
+  },
+  "wf_opBelow": {
+    "message": "below"
+  },
+  "wf_page": {
+    "message": "Page"
+  },
+  "wf_selectedPrefix": {
+    "message": "Selected: "
+  },
+  "wf_selectedQuote": {
+    "message": "“$1”",
+    "description": "$1 is the marked/selected text"
+  },
+  "wnew_created": {
+    "message": "Watcher created."
+  },
+  "wnew_pageTitle": {
+    "message": "New watcher"
+  },
+  "wnew_sectionChanges": {
+    "message": "the section “$1” changes",
+    "description": "$1 is the text the user selected on the page"
+  },
+  "wnew_willCheck": {
+    "message": "Tabwerk will check $1 and let you know.",
+    "description": "$1 is the site name"
+  },
+  "x_allGroupsNamed": {
+    "message": "All groups already have a name"
+  },
+  "x_bookmarkPermission": {
+    "message": "Tabwerk isn't allowed to create bookmarks. Turn it on in the settings."
+  },
+  "x_bookmarkSaved": {
+    "message": "Saved in “$1”",
+    "description": "$1 is a bookmark folder path"
+  },
+  "x_browserPages": {
+    "message": "Browser pages"
+  },
+  "x_dupeAlreadyOpenTitle": {
+    "message": "This page is already open"
+  },
+  "x_dupeGoToTab": {
+    "message": "Go to open tab"
+  },
+  "x_dupeGuardPaused_one": {
+    "message": "Duplicate guard paused for $1 minute"
+  },
+  "x_dupeGuardPaused_other": {
+    "message": "Duplicate guard paused for $1 minutes"
+  },
+  "x_dupeKeepBoth": {
+    "message": "Keep both"
+  },
+  "x_dupeSwitchedMessage": {
+    "message": "Open the page again within 20 seconds to keep both open."
+  },
+  "x_dupeSwitchedTitle": {
+    "message": "Switched to the open tab"
+  },
+  "x_featureCleanup": {
+    "message": "The cleanup suggestion"
+  },
+  "x_featureFocus": {
+    "message": "Focus mode"
+  },
+  "x_featureFulltext": {
+    "message": "Full-text search"
+  },
+  "x_featureGroupNames": {
+    "message": "Suggest group names"
+  },
+  "x_featureHistorySearch": {
+    "message": "History in plain language"
+  },
+  "x_featureOff": {
+    "message": "$1 is turned off in the settings.",
+    "description": "$1 is an already-translated feature name such as 'Snooze'"
+  },
+  "x_featureSessions": {
+    "message": "Sessions"
+  },
+  "x_featureSnooze": {
+    "message": "Snooze"
+  },
+  "x_featureStats": {
+    "message": "Statistics"
+  },
+  "x_focusBadge": {
+    "message": "F",
+    "description": "Single-letter toolbar badge for focus mode. Keep it to one character."
+  },
+  "x_focusEnded": {
+    "message": "Focus ended"
+  },
+  "x_focusUntil": {
+    "message": "Focus until $1",
+    "description": "$1 is a formatted time"
+  },
+  "x_groupsNamed_one": {
+    "message": "$1 group named"
+  },
+  "x_groupsNamed_other": {
+    "message": "$1 groups named"
+  },
+  "x_historyPermission": {
+    "message": "Tabwerk isn't allowed to read the history. Turn it on in the settings."
+  },
+  "x_jevCanGo": {
+    "message": "Jev: can go"
+  },
+  "x_noteAppended": {
+    "message": "Note appended"
+  },
+  "x_noteSaved": {
+    "message": "Note saved"
+  },
+  "x_notesWebOnly": {
+    "message": "Notes only work on regular web pages."
+  },
+  "x_notUsedDays_one": {
+    "message": "not used for $1 day"
+  },
+  "x_notUsedDays_other": {
+    "message": "not used for $1 days"
+  },
+  "x_onlyWebSnooze": {
+    "message": "Only web pages can snooze."
+  },
+  "x_sessionGone": {
+    "message": "This session no longer exists."
+  },
+  "x_sessionOpened": {
+    "message": "“$1” opened",
+    "description": "$1 is the session name"
+  },
+  "x_snoozeReopened": {
+    "message": "Reopened"
+  },
+  "x_snoozeReturn": {
+    "message": "Back $1",
+    "description": "$1 is a time phrase such as 'in 1 Stunde' / 'in 1 hour'"
+  },
+  "x_snoozeWokeTitle": {
+    "message": "Back again"
+  },
+  "x_tabAlreadyClosed": {
+    "message": "This tab is already closed."
+  },
+  "x_tabsDiscarded_one": {
+    "message": "$1 tab discarded"
+  },
+  "x_tabsDiscarded_other": {
+    "message": "$1 tabs discarded"
+  },
+  "x_unknownWakeTime": {
+    "message": "Unknown wake time."
+  },
+  "x_windowFallback": {
+    "message": "Window"
+  },
+  "xfer_notATabwerkFile": {
+    "message": "This isn't a Tabwerk file."
+  }
+}

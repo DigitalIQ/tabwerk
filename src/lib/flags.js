@@ -2,44 +2,46 @@
 // parent: die Funktion wirkt nur, wenn die übergeordnete an ist.
 // jev: braucht einen Schlüssel für Jev. perm: braucht eine optionale Chrome-Erlaubnis.
 
+import { t } from './i18n.js';
+
 export const FEATURES = [
-  { id: 'palette', area: 'Suchen', label: 'Schnellsuche', hint: 'Suche per Tastenkürzel über jeder Seite.', def: true },
-  { id: 'paletteFulltext', parent: 'palette', area: 'Suchen', label: 'Volltext in offenen Tabs', hint: 'Sucht auch im sichtbaren Text der Seiten. Braucht Leserecht für alle Websites.', def: false, perm: { origins: ['https://*/*', 'http://*/*'] } },
-  { id: 'paletteHistoryJev', parent: 'palette', area: 'Suchen', label: 'Verlauf in Alltagssprache', hint: 'Mit /h und Umschalt+Enter: „der Artikel über Solarstrom von letzter Woche“.', def: false, jev: true, perm: { permissions: ['history'] } },
-  { id: 'find', area: 'Suchen', label: 'Finden mit Jev', hint: 'Tab per Beschreibung finden, im Popup.', def: true, jev: true },
+  { id: 'palette', get area() { return t('ft_area_search'); }, get label() { return t('ft_palette_label'); }, get hint() { return t('ft_palette_hint'); }, def: true },
+  { id: 'paletteFulltext', parent: 'palette', get area() { return t('ft_area_search'); }, get label() { return t('ft_paletteFulltext_label'); }, get hint() { return t('ft_paletteFulltext_hint'); }, def: false, perm: { origins: ['https://*/*', 'http://*/*'] } },
+  { id: 'paletteHistoryJev', parent: 'palette', get area() { return t('ft_area_search'); }, get label() { return t('ft_paletteHistoryJev_label'); }, get hint() { return t('ft_paletteHistoryJev_hint'); }, def: false, jev: true, perm: { permissions: ['history'] } },
+  { id: 'find', get area() { return t('ft_area_search'); }, get label() { return t('ft_find_label'); }, get hint() { return t('ft_find_hint'); }, def: true, jev: true },
 
-  { id: 'groups', area: 'Ordnen', label: 'Gruppen-Vorschläge', hint: 'Jev schlägt für jeden Tab eine Gruppe vor.', def: true, jev: true },
-  { id: 'groupNames', parent: 'groups', area: 'Ordnen', label: 'Gruppennamen vorschlagen', hint: 'Für Gruppen ohne Titel wählt Jev einen kurzen Namen aus Wörtern der Tab-Titel.', def: true, jev: true },
-  { id: 'autoGroup', area: 'Ordnen', label: 'Neue Tabs automatisch einsortieren', hint: 'Nach deinen Regeln wie „github.com = Entwicklung“.', def: false },
-  { id: 'autoGroupJev', parent: 'autoGroup', area: 'Ordnen', label: 'Ohne passende Regel Jev fragen', hint: 'Nur bei hoher Sicherheit, sonst bleibt der Tab ohne Gruppe.', def: false, jev: true },
-  { id: 'sort', area: 'Ordnen', label: 'Sortieren', hint: 'Nach Website, Nutzung, Titel und mit Jev nach Priorität.', def: true },
-  { id: 'focus', area: 'Ordnen', label: 'Fokus-Modus', hint: 'Klappt andere Gruppen ein und sperrt ablenkende Seiten auf Zeit.', def: true },
-  { id: 'notes', area: 'Ordnen', label: 'Notizen an Tabs', hint: 'Per Rechtsklick, Tastenkürzel oder Schnellsuche.', def: true },
-  { id: 'copyLinks', area: 'Ordnen', label: 'Tabs als Linkliste kopieren', hint: 'Als Markdown oder Text, für Notizen und Mails.', def: true },
+  { id: 'groups', get area() { return t('ft_area_organize'); }, get label() { return t('ft_groups_label'); }, get hint() { return t('ft_groups_hint'); }, def: true, jev: true },
+  { id: 'groupNames', parent: 'groups', get area() { return t('ft_area_organize'); }, get label() { return t('ft_groupNames_label'); }, get hint() { return t('ft_groupNames_hint'); }, def: true, jev: true },
+  { id: 'autoGroup', get area() { return t('ft_area_organize'); }, get label() { return t('ft_autoGroup_label'); }, get hint() { return t('ft_autoGroup_hint'); }, def: false },
+  { id: 'autoGroupJev', parent: 'autoGroup', get area() { return t('ft_area_organize'); }, get label() { return t('ft_autoGroupJev_label'); }, get hint() { return t('ft_autoGroupJev_hint'); }, def: false, jev: true },
+  { id: 'sort', get area() { return t('ft_area_organize'); }, get label() { return t('ft_sort_label'); }, get hint() { return t('ft_sort_hint'); }, def: true },
+  { id: 'focus', get area() { return t('ft_area_organize'); }, get label() { return t('ft_focus_label'); }, get hint() { return t('ft_focus_hint'); }, def: true },
+  { id: 'notes', get area() { return t('ft_area_organize'); }, get label() { return t('ft_notes_label'); }, get hint() { return t('ft_notes_hint'); }, def: true },
+  { id: 'copyLinks', get area() { return t('ft_area_organize'); }, get label() { return t('ft_copyLinks_label'); }, get hint() { return t('ft_copyLinks_hint'); }, def: true },
 
-  { id: 'cleanup', area: 'Aufräumen', label: 'Doppelte finden', hint: 'Gleiche Adressen finden und einzeln schließen.', def: true },
-  { id: 'similar', parent: 'cleanup', area: 'Aufräumen', label: 'Gleichen Inhalt finden', hint: 'Jev vergleicht Tabs derselben Website.', def: true, jev: true },
-  { id: 'cleanupSuggest', parent: 'cleanup', area: 'Aufräumen', label: 'Aufräum-Vorschlag', hint: 'Markiert alte und unwichtige Tabs zum Schließen. Mit Jev genauer.', def: true },
-  { id: 'dupeGuard', area: 'Aufräumen', label: 'Doppelte beim Öffnen abfangen', hint: 'Springt zum schon offenen Tab. Zweimal öffnen hintereinander behält beide.', def: false },
-  { id: 'discard', area: 'Aufräumen', label: 'Inaktive Tabs entladen', hint: 'Spart Speicher. Der Tab bleibt sichtbar und lädt beim Anklicken neu.', def: false },
-  { id: 'snooze', area: 'Aufräumen', label: 'Tabs schlummern lassen', hint: 'Tab schließen und zur gewählten Zeit wieder öffnen.', def: true },
+  { id: 'cleanup', get area() { return t('ft_area_cleanup'); }, get label() { return t('ft_cleanup_label'); }, get hint() { return t('ft_cleanup_hint'); }, def: true },
+  { id: 'similar', parent: 'cleanup', get area() { return t('ft_area_cleanup'); }, get label() { return t('ft_similar_label'); }, get hint() { return t('ft_similar_hint'); }, def: true, jev: true },
+  { id: 'cleanupSuggest', parent: 'cleanup', get area() { return t('ft_area_cleanup'); }, get label() { return t('ft_cleanupSuggest_label'); }, get hint() { return t('ft_cleanupSuggest_hint'); }, def: true },
+  { id: 'dupeGuard', get area() { return t('ft_area_cleanup'); }, get label() { return t('ft_dupeGuard_label'); }, get hint() { return t('ft_dupeGuard_hint'); }, def: false },
+  { id: 'discard', get area() { return t('ft_area_cleanup'); }, get label() { return t('ft_discard_label'); }, get hint() { return t('ft_discard_hint'); }, def: false },
+  { id: 'snooze', get area() { return t('ft_area_cleanup'); }, get label() { return t('ft_snooze_label'); }, get hint() { return t('ft_snooze_hint'); }, def: true },
 
-  { id: 'history', area: 'Sichern', label: 'Verlauf', hint: 'Sichert Fenster, Tabs und Gruppen nach jeder Änderung.', def: true },
-  { id: 'undo', parent: 'history', area: 'Sichern', label: 'Rückgängig', hint: 'Springt zum Stand vor der letzten Tabwerk-Aktion.', def: true },
-  { id: 'sessions', area: 'Sichern', label: 'Benannte Sitzungen', hint: 'Fenster unter einem Namen speichern und später öffnen.', def: true },
-  { id: 'transfer', area: 'Sichern', label: 'Export und Import', hint: 'Alles als Datei sichern, Sitzungen auch als Lesezeichen-Datei.', def: true },
-  { id: 'stats', area: 'Sichern', label: 'Statistik', hint: 'Tabs pro Fenster und Website, älteste Tabs, Verlauf der Anzahl.', def: true },
+  { id: 'history', get area() { return t('ft_area_backup'); }, get label() { return t('ft_history_label'); }, get hint() { return t('ft_history_hint'); }, def: true },
+  { id: 'undo', parent: 'history', get area() { return t('ft_area_backup'); }, get label() { return t('ft_undo_label'); }, get hint() { return t('ft_undo_hint'); }, def: true },
+  { id: 'sessions', get area() { return t('ft_area_backup'); }, get label() { return t('ft_sessions_label'); }, get hint() { return t('ft_sessions_hint'); }, def: true },
+  { id: 'transfer', get area() { return t('ft_area_backup'); }, get label() { return t('ft_transfer_label'); }, get hint() { return t('ft_transfer_hint'); }, def: true },
+  { id: 'stats', get area() { return t('ft_area_backup'); }, get label() { return t('ft_stats_label'); }, get hint() { return t('ft_stats_hint'); }, def: true },
 
-  { id: 'watches', area: 'Beobachten', label: 'Wächter', hint: 'Seiten beobachten und bei passender Änderung melden.', def: true },
-  { id: 'watchDiff', parent: 'watches', area: 'Beobachten', label: 'Änderungen anzeigen', hint: 'Zeigt neue und entfernte Zeilen jeder Prüfung.', def: true },
-  { id: 'watchNumbers', parent: 'watches', area: 'Beobachten', label: 'Zahlen und Preise vergleichen', hint: 'Code vergleicht exakt, Jev wählt die richtige Zahl auf der Seite.', def: true, jev: true },
+  { id: 'watches', get area() { return t('ft_area_watch'); }, get label() { return t('ft_watches_label'); }, get hint() { return t('ft_watches_hint'); }, def: true },
+  { id: 'watchDiff', parent: 'watches', get area() { return t('ft_area_watch'); }, get label() { return t('ft_watchDiff_label'); }, get hint() { return t('ft_watchDiff_hint'); }, def: true },
+  { id: 'watchNumbers', parent: 'watches', get area() { return t('ft_area_watch'); }, get label() { return t('ft_watchNumbers_label'); }, get hint() { return t('ft_watchNumbers_hint'); }, def: true, jev: true },
 
-  { id: 'copyUnlock', area: 'Lesezeichen und Formulare', label: 'Kopieren erlauben', hint: 'Hebt Sperren für Kopieren, Einfügen, Markieren und Rechtsklick auf. Für einen Tab oder immer für eine Website.', def: true },
-  { id: 'bookmarkFolder', area: 'Lesezeichen und Formulare', label: 'Lesezeichen-Ordner vorschlagen', hint: 'Jev wählt beim Speichern den passenden Ordner.', def: false, jev: true, perm: { permissions: ['bookmarks'] } },
-  { id: 'forms', area: 'Lesezeichen und Formulare', label: 'Formulare speichern und ausfüllen', hint: 'Passwort-, Karten- und Kontofelder speichert Tabwerk nie.', def: true },
-  { id: 'formsTestData', parent: 'forms', area: 'Lesezeichen und Formulare', label: 'Mit Testdaten füllen', hint: 'Erfundene Namen, Adressen und Zahlen, für Entwickler.', def: true },
-  { id: 'formsSensitive', parent: 'forms', area: 'Lesezeichen und Formulare', label: 'Auch geschützte Felder speichern', hint: 'Speichert auch Passwort-, Karten-, Konto-, IBAN- und TAN-Felder. Tabwerk legt sie unverschlüsselt in Chrome ab und nimmt sie in den Export auf. Jev sieht nie Werte.', def: false, warn: true },
-  { id: 'formsJev', parent: 'forms', area: 'Lesezeichen und Formulare', label: 'Unbekannte Felder mit Jev zuordnen', hint: 'Jev sieht nur Feldnamen und Beschriftungen, keine Werte.', def: false, jev: true },
+  { id: 'copyUnlock', get area() { return t('ft_area_bookmarksForms'); }, get label() { return t('ft_copyUnlock_label'); }, get hint() { return t('ft_copyUnlock_hint'); }, def: true },
+  { id: 'bookmarkFolder', get area() { return t('ft_area_bookmarksForms'); }, get label() { return t('ft_bookmarkFolder_label'); }, get hint() { return t('ft_bookmarkFolder_hint'); }, def: false, jev: true, perm: { permissions: ['bookmarks'] } },
+  { id: 'forms', get area() { return t('ft_area_bookmarksForms'); }, get label() { return t('ft_forms_label'); }, get hint() { return t('ft_forms_hint'); }, def: true },
+  { id: 'formsTestData', parent: 'forms', get area() { return t('ft_area_bookmarksForms'); }, get label() { return t('ft_formsTestData_label'); }, get hint() { return t('ft_formsTestData_hint'); }, def: true },
+  { id: 'formsSensitive', parent: 'forms', get area() { return t('ft_area_bookmarksForms'); }, get label() { return t('ft_formsSensitive_label'); }, get hint() { return t('ft_formsSensitive_hint'); }, def: false, warn: true },
+  { id: 'formsJev', parent: 'forms', get area() { return t('ft_area_bookmarksForms'); }, get label() { return t('ft_formsJev_label'); }, get hint() { return t('ft_formsJev_hint'); }, def: false, jev: true },
 ];
 
 export const FEATURE_DEFAULTS = Object.fromEntries(FEATURES.map((f) => [f.id, f.def]));

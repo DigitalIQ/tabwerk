@@ -4,12 +4,22 @@ import { watchForm } from '../ui/watchform.js';
 import { describeInterval } from '../lib/duration.js';
 import { hostOf } from '../lib/url.js';
 import { isOn } from '../lib/flags.js';
+import { initI18n, localizeDom, t, tp, fmtNumber, fmtDate, fmtList } from '../lib/i18n.js';
+import { reasonText, labelText, isBefore } from '../lib/reasons.js';
+
+await initI18n();
+localizeDom();
 
 const $ = (sel) => document.querySelector(sel);
 // replaceChildren schreibt null als Text. put filtert leere Einträge heraus.
 const put = (el, ...nodes) => el.replaceChildren(...nodes.flat().filter(Boolean));
 const win = await chrome.windows.getCurrent();
 const settings = await getSettings();
+
+// Vier Prioritätsstufen, von schließen bis jetzt.
+const LEVEL_LABELS = [t('popup_levelClose'), t('popup_levelLater'), t('popup_levelRelevant'), t('popup_levelNow')];
+// Vergleichsoperatoren für Zahlen-Wächter, dieselben Texte wie im Wächter-Formular.
+const OPS = { below: 'wf_opBelow', atmost: 'wf_opAtmost', above: 'wf_opAbove', atleast: 'wf_opAtleast' };
 
 // Ausgeschaltete Funktionen verschwinden. data-flag darf mehrere Schalter mit | nennen.
 for (const el of document.querySelectorAll('[data-flag]')) {
@@ -21,16 +31,16 @@ for (const el of document.querySelectorAll('[data-flag]')) {
 async function refreshHeader() {
   const tabs = await chrome.tabs.query({ windowId: win.id });
   const groups = await chrome.tabGroups.query({ windowId: win.id });
-  $('#count').textContent = `${tabs.length} Tabs · ${groups.length} Gruppen`;
+  $('#count').textContent = `${tp('popup_tabsCount', tabs.length)} · ${tp('popup_groupsCount', groups.length)}`;
   const usage = await getUsage();
-  const month = new Date().toLocaleDateString('de-DE', { month: 'long' });
-  $('#usage').textContent = `${modelShort(connection(settings).model)} · ${usage.requests} Anfragen · ${usage.estimated ? '≈ ' : ''}${cost(usage.cost)}`;
-  $('#usage').title = `Jev-Anfragen und gemeldete Kosten im ${month}`;
+  const month = fmtDate(new Date(), { month: 'long' });
+  $('#usage').textContent = `${modelShort(connection(settings).model)} · ${tp('popup_requests', usage.requests)} · ${usage.estimated ? '≈ ' : ''}${cost(usage.cost)}`;
+  $('#usage').title = t('popup_usageTitle', month);
   const lastAction = isOn(settings, 'undo') ? await send('lastAction', { windowId: win.id }) : null;
   $('#undo').hidden = !lastAction;
   if (lastAction) {
-    $('#undo').title = `Stand vor „${lastAction.label}“ wiederherstellen`;
-    $('#undo-label').textContent = 'Rückgängig';
+    $('#undo').title = t('popup_restoreBefore', labelText(lastAction.label));
+    $('#undo-label').textContent = t('popup_undo');
   }
 }
 
@@ -65,10 +75,10 @@ function showPanel(name) {
 }
 document.querySelectorAll('[role=tab]').forEach((tab) => tab.addEventListener('click', () => showPanel(tab.dataset.panel)));
 
-const skeleton = () => h('div', { class: 'skel', 'aria-label': 'Jev entscheidet' }, h('i'), h('i'), h('i'));
+const skeleton = () => h('div', { class: 'skel', 'aria-label': t('popup_jevDeciding') }, h('i'), h('i'), h('i'));
 
 function failure(error) {
-  const text = error.code === 'no-key' ? 'Kein Schlüssel für Jev. Verbinde Tabwerk in den Einstellungen.' : error.message;
+  const text = error.code === 'no-key' ? t('popup_noKeyError') : error.message;
   return h('div', { class: 'fail', role: 'alert' }, icon('warn'), h('span', {}, text));
 }
 
@@ -114,18 +124,18 @@ $('#find-form').addEventListener('submit', (event) => {
     const { hits, cost: c } = await send('find', { query });
     const top = hits.find((x) => !x.none);
     if (!top) {
-      put(out, empty('search', 'Kein Tab passt.', 'Beschreib ihn anders, zum Beispiel mit der Website.'));
+      put(out, empty('search', t('popup_noTabMatch'), t('popup_noTabMatchHint')));
       return;
     }
     put(out, ...hits.map((hit) => hit.none
-      ? h('p', { class: 'help' }, `Kein passender Tab: ${Math.round(hit.p * 100)} %`)
+      ? h('p', { class: 'help' }, t('popup_noMatchingTab', fmtNumber(hit.p, { style: 'percent', maximumFractionDigits: 0 })))
       : h('button', {
         class: 'row',
         onclick: async () => { await send('focusTab', { tabId: hit.id, windowId: hit.windowId }); window.close(); },
       },
       favicon(hit.url),
       h('span', { class: 'txt' }, h('span', { class: 'title' }, hit.title), h('span', { class: 'site' }, hostOf(hit.url))),
-      meter(hit.p, settings.confidence, 'sicher, dass es dieser Tab ist'))),
+      meter(hit.p, settings.confidence, t('popup_meterSureTab')))),
     h('p', { class: 'help mono' }, cost(c)));
   });
 });
@@ -143,7 +153,7 @@ $('#propose').addEventListener('click', () => {
   run(out, async () => {
     const res = await send('proposeGroups', { windowId: win.id, onlyUngrouped: $('#only-ungrouped').checked });
     if (!res.items.length) {
-      put(out, empty('groups', 'Nichts zu gruppieren.', 'Alle Tabs haben schon eine Gruppe.'));
+      put(out, empty('groups', t('popup_nothingToGroup'), t('popup_nothingToGroupHint')));
       return;
     }
     renderGroupPlan(out, res);
@@ -158,10 +168,10 @@ $('#name-groups').addEventListener('click', () => {
       put(out, empty('check', res.message));
       return;
     }
-    put(out, h('p', { class: 'help' }, 'Benannt:'),
+    put(out, h('p', { class: 'help' }, t('popup_named')),
       ...res.groups.map((g) => h('div', { class: 'row', style: { gridTemplateColumns: '1fr auto' } },
         reiter({ type: 'existing', name: g.name, color: g.color }),
-        g.confidence !== null ? meter(g.confidence, settings.confidence) : h('span', { class: 'faint mono' }, 'Code'))),
+        g.confidence !== null ? meter(g.confidence, settings.confidence) : h('span', { class: 'faint mono' }, t('popup_viaCode')))),
       res.cost ? h('p', { class: 'help mono' }, cost(res.cost)) : null);
   });
 });
@@ -176,9 +186,9 @@ function renderGroupPlan(out, res) {
       .filter((b) => b.items.length);
     const unsure = res.items.filter((i) => !i.sure).length;
     const selected = [...plan.values()].filter((p) => p.on && p.target !== 'none').length;
-    const apply = h('button', { class: 'primary', disabled: !selected, onclick: applyPlan }, `${selected} Tabs einsortieren`);
-    put(out, 
-      unsure ? h('p', { class: 'help' }, h('span', { class: 'flag' }, icon('warn'), `${unsure} prüfen`), ' Hier ist Jev unsicher. Diese Tabs sind abgewählt.') : null,
+    const apply = h('button', { class: 'primary', disabled: !selected, onclick: applyPlan }, tp('popup_fileInCount', selected));
+    put(out,
+      unsure ? h('p', { class: 'help' }, h('span', { class: 'flag' }, icon('warn'), t('popup_reviewCount', fmtNumber(unsure))), ` ${t('popup_unsureHint')}`) : null,
       ...buckets.map((b) => h('div', { class: `bucket${b.opt.type === 'none' ? ' none' : ''}`, style: { '--c': CHROME_COLORS[b.opt.color] } },
         reiter(b.opt),
         h('div', { class: 'list' }, ...b.items.map((item) => groupRow(item))))),
@@ -188,9 +198,9 @@ function renderGroupPlan(out, res) {
 
   const groupRow = (item) => {
     const state = plan.get(item.id);
-    const box = h('input', { type: 'checkbox', 'aria-label': `${item.title} einsortieren`, onchange: (e) => { state.on = e.target.checked; draw(); } });
+    const box = h('input', { type: 'checkbox', 'aria-label': t('popup_fileTab', item.title), onchange: (e) => { state.on = e.target.checked; draw(); } });
     box.checked = state.on;
-    const select = h('select', { 'aria-label': 'Ziel ändern', onchange: (e) => { state.target = e.target.value; state.on = e.target.value !== 'none'; draw(); } },
+    const select = h('select', { 'aria-label': t('popup_changeTarget'), onchange: (e) => { state.target = e.target.value; state.on = e.target.value !== 'none'; draw(); } },
       ...keys.map((k) => h('option', { value: k }, res.options[k].name)));
     select.value = state.target;
     return h('div', { class: `row check-row${item.sure ? '' : ' unsure'}` },
@@ -204,7 +214,7 @@ function renderGroupPlan(out, res) {
     const chosen = [...plan].filter(([, p]) => p.on && p.target !== 'none').map(([tabId, p]) => ({ tabId, target: p.target }));
     await run(out, async () => {
       const { moved } = await send('applyGroups', { windowId: win.id, plan: chosen, options: res.options });
-      put(out, empty('check', `${moved} Tabs einsortiert.`, 'Mit Rückgängig stellst du den alten Stand her.'));
+      put(out, empty('check', tp('popup_filedCount', moved), t('popup_undoRestoreHint')));
     });
   }
 
@@ -220,16 +230,15 @@ $('#sort-go').addEventListener('click', () => {
     if (by === 'groups') {
       const res = await send('sortGroups', { windowId: win.id });
       if (!res.groups.length) {
-        put(out, empty('groups', 'Weniger als zwei Gruppen.', 'Gruppiere erst ein paar Tabs.'));
+        put(out, empty('groups', t('popup_tooFewGroups'), t('popup_tooFewGroupsHint')));
         return;
       }
-      const labels = ['schließen', 'später', 'relevant', 'jetzt'];
       put(out,
-        h('p', { class: 'help' }, res.moved ? 'Gruppen sortiert, wichtigste zuerst:' : 'Die Reihenfolge passt schon:'),
+        h('p', { class: 'help' }, res.moved ? t('popup_groupsSorted') : t('popup_orderAlreadyFine')),
         ...res.groups.map((g) => h('div', { class: `row${g.confidence < res.threshold ? ' unsure' : ''}`, style: { gridTemplateColumns: '1fr auto' } },
-          h('span', { class: 'txt' }, reiter({ type: 'existing', name: g.title, color: g.color }), h('span', { class: 'site' }, `${g.tabs} Tabs`)),
+          h('span', { class: 'txt' }, reiter({ type: 'existing', name: g.title, color: g.color }), h('span', { class: 'site' }, tp('popup_tabsCount', g.tabs))),
           h('span', { style: { display: 'grid', gap: '4px', justifyItems: 'end' } },
-            h('span', { class: 'level' }, g.levels === 4 ? labels[g.level] : `Stufe ${g.level}`),
+            h('span', { class: 'level' }, g.levels === 4 ? LEVEL_LABELS[g.level] : t('popup_levelNumber', fmtNumber(g.level))),
             meter(g.confidence, res.threshold)))),
         h('p', { class: 'help mono' }, cost(res.cost)));
       out.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -237,14 +246,13 @@ $('#sort-go').addEventListener('click', () => {
     }
     const res = await send('sortTabs', { windowId: win.id, by });
     if (!res.scores) {
-      put(out, empty('check', res.segments ? 'Sortiert.' : 'Schon in dieser Reihenfolge.'));
+      put(out, empty('check', res.segments ? t('popup_sorted') : t('popup_alreadyInOrder')));
       return;
     }
-    const labels = ['schließen', 'später', 'relevant', 'jetzt'];
-    put(out, 
-      h('p', { class: 'help' }, 'Jevs Bewertung, wichtigste zuerst:'),
+    put(out,
+      h('p', { class: 'help' }, t('popup_jevRatingFirst')),
       ...res.scores.map((s) => tabRow(s, h('span', { style: { display: 'grid', gap: '4px', justifyItems: 'end' } },
-        h('span', { class: 'level' }, s.levels === 4 ? labels[s.level] : `Stufe ${s.level}`),
+        h('span', { class: 'level' }, s.levels === 4 ? LEVEL_LABELS[s.level] : t('popup_levelNumber', fmtNumber(s.level))),
         meter(s.confidence, res.threshold)), { class: `row${s.confidence < res.threshold ? ' unsure' : ''}` })),
       h('p', { class: 'help mono' }, cost(res.cost)));
     out.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -262,7 +270,7 @@ function shortUrl(url) {
 }
 
 function renderDupeChoices(out, groups, { intro, costText } = {}) {
-  const marked = new Set(groups.flatMap((g) => g.close.map((t) => t.id)));
+  const marked = new Set(groups.flatMap((g) => g.close.map((tab) => tab.id)));
   const scope = () => ($('#dupes-all').checked ? null : win.id);
 
   const closeIds = async (ids) => {
@@ -270,20 +278,20 @@ function renderDupeChoices(out, groups, { intro, costText } = {}) {
     await send('closeTabs', { tabIds: ids, windowId: scope() });
     for (const id of ids) marked.delete(id);
     groups = groups
-      .map((g) => ({ ...g, tabs: g.tabs.filter((t) => !ids.includes(t.id)) }))
+      .map((g) => ({ ...g, tabs: g.tabs.filter((tab) => !ids.includes(tab.id)) }))
       .filter((g) => g.tabs.length > 1);
     refreshHeader();
-    if (!groups.length) put(out, empty('check', 'Erledigt.', 'Mit Rückgängig holst du geschlossene Tabs zurück.'));
+    if (!groups.length) put(out, empty('check', t('popup_done'), t('popup_undoClosedHint')));
     else draw();
   };
 
   const row = (tab, g) => {
-    const box = h('input', { type: 'checkbox', 'aria-label': `${tab.title} schließen`, onchange: (e) => {
+    const box = h('input', { type: 'checkbox', 'aria-label': t('popup_closeTab', tab.title), onchange: (e) => {
       if (e.target.checked) marked.add(tab.id); else marked.delete(tab.id);
       draw();
     } });
     box.checked = marked.has(tab.id);
-    const badge = tab.active ? 'aktiv' : tab.pinned ? 'angepinnt' : tab.lastAccessed ? ago(tab.lastAccessed) : '';
+    const badge = tab.active ? t('popup_active') : tab.pinned ? t('popup_pinned') : tab.lastAccessed ? ago(tab.lastAccessed) : '';
     return h('label', { class: `row check-row dupe-row${marked.has(tab.id) ? ' gone' : ''}` },
       box,
       favicon(tab.url),
@@ -296,20 +304,20 @@ function renderDupeChoices(out, groups, { intro, costText } = {}) {
     put(out,
       intro ? h('p', { class: 'help' }, intro) : null,
       ...groups.map((g) => {
-        const chosen = g.tabs.filter((t) => marked.has(t.id)).map((t) => t.id);
+        const chosen = g.tabs.filter((tab) => marked.has(tab.id)).map((tab) => tab.id);
         const all = chosen.length === g.tabs.length;
         return h('div', { class: 'dupe' },
           h('div', { class: 'dupe-head' },
-            h('span', { class: 'mono faint' }, `${g.tabs.length} Tabs${g.p !== undefined ? '' : ' · gleiche Adresse'}`),
-            g.p !== undefined ? meter(g.p, settings.confidence, 'sicher, dass der Inhalt gleich ist') : null),
-          ...g.tabs.map((t) => row(t, g)),
-          all ? h('p', { class: 'help warn-text' }, 'Alle Tabs dieser Seite sind markiert. Dann ist die Seite ganz zu.') : null,
+            h('span', { class: 'mono faint' }, g.p !== undefined ? tp('popup_tabsCount', g.tabs.length) : `${tp('popup_tabsCount', g.tabs.length)} · ${t('popup_sameAddress')}`),
+            g.p !== undefined ? meter(g.p, settings.confidence, t('popup_meterSureSameContent')) : null),
+          ...g.tabs.map((tab) => row(tab, g)),
+          all ? h('p', { class: 'help warn-text' }, t('popup_allMarkedWarning')) : null,
           h('div', { class: 'dupe-foot' },
-            h('button', { class: 'ghost', disabled: !chosen.length, onclick: () => closeIds(chosen) }, icon('x'), chosen.length ? `${chosen.length} hier schließen` : 'nichts markiert')));
+            h('button', { class: 'ghost', disabled: !chosen.length, onclick: () => closeIds(chosen) }, icon('x'), chosen.length ? tp('popup_closeHereCount', chosen.length) : t('popup_nothingMarked'))));
       }),
       h('div', { class: 'summary sticky' },
-        h('span', { class: costText ? 'mono' : '' }, costText || `${groups.length} ${groups.length === 1 ? 'Seite' : 'Seiten'} mehrfach offen`),
-        h('button', { class: 'primary', disabled: !total, onclick: () => closeIds([...marked]) }, icon('x'), `${total} markierte schließen`)));
+        h('span', { class: costText ? 'mono' : '' }, costText || tp('popup_multipleOpenCount', groups.length)),
+        h('button', { class: 'primary', disabled: !total, onclick: () => closeIds([...marked]) }, icon('x'), tp('popup_closeMarkedCount', total))));
   };
   draw();
 }
@@ -318,11 +326,11 @@ async function loadDupes() {
   const out = $('#dupes-out');
   const found = await send('duplicates', { windowId: win.id, allWindows: $('#dupes-all').checked });
   if (!found.length) {
-    put(out, empty('check', 'Keine doppelten Tabs.', 'Mit „Ähnliche prüfen“ sucht Jev nach gleichem Inhalt unter anderer Adresse.'));
+    put(out, empty('check', t('popup_noDupes'), t('popup_noDupesHint', t('popup_checkSimilar'))));
     return;
   }
   renderDupeChoices(out, found.map((g) => ({ tabs: [g.keep, ...g.close], close: g.close })),
-    { intro: 'Markiert ist, was zugeht. Ein Tab pro Seite bleibt vorausgewählt offen.' });
+    { intro: t('popup_dupeIntro') });
 }
 $('#dupes-all').addEventListener('change', loadDupes);
 
@@ -332,7 +340,7 @@ function showClean() {
   $('#suggest-bar').hidden = mode !== 'suggest';
   $('#suggest-jev').closest('label').hidden = !hasKey(settings);
   if (mode === 'dupes') loadDupes();
-  else put($('#dupes-out'), empty('bolt', 'Alte und unwichtige Tabs finden.', `Alt heißt: länger als ${settings.cleanupDays} Tage nicht benutzt. Mit Jev zählt auch, ob der Tab zu deinem Fokus passt.`));
+  else put($('#dupes-out'), empty('bolt', t('popup_findOldTabs'), tp('popup_oldMeansHint', settings.cleanupDays)));
 }
 document.querySelectorAll('input[name=clean]').forEach((r) => r.addEventListener('change', showClean));
 
@@ -341,15 +349,15 @@ $('#suggest-go').addEventListener('click', () => {
   run(out, async () => {
     const res = await send('suggestCleanup', { windowId: win.id, useJev: $('#suggest-jev').checked });
     if (!res.items.length) {
-      put(out, empty('check', 'Nichts zum Aufräumen.', 'Kein Tab ist alt oder laut Jev überflüssig.'));
+      put(out, empty('check', t('popup_nothingToClean'), t('popup_nothingToCleanHint')));
       return;
     }
     const marked = new Set(res.items.filter((i) => i.preselect).map((i) => i.id));
     const draw = () => {
       put(out,
-        h('p', { class: 'help' }, 'Markiert ist, was zugeht. Alles bleibt im Verlauf.'),
+        h('p', { class: 'help' }, t('popup_markedWillCloseHint')),
         ...res.items.map((item) => {
-          const box = h('input', { type: 'checkbox', 'aria-label': `${item.title} schließen`, onchange: (e) => { if (e.target.checked) marked.add(item.id); else marked.delete(item.id); draw(); } });
+          const box = h('input', { type: 'checkbox', 'aria-label': t('popup_closeTab', item.title), onchange: (e) => { if (e.target.checked) marked.add(item.id); else marked.delete(item.id); draw(); } });
           box.checked = marked.has(item.id);
           return h('label', { class: `row check-row dupe-row${marked.has(item.id) ? ' gone' : ''}` },
             box, favicon(item.url),
@@ -357,12 +365,12 @@ $('#suggest-go').addEventListener('click', () => {
             typeof item.confidence === 'number' ? meter(item.confidence, res.threshold) : h('span', {}));
         }),
         h('div', { class: 'summary sticky' },
-          h('span', { class: 'mono' }, res.jev ? cost(res.cost) : 'ohne Jev'),
+          h('span', { class: 'mono' }, res.jev ? cost(res.cost) : t('popup_withoutJev')),
           h('button', { class: 'primary', disabled: !marked.size, onclick: async () => {
-            await send('closeTabs', { tabIds: [...marked], windowId: win.id, label: 'Aufräumen' });
+            await send('closeTabs', { tabIds: [...marked], windowId: win.id, label: 'lbl_cleanup' });
             refreshHeader();
-            put(out, empty('check', `${marked.size} Tabs geschlossen.`, 'Mit Rückgängig holst du sie zurück.'));
-          } }, icon('x'), `${marked.size} schließen`)));
+            put(out, empty('check', tp('popup_closedTabs', marked.size), t('popup_undoBringBackHint')));
+          } }, icon('x'), tp('popup_closeCount', marked.size))));
     };
     draw();
   });
@@ -373,29 +381,29 @@ $('#similar').addEventListener('click', () => {
   run(out, async () => {
     const res = await send('similar', { windowId: win.id, allWindows: $('#dupes-all').checked });
     if (!res.pairs.length) {
-      put(out, empty('check', 'Kein gleicher Inhalt gefunden.', 'Jev hat Tabs derselben Website verglichen.'));
+      put(out, empty('check', t('popup_noSameContent'), t('popup_noSameContentHint')));
       return;
     }
     renderDupeChoices(out, res.pairs.map((pair) => ({ tabs: [pair.a, pair.b], close: [pair.b], p: pair.p })),
-      { intro: 'Gleicher Inhalt, andere Adresse. Markiert ist, was zugeht.', costText: cost(res.cost) });
+      { intro: t('popup_similarIntro'), costText: cost(res.cost) });
   });
 });
 
 // ---------- Wächter ----------
 
 const STATUS = {
-  baseline: 'Vergleichsbasis gespeichert',
-  same: 'keine Änderung',
-  noise: 'geändert, passt nicht',
-  match: 'passende Änderung',
-  error: 'Fehler',
+  baseline: t('popup_statusBaseline'),
+  same: t('popup_statusSame'),
+  noise: t('popup_statusNoise'),
+  match: t('popup_statusMatch'),
+  error: t('popup_statusError'),
 };
 
 async function loadWatches() {
   const list = $('#watch-list');
   const watches = await send('listWatches');
   if (!watches.length) {
-    put(list, empty('bell', 'Noch kein Wächter.', 'Leg unten einen an. Tabwerk prüft die Seite und meldet sich, wenn deine Bedingung eintritt.'));
+    put(list, empty('bell', t('popup_noWatchers'), t('popup_noWatchersHint')));
     $('#newwatch').open = true;
     return;
   }
@@ -407,27 +415,26 @@ function watchCard(w) {
   const hit = w.history?.find((x) => x.status === 'match');
   const status = last
     ? h('div', { class: `state ${last.status}` }, h('span', { class: 'dot' }),
-      `${ago(last.t)} · ${STATUS[last.status]}${typeof last.p === 'number' ? ` · ${Math.round(last.p * 100)} %` : ''}${last.error ? ` · ${last.error}` : ''}`)
-    : h('div', { class: 'state' }, h('span', { class: 'dot' }), 'wird geprüft');
+      `${ago(last.t)} · ${STATUS[last.status]}${typeof last.p === 'number' ? ` · ${fmtNumber(last.p, { style: 'percent', maximumFractionDigits: 0 })}` : ''}${last.error ? ` · ${last.error}` : ''}`)
+    : h('div', { class: 'state' }, h('span', { class: 'dot' }), t('popup_checking'));
   const act = (ico, label, fn) => h('button', { class: 'ghost icon', title: label, 'aria-label': label, onclick: fn }, icon(ico));
   return h('div', { class: `watch${w.enabled ? '' : ' off'}` },
     h('div', { class: 'head' },
       favicon(w.url),
       h('span', { class: 'site' }, w.site),
       h('span', { class: 'acts' },
-        act('refresh', 'Jetzt prüfen', async (e) => { e.currentTarget.disabled = true; await send('checkWatch', { id: w.id }); loadWatches(); refreshHeader(); }),
-        act(w.enabled ? 'pause' : 'play', w.enabled ? 'Pausieren' : 'Fortsetzen', async () => { await send('toggleWatch', { id: w.id }); loadWatches(); }),
-        act('open', 'Seite öffnen', () => chrome.tabs.create({ url: w.url })),
-        act('trash', 'Löschen', async () => { await send('removeWatch', { id: w.id }); loadWatches(); }))),
+        act('refresh', t('popup_checkNow'), async (e) => { e.currentTarget.disabled = true; await send('checkWatch', { id: w.id }); loadWatches(); refreshHeader(); }),
+        act(w.enabled ? 'pause' : 'play', w.enabled ? t('popup_pause') : t('popup_resume'), async () => { await send('toggleWatch', { id: w.id }); loadWatches(); }),
+        act('open', t('popup_openPage'), () => chrome.tabs.create({ url: w.url })),
+        act('trash', t('popup_delete'), async () => { await send('removeWatch', { id: w.id }); loadWatches(); }))),
     h('div', { class: 'cond' }, w.condition),
-    h('div', { class: 'state' }, `prüft alle ${describeInterval(w.intervalMin)}`),
+    h('div', { class: 'state' }, t('popup_checksEvery', describeInterval(w.intervalMin))),
     status,
-    w.number ? h('div', { class: 'state' }, `Grenze: ${OPS[w.number.op]} ${w.number.limit.toLocaleString('de-DE')}${typeof lastValue(w) === 'number' ? ` · zuletzt ${lastValue(w).toLocaleString('de-DE')}` : ''}`) : null,
-    hit ? h('div', { class: 'evidence' }, hit.evidence || 'Passende Änderung', h('span', { class: 'faint mono' }, ` · ${ago(hit.t)}`)) : null,
+    w.number ? h('div', { class: 'state' }, `${t('wf_limit')}: ${t(OPS[w.number.op])} ${fmtNumber(w.number.limit)}${typeof lastValue(w) === 'number' ? ` · ${t('popup_lastValue', fmtNumber(lastValue(w)))}` : ''}`) : null,
+    hit ? h('div', { class: 'evidence' }, hit.evidence || t('popup_matchingChange'), h('span', { class: 'faint mono' }, ` · ${ago(hit.t)}`)) : null,
     diffView(w));
 }
 
-const OPS = { below: 'unter', atmost: 'höchstens', above: 'über', atleast: 'mindestens' };
 const lastValue = (w) => w.history?.find((x) => typeof x.value === 'number')?.value;
 
 // Änderungen der letzten Prüfung mit Unterschied, wenn eingeschaltet.
@@ -436,7 +443,7 @@ function diffView(w) {
   const e = w.history?.find((x) => x.addedLines?.length || x.removedLines?.length);
   if (!e) return null;
   return h('details', {},
-    h('summary', {}, `Änderungen ${ago(e.t)}: +${e.added ?? e.addedLines.length} −${e.removed ?? e.removedLines.length} Zeilen`),
+    h('summary', {}, t('popup_diffSummary', ago(e.t), fmtNumber(e.added ?? e.addedLines.length), fmtNumber(e.removed ?? e.removedLines.length))),
     h('div', { class: 'diff' },
       ...e.removedLines.map((l) => h('span', { class: 'del' }, `− ${l}`)),
       ...e.addedLines.map((l) => h('span', { class: 'add' }, `+ ${l}`))));
@@ -451,15 +458,13 @@ function mountWatchForm(url) {
 
 // ---------- Verlauf ----------
 
-const timeFmt = new Intl.DateTimeFormat('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-function dayLabel(t) {
-  const d = new Date(t);
+function dayLabel(at) {
+  const d = new Date(at);
   const today = new Date();
   const yesterday = new Date(Date.now() - 864e5);
-  if (d.toDateString() === today.toDateString()) return 'Heute';
-  if (d.toDateString() === yesterday.toDateString()) return 'Gestern';
-  return d.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' });
+  if (d.toDateString() === today.toDateString()) return t('popup_today');
+  if (d.toDateString() === yesterday.toDateString()) return t('popup_yesterday');
+  return fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' });
 }
 
 // Im Fenster-Modus zählen nur die Werte dieses Fensters.
@@ -470,7 +475,7 @@ function delta(entry, older) {
   if (!older) return null;
   const n = view(entry).tabs - view(older).tabs;
   if (!n) return null;
-  return h('span', { class: `delta ${n > 0 ? 'up' : 'down'}` }, n > 0 ? `+${n}` : `−${-n}`);
+  return h('span', { class: `delta ${n > 0 ? 'up' : 'down'}` }, n > 0 ? `+${fmtNumber(n)}` : `−${fmtNumber(-n)}`);
 }
 
 async function loadHistory() {
@@ -482,11 +487,11 @@ async function loadHistory() {
       const mine = e.win?.[win.id];
       if (!mine) return false;
       const older = index.slice(i + 1).find((o) => o.win?.[win.id]);
-      return !older || older.win[win.id].sig !== mine.sig || e.reason.startsWith('Vor ');
+      return !older || older.win[win.id].sig !== mine.sig || isBefore(e);
     });
   }
   if (!index.length) {
-    put(out, empty('undo', 'Noch keine Sicherung.', 'Sobald sich ein Tab ändert, legt Tabwerk die erste an.'));
+    put(out, empty('undo', t('popup_noSnapshotsYet'), t('popup_noSnapshotsYetHint')));
     return;
   }
   const nodes = [];
@@ -505,9 +510,9 @@ async function loadHistory() {
 function counts(entry) {
   const v = view(entry);
   return [
-    v.windows > 1 ? `${v.windows} Fenster` : null,
-    `${v.tabs} Tabs`,
-    v.groups ? `${v.groups} Gr.` : null,
+    v.windows > 1 ? tp('popup_windowsCount', v.windows) : null,
+    tp('popup_tabsCount', v.tabs),
+    v.groups ? tp('popup_groupsAbbrCount', v.groups) : null,
   ].filter(Boolean).join(' · ');
 }
 
@@ -515,8 +520,8 @@ function snapshotItem(entry, older) {
   const body = h('div', { class: 'snap-body' });
   const item = h('details', { class: 'snap', ontoggle: () => { if (item.open && !body.childElementCount) fillSnapshot(entry, body); } },
     h('summary', {},
-      h('span', { class: 'mono time' }, timeFmt.format(entry.t)),
-      h('span', { class: 'reason' }, entry.reason),
+      h('span', { class: 'mono time' }, fmtDate(entry.t, { hour: '2-digit', minute: '2-digit', second: '2-digit' })),
+      h('span', { class: 'reason' }, reasonText(entry)),
       h('span', { class: 'mono counts' }, counts(entry), delta(entry, older))),
     body);
   return item;
@@ -526,7 +531,7 @@ async function fillSnapshot(entry, body) {
   put(body, skeleton());
   const snap = await send('getSnapshot', { id: entry.id });
   if (!snap) {
-    put(body, h('p', { class: 'help' }, 'Diese Sicherung gibt es nicht mehr.'));
+    put(body, h('p', { class: 'help' }, t('popup_snapshotGone')));
     return;
   }
   const windowMode = !historyAll();
@@ -535,16 +540,19 @@ async function fillSnapshot(entry, body) {
     const groups = new Map(w.groups.map((g) => [g.id, g]));
     const rows = [];
     let lastGroup = null;
-    for (const t of w.tabs.slice(0, 14)) {
-      if (t.groupId !== -1 && t.groupId !== lastGroup && groups.has(t.groupId)) {
-        const g = groups.get(t.groupId);
-        rows.push(reiter({ type: 'existing', name: g.title || 'Ohne Titel', color: g.color }));
+    for (const tab of w.tabs.slice(0, 14)) {
+      if (tab.groupId !== -1 && tab.groupId !== lastGroup && groups.has(tab.groupId)) {
+        const g = groups.get(tab.groupId);
+        rows.push(reiter({ type: 'existing', name: g.title || t('popup_noTitle'), color: g.color }));
       }
-      lastGroup = t.groupId;
-      rows.push(h('div', { class: 'mini' }, favicon(t.url), h('span', {}, t.title || t.url)));
+      lastGroup = tab.groupId;
+      rows.push(h('div', { class: 'mini' }, favicon(tab.url), h('span', {}, tab.title || tab.url)));
     }
-    if (w.tabs.length > 14) rows.push(h('p', { class: 'help' }, `und ${w.tabs.length - 14} weitere`));
-    const label = windowMode ? `Dieses Fenster · ${w.tabs.length} Tabs` : `Fenster ${i + 1}${w.id === win.id ? ' (dieses)' : ''} · ${w.tabs.length} Tabs`;
+    if (w.tabs.length > 14) rows.push(h('p', { class: 'help' }, tp('popup_andMoreCount', w.tabs.length - 14)));
+    const marker = w.id === win.id ? t('popup_thisMarker') : '';
+    const label = windowMode
+      ? `${t('popup_thisWindow')} · ${tp('popup_tabsCount', w.tabs.length)}`
+      : `${t('popup_windowNumber', fmtNumber(i + 1))}${marker} · ${tp('popup_tabsCount', w.tabs.length)}`;
     return h('div', { class: 'snap-win' }, h('div', { class: 'mono faint' }, label), ...rows);
   });
   const status = h('p', { class: 'help', 'aria-live': 'polite' });
@@ -552,23 +560,24 @@ async function fillSnapshot(entry, body) {
   const button = h('button', { class: 'primary', onclick: async () => {
     if (!armed) {
       armed = true;
-      button.textContent = 'Wirklich wiederherstellen';
+      button.textContent = t('popup_confirmRestore');
       status.textContent = windowMode
-        ? 'Nur dieses Fenster. Tabs, die damals nicht offen waren, bleiben offen und rücken ans Ende.'
-        : 'Alle Fenster. Tabs, die damals nicht offen waren, bleiben offen und rücken ans Ende.';
+        ? t('popup_restoreWindowOnlyWarning')
+        : t('popup_restoreAllWarning');
       return;
     }
     button.disabled = true;
     try {
       const r = await send('restoreSnapshot', { id: entry.id, windowId: windowMode ? win.id : null });
-      status.textContent = `Fertig. ${r.reused} Tabs zurück an ihrem Platz, ${r.opened} neu geöffnet${r.failed ? `, ${r.failed} nicht möglich` : ''}.`;
+      const failedSuffix = r.failed ? t('popup_restoreFailedSuffix', fmtNumber(r.failed)) : '';
+      status.textContent = t('popup_restoreDone', fmtNumber(r.reused), fmtNumber(r.opened), failedSuffix);
       refreshHeader();
       setTimeout(loadHistory, 1800);
     } catch (error) {
       status.textContent = error.message;
       button.disabled = false;
     }
-  } }, icon('undo'), windowMode ? 'Fenster zurücksetzen' : 'Alle Fenster zurücksetzen');
+  } }, icon('undo'), windowMode ? t('popup_resetWindowButton') : t('popup_resetAllButton'));
   put(body, ...windows, h('div', { class: 'snap-actions' }, button), status);
 }
 
@@ -589,7 +598,7 @@ async function loadSessions() {
   const out = $('#sessions-out');
   const sessions = await send('listSessions');
   if (!sessions.length) {
-    put(out, empty('window', 'Noch keine Sitzung.', 'Speicher dieses Fenster unter einem Namen. Später öffnest du es wieder, mit allen Gruppen.'));
+    put(out, empty('window', t('popup_noSessionsYet'), t('popup_noSessionsYetHint')));
     return;
   }
   put(out, ...sessions.map((s) => {
@@ -599,13 +608,13 @@ async function loadSessions() {
       h('div', { class: 'head' },
         h('span', { class: 'name', title: s.name }, s.name),
         h('span', { class: 'acts' },
-          h('button', { class: 'ghost', onclick: async () => { await send('openSession', { id: s.id }); } }, icon('open'), 'Öffnen'),
-          h('button', { class: 'ghost icon', title: 'Umbenennen', 'aria-label': 'Umbenennen', onclick: async () => {
-            const name = prompt('Neuer Name', s.name);
+          h('button', { class: 'ghost', onclick: async () => { await send('openSession', { id: s.id }); } }, icon('open'), t('popup_open')),
+          h('button', { class: 'ghost icon', title: t('popup_rename'), 'aria-label': t('popup_rename'), onclick: async () => {
+            const name = prompt(t('popup_newNameLabel'), s.name);
             if (name) { await send('renameSession', { id: s.id, name }); loadSessions(); }
           } }, icon('edit')),
-          h('button', { class: 'ghost icon', title: 'Löschen', 'aria-label': 'Löschen', onclick: async () => { await send('deleteSession', { id: s.id }); loadSessions(); } }, icon('trash')))),
-      h('div', { class: 'state' }, `${new Date(s.t).toLocaleDateString('de-DE')} · ${tabs} Tabs${groups.length ? ` · ${groups.slice(0, 3).map((g) => g.title).join(', ')}` : ''}`));
+          h('button', { class: 'ghost icon', title: t('popup_delete'), 'aria-label': t('popup_delete'), onclick: async () => { await send('deleteSession', { id: s.id }); loadSessions(); } }, icon('trash')))),
+      h('div', { class: 'state' }, `${fmtDate(s.t, { dateStyle: 'medium' })} · ${tp('popup_tabsCount', tabs)}${groups.length ? ` · ${fmtList(groups.slice(0, 3).map((g) => g.title))}` : ''}`));
   }));
 }
 
@@ -628,6 +637,6 @@ mountWatchForm(current?.url?.startsWith('http') ? current.url : '');
 
 let start = 'find';
 try { start = localStorage.getItem('panel') || 'find'; } catch {}
-const visible = [...document.querySelectorAll('[role=tab]')].filter((t) => !t.hidden).map((t) => t.dataset.panel);
+const visible = [...document.querySelectorAll('[role=tab]')].filter((tab) => !tab.hidden).map((tab) => tab.dataset.panel);
 if (visible.length) showPanel(visible.includes(start) ? start : visible[0]);
 refreshHeader();

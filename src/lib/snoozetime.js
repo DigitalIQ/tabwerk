@@ -1,11 +1,21 @@
 // Weckzeiten für geschlummerte Tabs. Reiner Code.
 
+import { t, fmtDate } from './i18n.js';
+
+// Wochentagsname des nächsten Montags, über Intl. So passt der Name zur Sprache.
+function nextMondayName(now) {
+  const d = new Date(now);
+  const days = ((8 - d.getDay()) % 7) || 7;
+  d.setDate(d.getDate() + days);
+  return fmtDate(d, { weekday: 'long' });
+}
+
 export const SNOOZE_PRESETS = [
-  { id: 'hour', label: 'in 1 Stunde' },
-  { id: 'evening', label: 'heute um 18 Uhr' },
-  { id: 'tomorrow', label: 'morgen um 9 Uhr' },
-  { id: 'monday', label: 'Montag um 9 Uhr' },
-  { id: 'week', label: 'in einer Woche' },
+  { id: 'hour', get label() { return t('snooze_inOneHour'); } },
+  { id: 'evening', get label() { return t('snooze_todayEvening'); } },
+  { id: 'tomorrow', get label() { return t('snooze_tomorrowMorning'); } },
+  { id: 'monday', get label() { return t('snooze_weekdayMorning', nextMondayName(Date.now())); } },
+  { id: 'week', get label() { return t('snooze_inOneWeek'); } },
 ];
 
 export function wakeTime(preset, now = Date.now()) {

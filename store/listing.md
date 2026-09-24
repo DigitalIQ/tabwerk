@@ -11,7 +11,7 @@ EN: Many tabs, clearly organized: quick search, groups, cleanup, undo history an
 Arbeitsabläufe und Planung (Workflow & Planning)
 
 ## Sprache
-Deutsch
+Deutsch und Englisch. Tabwerk folgt der Browsersprache, in den Einstellungen lässt sich die Sprache fest wählen. Für den Store-Eintrag beide Sprachen anlegen: Deutsch mit der deutschen, Englisch mit der englischen Beschreibung.
 
 ## Beschreibung (Deutsch)
 
@@ -24,7 +24,7 @@ Ordnen
 • Tabs automatisch in Gruppen sortieren, nach deinen Regeln oder per Vorschlag
 • Tabs und ganze Gruppen nach Wichtigkeit sortieren, dazu nach Website, Nutzung oder Titel
 • Gruppen ohne Titel benennen lassen
-• Notizen an Tabs heften, per Rechtsklick oder Tastenkürzel
+• Notizen an Tabs heften, per Rechtsklick, Tastenkürzel oder mit /N direkt in der Schnellsuche
 • Fokus-Modus: andere Gruppen einklappen, ablenkende Seiten auf Zeit sperren
 
 Aufräumen
@@ -43,9 +43,10 @@ Beobachten
 • Wächter prüfen Seiten in deinem Takt und melden sich, wenn deine Bedingung eintritt, zum Beispiel „wieder lieferbar“
 • Preise und Zahlen exakt vergleichen
 
-Formulare
-• Formulare speichern und wieder ausfüllen. Passwort-, Karten- und Kontofelder speichert Tabwerk nie.
+Formulare und Seiten
+• Formulare speichern und wieder ausfüllen. Passwort-, Karten- und Kontofelder speichert Tabwerk nur, wenn du das ausdrücklich einschaltest.
 • Formulare mit Testdaten füllen
+• Kopieren, Einfügen und Rechtsklick auf Seiten erlauben, die das sperren
 
 Optional mit Jev
 Für Entscheidungen wie „Welche Gruppe passt?“ nutzt Tabwerk auf Wunsch Jev, ein Entscheidungsmodell von TypeSafe. Du brauchst dafür einen eigenen Schlüssel von OpenRouter oder TypeSafe. Tabwerk zeigt bei jeder Entscheidung, wie sicher Jev ist, und lässt Unsicheres abgewählt. Ohne Schlüssel laufen alle Funktionen, die nur Code brauchen.
@@ -58,7 +59,7 @@ Tabwerk keeps order when you have dozens of tabs open.
 
 Quick search: one shortcut opens a search above any page. It finds tabs, actions, bookmarks, history, sessions, notes and saved forms, and it tolerates typos and abbreviations.
 
-Organize: sort new tabs into groups by your rules or by suggestion, sort tabs and whole groups by importance, name untitled groups, attach notes to tabs, and use a focus mode that collapses other groups and blocks distracting sites for a while.
+Organize: sort new tabs into groups by your rules or by suggestion, sort tabs and whole groups by importance, name untitled groups, attach notes to tabs (right-click, shortcut or /N in quick search), and use a focus mode that collapses other groups and blocks distracting sites for a while.
 
 Clean up: find duplicate tabs and decide per page what to close, stop duplicates from opening, get suggestions for old and unimportant tabs, unload inactive tabs, and snooze tabs until later.
 
@@ -66,11 +67,11 @@ Back up: every change is saved as a snapshot of your windows, tabs and groups. U
 
 Watch: page watchers check pages on your schedule and notify you when your plain-language condition is met, including exact price limits.
 
-Forms: save and refill forms, never storing password, card or account fields, and fill forms with test data.
+Forms and pages: save and refill forms (password, card and account fields only if you explicitly turn that on), fill forms with test data, and re-enable copy, paste and right-click on pages that block them.
 
 Optional decision model: Tabwerk can use Jev by TypeSafe for choices such as which group fits. You need your own OpenRouter or TypeSafe key. Without a key, all code-only features work.
 
-Every feature can be switched off. No server, no tracking. Open source under the MIT license.
+Every feature can be switched off. Available in English and German. No server, no tracking. Open source under the MIT license.
 
 ## Links
 - Website / Support: https://github.com/DigitalIQ/tabwerk

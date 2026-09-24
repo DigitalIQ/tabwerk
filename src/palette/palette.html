@@ -3,25 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tabwerk Schnellsuche</title>
+  <title data-i18n="pal_title">Tabwerk Schnellsuche</title>
   <link rel="stylesheet" href="../ui/base.css">
   <link rel="stylesheet" href="palette.css">
 </head>
 <body>
   <div class="scrim" id="scrim"></div>
-  <div class="panel" role="dialog" aria-modal="true" aria-label="Schnellsuche">
+  <div class="panel" role="dialog" aria-modal="true" aria-label="Schnellsuche" data-i18n-aria-label="pal_dialogLabel">
     <div class="field-row">
       <span class="ico i-search" aria-hidden="true"></span>
-      <input id="q" type="text" autocomplete="off" spellcheck="false" placeholder="Tabs, Aktionen, Lesezeichen, Verlauf" aria-label="Suchen" aria-controls="list" aria-activedescendant="">
+      <input id="q" type="text" autocomplete="off" spellcheck="false" placeholder="Tabs, Aktionen, Lesezeichen, Verlauf" data-i18n-placeholder="pal_searchPlaceholder" aria-label="Suchen" data-i18n-aria-label="pal_searchLabel" aria-controls="list" aria-activedescendant="">
       <span class="scope mono" id="scope" hidden></span>
     </div>
-    <ul class="list" id="list" role="listbox" aria-label="Treffer"></ul>
+    <ul class="list" id="list" role="listbox" aria-label="Treffer" data-i18n-aria-label="pal_resultsLabel"></ul>
     <div class="status" id="status" aria-live="polite" hidden></div>
     <footer class="keys mono">
-      <span><kbd>↑</kbd><kbd>↓</kbd> wählen</span>
-      <span><kbd>↵</kbd> öffnen</span>
-      <span><kbd>⌘</kbd><kbd>⌫</kbd> Tab schließen</span>
-      <span id="jev-key" hidden><kbd>⇧</kbd><kbd>↵</kbd> mit Jev suchen</span>
+      <span><kbd>↑</kbd><kbd>↓</kbd> <span data-i18n="pal_kbdSelect">wählen</span></span>
+      <span><kbd>↵</kbd> <span data-i18n="pal_kbdOpen">öffnen</span></span>
+      <span><kbd>⌘</kbd><kbd>⌫</kbd> <span data-i18n="pal_kbdCloseTab">Tab schließen</span></span>
+      <span id="jev-key" hidden><kbd>⇧</kbd><kbd>↵</kbd> <span data-i18n="pal_kbdJevSearch">mit Jev suchen</span></span>
       <span class="filters">/t /a /h /n /N</span>
     </footer>
   </div>

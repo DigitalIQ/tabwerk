@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tabwerk Einstellungen</title>
+  <title data-i18n="opt_title">Tabwerk Einstellungen</title>
   <link rel="stylesheet" href="../ui/base.css">
   <link rel="stylesheet" href="options.css">
 </head>
@@ -13,163 +13,176 @@
       <img src="/icons/icon128.png" alt="" width="40" height="40">
       <div>
         <h1>Tabwerk</h1>
-        <p class="muted">Jev trifft kleine Entscheidungen über deine Tabs. Du legst fest, wonach.</p>
+        <p class="muted" data-i18n="opt_tagline">Jev trifft kleine Entscheidungen über deine Tabs. Du legst fest, wonach.</p>
       </div>
       <span class="saved mono" id="saved" aria-live="polite"></span>
     </header>
 
-    <section class="block" id="sec-connect">
+    <section class="block" id="sec-language">
       <div class="lede">
-        <h2>Verbindung</h2>
-        <p>Tabwerk fragt Jev über OpenRouter oder direkt bei TypeSafe, dem Hersteller von Jev. Der Schlüssel bleibt auf diesem Rechner.</p>
-        <p class="faint">Ohne Schlüssel laufen alle Funktionen, die nur Code brauchen: Schnellsuche, Doppelte, Sortieren ohne Priorität, Verlauf.</p>
+        <h2 data-i18n="opt_languageTitle">Sprache</h2>
+        <p data-i18n="opt_languageDesc">Wähle, in welcher Sprache Tabwerk zu dir spricht.</p>
       </div>
       <div class="controls">
-        <div class="segmented" role="radiogroup" aria-label="Anbieter">
+        <label class="field"><span data-i18n="opt_languageLabel">Sprache</span>
+          <select id="ui-language"></select>
+        </label>
+        <p class="help" data-i18n="opt_languageHelp">Die Sprache gilt für Tabwerk. Einträge im Rechtsklick-Menü wechseln sofort, der Name der Erweiterung in Chrome folgt immer der Browsersprache.</p>
+      </div>
+    </section>
+
+    <section class="block" id="sec-connect">
+      <div class="lede">
+        <h2 data-i18n="opt_connectionTitle">Verbindung</h2>
+        <p data-i18n="opt_connectionDesc">Tabwerk fragt Jev über OpenRouter oder direkt bei TypeSafe, dem Hersteller von Jev. Der Schlüssel bleibt auf diesem Rechner.</p>
+        <p class="faint" data-i18n="opt_connectionNoKey">Ohne Schlüssel laufen alle Funktionen, die nur Code brauchen: Schnellsuche, Doppelte, Sortieren ohne Priorität, Verlauf.</p>
+      </div>
+      <div class="controls">
+        <div class="segmented" role="radiogroup" data-i18n-aria-label="opt_providerAriaLabel" aria-label="Anbieter">
           <label><input type="radio" name="provider" value="openrouter"><span>OpenRouter</span></label>
-          <label><input type="radio" name="provider" value="typesafe"><span>TypeSafe direkt</span></label>
+          <label><input type="radio" name="provider" value="typesafe"><span data-i18n="opt_providerTypesafeDirect">TypeSafe direkt</span></label>
         </div>
         <div class="status" id="key-status"></div>
 
         <div class="provider" data-provider="openrouter">
           <div class="row-actions">
-            <button class="primary" id="oauth"><span class="ico i-plug"></span>Mit OpenRouter verbinden</button>
+            <button class="primary" id="oauth"><span class="ico i-plug"></span><span data-i18n="opt_connectOpenRouter">Mit OpenRouter verbinden</span></button>
           </div>
-          <p class="help">Verbinden öffnet OpenRouter. Dort meldest du dich an und gibst Tabwerk einen eigenen Schlüssel frei.</p>
+          <p class="help" data-i18n="opt_connectHelp">Verbinden öffnet OpenRouter. Dort meldest du dich an und gibst Tabwerk einen eigenen Schlüssel frei.</p>
           <details class="manual">
-            <summary>Schlüssel selbst eintragen</summary>
-            <label class="field"><span>OpenRouter-Schlüssel</span>
-              <input id="or-key" type="password" autocomplete="off" spellcheck="false" placeholder="sk-or-v1-…">
+            <summary data-i18n="opt_manualKeyToggle">Schlüssel selbst eintragen</summary>
+            <label class="field"><span data-i18n="opt_openrouterKeyLabel">OpenRouter-Schlüssel</span>
+              <input id="or-key" type="password" autocomplete="off" spellcheck="false" data-i18n-placeholder="opt_orKeyPlaceholder" placeholder="sk-or-v1-…">
             </label>
             <div class="row-actions">
-              <button id="or-save">Schlüssel speichern</button>
-              <button class="ghost danger" id="or-clear"><span class="ico i-trash"></span>Schlüssel entfernen</button>
+              <button id="or-save" data-i18n="opt_saveKey">Schlüssel speichern</button>
+              <button class="ghost danger" id="or-clear"><span class="ico i-trash"></span><span data-i18n="opt_removeKey">Schlüssel entfernen</span></button>
             </div>
           </details>
         </div>
 
         <div class="provider" data-provider="typesafe">
-          <label class="field"><span>TypeSafe-Schlüssel</span>
-            <input id="ts-key" type="password" autocomplete="off" spellcheck="false" placeholder="Schlüssel aus der TypeSafe-Konsole">
+          <label class="field"><span data-i18n="opt_typesafeKeyLabel">TypeSafe-Schlüssel</span>
+            <input id="ts-key" type="password" autocomplete="off" spellcheck="false" data-i18n-placeholder="opt_typesafeKeyPlaceholder" placeholder="Schlüssel aus der TypeSafe-Konsole">
           </label>
           <div class="row-actions">
-            <button id="ts-save">Schlüssel speichern</button>
-            <button class="ghost danger" id="ts-clear"><span class="ico i-trash"></span>Schlüssel entfernen</button>
+            <button id="ts-save" data-i18n="opt_saveKey">Schlüssel speichern</button>
+            <button class="ghost danger" id="ts-clear"><span class="ico i-trash"></span><span data-i18n="opt_removeKey">Schlüssel entfernen</span></button>
           </div>
-          <p class="help">Den Schlüssel erstellst du unter console.typesafe.ai. TypeSafe meldet keine Kosten, Tabwerk schätzt sie aus den gelesenen Tokens.</p>
+          <p class="help" data-i18n="opt_typesafeHelp">Den Schlüssel erstellst du unter console.typesafe.ai. TypeSafe meldet keine Kosten, Tabwerk schätzt sie aus den gelesenen Tokens.</p>
         </div>
 
-        <label class="field"><span>Modell</span>
+        <label class="field"><span data-i18n="opt_modelLabel">Modell</span>
           <select id="model"></select>
         </label>
-        <p class="help">jev-latest wechselt von selbst auf neue Versionen. Die Sicherheitswerte können sich dann leicht verschieben.</p>
-        <div class="row-actions"><button id="test">Verbindung testen</button></div>
+        <p class="help" data-i18n="opt_modelHelp">jev-latest wechselt von selbst auf neue Versionen. Die Sicherheitswerte können sich dann leicht verschieben.</p>
+        <div class="row-actions"><button id="test" data-i18n="opt_testConnection">Verbindung testen</button></div>
         <p class="error-text" id="connect-err" hidden></p>
       </div>
     </section>
 
     <section class="block" id="sec-features">
       <div class="lede">
-        <h2>Funktionen</h2>
-        <p>Schalte ein, was du brauchst. Eingerückte Funktionen hängen an der darüber und wirken nur, wenn diese an ist.</p>
-        <p class="faint">„Jev“ heißt: braucht einen Schlüssel. „Erlaubnis“ heißt: Chrome fragt beim Einschalten einmal nach.</p>
+        <h2 data-i18n="opt_featuresTitle">Funktionen</h2>
+        <p data-i18n="opt_featuresDesc">Schalte ein, was du brauchst. Eingerückte Funktionen hängen an der darüber und wirken nur, wenn diese an ist.</p>
+        <p class="faint" data-i18n="opt_featuresJevErlaubnis">„Jev“ heißt: braucht einen Schlüssel. „Erlaubnis“ heißt: Chrome fragt beim Einschalten einmal nach.</p>
       </div>
       <div class="controls" id="features"></div>
     </section>
 
     <section class="block" id="sec-palette">
       <div class="lede">
-        <h2>Schnellsuche</h2>
-        <p>Öffnet sich per Tastenkürzel über jeder Seite, ähnlich wie Spotlight. Sucht in Tabs, Aktionen, Lesezeichen und Verlauf.</p>
-        <p class="faint">Gesucht wird per Code bei jedem Tastendruck. Das kostet nichts.</p>
+        <h2 data-i18n="opt_paletteTitle">Schnellsuche</h2>
+        <p data-i18n="opt_paletteDesc">Öffnet sich per Tastenkürzel über jeder Seite, ähnlich wie Spotlight. Sucht in Tabs, Aktionen, Lesezeichen und Verlauf.</p>
+        <p class="faint" data-i18n="opt_paletteFree">Gesucht wird per Code bei jedem Tastendruck. Das kostet nichts.</p>
       </div>
       <div class="controls">
         <div class="status" id="shortcut"></div>
-        <div class="row-actions"><button id="change-shortcut">Kürzel ändern</button></div>
-        <label class="check-line"><input type="checkbox" id="p-bookmarks"><span><b>Lesezeichen durchsuchen</b><small>Chrome fragt einmal nach der Erlaubnis.</small></span></label>
-        <label class="check-line"><input type="checkbox" id="p-history"><span><b>Verlauf durchsuchen</b><small>Die letzten 90 Tage. Chrome fragt einmal nach der Erlaubnis.</small></span></label>
-        <label class="check-line"><input type="checkbox" id="p-jev"><span><b>Jev mit Umschalt+Enter fragen</b><small>Nur auf Tastendruck, nie beim Tippen. Jev sucht dann in allen offenen Tabs.</small></span></label>
-        <label class="field"><span>Farbmodus</span>
+        <div class="row-actions"><button id="change-shortcut" data-i18n="opt_changeShortcut">Kürzel ändern</button></div>
+        <label class="check-line"><input type="checkbox" id="p-bookmarks"><span><b data-i18n="opt_paletteBookmarksLabel">Lesezeichen durchsuchen</b><small data-i18n="opt_paletteBookmarksHint">Chrome fragt einmal nach der Erlaubnis.</small></span></label>
+        <label class="check-line"><input type="checkbox" id="p-history"><span><b data-i18n="opt_paletteHistoryLabel">Verlauf durchsuchen</b><small data-i18n="opt_paletteHistoryHint">Die letzten 90 Tage. Chrome fragt einmal nach der Erlaubnis.</small></span></label>
+        <label class="check-line"><input type="checkbox" id="p-jev"><span><b data-i18n="opt_paletteJevLabel">Jev mit Umschalt+Enter fragen</b><small data-i18n="opt_paletteJevHint">Nur auf Tastendruck, nie beim Tippen. Jev sucht dann in allen offenen Tabs.</small></span></label>
+        <label class="field"><span data-i18n="opt_colorModeLabel">Farbmodus</span>
           <select id="p-theme">
-            <option value="site">Automatisch nach Website</option>
-            <option value="system">Wie das System</option>
-            <option value="light">Immer hell</option>
-            <option value="dark">Immer dunkel</option>
+            <option value="site" data-i18n="opt_themeSite">Automatisch nach Website</option>
+            <option value="system" data-i18n="opt_themeSystem">Wie das System</option>
+            <option value="light" data-i18n="opt_themeLight">Immer hell</option>
+            <option value="dark" data-i18n="opt_themeDark">Immer dunkel</option>
           </select>
         </label>
-        <p class="help">„Automatisch nach Website“ misst die Hintergrundfarbe der Seite hinter der Suche.</p>
+        <p class="help" data-i18n="opt_themeHelp">„Automatisch nach Website“ misst die Hintergrundfarbe der Seite hinter der Suche.</p>
         <p class="error-text" id="palette-err" hidden></p>
       </div>
     </section>
 
     <section class="block" id="sec-groups">
       <div class="lede">
-        <h2>Gruppen</h2>
-        <p>Diese Kategorien schlägt Jev für neue Gruppen vor. Bestehende Gruppen im Fenster kennt Jev von selbst.</p>
-        <p class="faint">Die Beschreibung darf englisch sein. Dort ist Jev am genauesten.</p>
+        <h2 data-i18n="opt_groupsTitle">Gruppen</h2>
+        <p data-i18n="opt_groupsDesc">Diese Kategorien schlägt Jev für neue Gruppen vor. Bestehende Gruppen im Fenster kennt Jev von selbst.</p>
+        <p class="faint" data-i18n="opt_groupsDescFaint">Die Beschreibung darf englisch sein. Dort ist Jev am genauesten.</p>
       </div>
       <div class="controls">
         <div id="cats" class="cats"></div>
-        <button id="add-cat"><span class="ico i-plus"></span>Kategorie hinzufügen</button>
+        <button id="add-cat"><span class="ico i-plus"></span><span data-i18n="opt_addCategory">Kategorie hinzufügen</span></button>
       </div>
     </section>
 
     <section class="block" id="sec-priority">
       <div class="lede">
-        <h2>Priorität</h2>
-        <p>Beim Sortieren nach Priorität ordnet Jev jeden Tab einer Stufe zu. Wichtige Tabs kommen nach vorn.</p>
+        <h2 data-i18n="opt_priorityTitle">Priorität</h2>
+        <p data-i18n="opt_priorityDesc">Beim Sortieren nach Priorität ordnet Jev jeden Tab einer Stufe zu. Wichtige Tabs kommen nach vorn.</p>
       </div>
       <div class="controls">
-        <label class="field"><span>Woran arbeitest du gerade?</span>
-          <textarea id="focus" placeholder="Ich schreibe heute den Quartalsbericht. Alles dazu ist wichtig."></textarea>
+        <label class="field"><span data-i18n="opt_priorityFocusLabel">Woran arbeitest du gerade?</span>
+          <textarea id="focus" data-i18n-placeholder="opt_priorityFocusPlaceholder" placeholder="Ich schreibe heute den Quartalsbericht. Alles dazu ist wichtig."></textarea>
         </label>
-        <p class="help">Leer lassen geht auch. Dann bewertet Jev nur nach den Stufen.</p>
+        <p class="help" data-i18n="opt_priorityFocusHelp">Leer lassen geht auch. Dann bewertet Jev nur nach den Stufen.</p>
         <div class="levels" id="levels"></div>
       </div>
     </section>
 
     <section class="block" id="sec-thresholds">
       <div class="lede">
-        <h2>Schwellen</h2>
-        <p>Jev sagt zu jeder Antwort, wie sicher es ist. Diese Sicherheit ist keine Garantie, aber ein guter Filter.</p>
+        <h2 data-i18n="opt_thresholdsTitle">Schwellen</h2>
+        <p data-i18n="opt_thresholdsDesc">Jev sagt zu jeder Antwort, wie sicher es ist. Diese Sicherheit ist keine Garantie, aber ein guter Filter.</p>
       </div>
       <div class="controls">
-        <label class="field range"><span>Vorschläge vorauswählen ab</span>
+        <label class="field range"><span data-i18n="opt_confidenceLabel">Vorschläge vorauswählen ab</span>
           <input id="confidence" type="range" min="50" max="95" step="5"><output class="mono" for="confidence"></output>
         </label>
-        <p class="help">Darunter markiert Tabwerk den Tab mit „prüfen“ und wählt ihn ab.</p>
-        <label class="field range"><span>Wächter melden sich ab</span>
+        <p class="help" data-i18n="opt_confidenceHelp">Darunter markiert Tabwerk den Tab mit „prüfen“ und wählt ihn ab.</p>
+        <label class="field range"><span data-i18n="opt_notifyAtLabel">Wächter melden sich ab</span>
           <input id="notify-at" type="range" min="50" max="95" step="5"><output class="mono" for="notify-at"></output>
         </label>
-        <p class="help">Gilt auch für „Ähnliche prüfen“ bei den Doppelten.</p>
+        <p class="help" data-i18n="opt_notifyAtHelp">Gilt auch für „Ähnliche prüfen“ bei den Doppelten.</p>
       </div>
     </section>
 
     <section class="block" id="sec-privacy">
       <div class="lede">
-        <h2>Datenschutz</h2>
-        <p>An Jev gehen Tab-Titel, Website und Pfad. Parameter nach „?“ und Anker nach „#“ schickt Tabwerk nicht mit.</p>
-        <p class="faint">Wächter schicken nur geänderte Zeilen der beobachteten Seite.</p>
+        <h2 data-i18n="opt_privacyTitle">Datenschutz</h2>
+        <p data-i18n="opt_privacyDesc">An Jev gehen Tab-Titel, Website und Pfad. Parameter nach „?“ und Anker nach „#“ schickt Tabwerk nicht mit.</p>
+        <p class="faint" data-i18n="opt_privacyFaint">Wächter schicken nur geänderte Zeilen der beobachteten Seite.</p>
       </div>
       <div class="controls">
-        <label class="field"><span>Diese Websites nie an Jev schicken</span>
+        <label class="field"><span data-i18n="opt_excludedLabel">Diese Websites nie an Jev schicken</span>
           <textarea id="excluded" class="mono" placeholder="meinebank.de&#10;*.intranet.example"></textarea>
         </label>
-        <p class="help">Eine Website pro Zeile. Subdomains zählen mit.</p>
+        <p class="help" data-i18n="opt_excludedHelp">Eine Website pro Zeile. Subdomains zählen mit.</p>
       </div>
     </section>
 
     <section class="block" id="sec-history">
       <div class="lede">
-        <h2>Verlauf</h2>
-        <p>Tabwerk sichert Fenster, Tabs und Gruppen nach jeder Änderung. Den Verlauf findest du im Popup.</p>
-        <p class="faint">Letzte 24 Stunden vollständig, bis 7 Tage stündlich, bis 90 Tage täglich.</p>
+        <h2 data-i18n="opt_historyTitle">Verlauf</h2>
+        <p data-i18n="opt_historyDesc">Tabwerk sichert Fenster, Tabs und Gruppen nach jeder Änderung. Den Verlauf findest du im Popup.</p>
+        <p class="faint" data-i18n="opt_historyFaint">Letzte 24 Stunden vollständig, bis 7 Tage stündlich, bis 90 Tage täglich.</p>
       </div>
       <div class="controls">
         <div class="usage" id="history-stats"></div>
         <div class="row-actions">
-          <button class="ghost danger" id="clear-history"><span class="ico i-trash"></span>Verlauf leeren</button>
-          <button class="ghost" id="open-stats"><span class="ico i-sort"></span>Statistik öffnen</button>
+          <button class="ghost danger" id="clear-history"><span class="ico i-trash"></span><span data-i18n="opt_clearHistory">Verlauf leeren</span></button>
+          <button class="ghost" id="open-stats"><span class="ico i-sort"></span><span data-i18n="opt_openStats">Statistik öffnen</span></button>
         </div>
         <p class="help" id="history-note" aria-live="polite"></p>
       </div>
@@ -177,9 +190,9 @@
 
     <section class="block" id="sec-forms">
       <div class="lede">
-        <h2>Formulare</h2>
-        <p>Gespeicherte Formulare füllst du per Schnellsuche mit /f, per Rechtsklick oder per Tastenkürzel wieder aus.</p>
-        <p class="faint">Passwort-, Karten-, Konto- und TAN-Felder speichert Tabwerk nie.</p>
+        <h2 data-i18n="opt_formsTitle">Formulare</h2>
+        <p data-i18n="opt_formsDesc">Gespeicherte Formulare füllst du per Schnellsuche mit /f, per Rechtsklick oder per Tastenkürzel wieder aus.</p>
+        <p class="faint" data-i18n="opt_formsFaint">Passwort-, Karten-, Konto- und TAN-Felder speichert Tabwerk nie.</p>
       </div>
       <div class="controls">
         <div id="profiles" class="profiles"></div>
@@ -188,18 +201,18 @@
 
     <section class="block" id="sec-transfer">
       <div class="lede">
-        <h2>Export und Import</h2>
-        <p>Sichert Einstellungen, Sitzungen, Wächter, Notizen, geschlummerte Tabs, Formulare und den Verlauf in einer Datei.</p>
-        <p class="faint">Import führt zusammen. Vorhandenes bleibt erhalten.</p>
+        <h2 data-i18n="opt_transferTitle">Export und Import</h2>
+        <p data-i18n="opt_transferDesc">Sichert Einstellungen, Sitzungen, Wächter, Notizen, geschlummerte Tabs, Formulare und den Verlauf in einer Datei.</p>
+        <p class="faint" data-i18n="opt_transferFaint">Import führt zusammen. Vorhandenes bleibt erhalten.</p>
       </div>
       <div class="controls">
-        <label class="check-line"><input type="checkbox" id="x-history" checked><span><b>Verlauf mitnehmen</b><small>Macht die Datei größer.</small></span></label>
-        <label class="check-line"><input type="checkbox" id="x-forms" checked><span><b>Formulare mitnehmen</b><small>Die Datei enthält dann deine Formulardaten im Klartext.</small></span></label>
-        <label class="check-line"><input type="checkbox" id="x-keys"><span><b>Schlüssel mitnehmen</b><small>Nur für den eigenen Umzug. Gib die Datei dann nicht weiter.</small></span></label>
+        <label class="check-line"><input type="checkbox" id="x-history" checked><span><b data-i18n="opt_xHistoryLabel">Verlauf mitnehmen</b><small data-i18n="opt_xHistoryHint">Macht die Datei größer.</small></span></label>
+        <label class="check-line"><input type="checkbox" id="x-forms" checked><span><b data-i18n="opt_xFormsLabel">Formulare mitnehmen</b><small data-i18n="opt_xFormsHint">Die Datei enthält dann deine Formulardaten im Klartext.</small></span></label>
+        <label class="check-line"><input type="checkbox" id="x-keys"><span><b data-i18n="opt_xKeysLabel">Schlüssel mitnehmen</b><small data-i18n="opt_xKeysHint">Nur für den eigenen Umzug. Gib die Datei dann nicht weiter.</small></span></label>
         <div class="row-actions">
-          <button class="primary" id="x-export">Alles exportieren</button>
-          <button id="x-bookmarks">Sitzungen als Lesezeichen-Datei</button>
-          <label class="btn" for="x-import">Datei importieren</label>
+          <button class="primary" id="x-export" data-i18n="opt_exportAll">Alles exportieren</button>
+          <button id="x-bookmarks" data-i18n="opt_exportBookmarks">Sitzungen als Lesezeichen-Datei</button>
+          <label class="btn" for="x-import" data-i18n="opt_importFile">Datei importieren</label>
           <input type="file" id="x-import" accept="application/json,.json" class="visually-hidden">
         </div>
         <p class="help" id="x-note" aria-live="polite"></p>
@@ -208,8 +221,8 @@
 
     <section class="block" id="sec-usage">
       <div class="lede">
-        <h2>Verbrauch</h2>
-        <p>Jev rechnet pro gelesenem Token ab. Antworten sind kostenlos.</p>
+        <h2 data-i18n="opt_usageTitle">Verbrauch</h2>
+        <p data-i18n="opt_usageDesc">Jev rechnet pro gelesenem Token ab. Antworten sind kostenlos.</p>
       </div>
       <div class="controls">
         <div class="usage" id="usage"></div>

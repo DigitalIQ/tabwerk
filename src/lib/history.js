@@ -5,7 +5,9 @@ import { normalizeUrl } from './url.js';
 import { planRetention } from './retention.js';
 import { getSettings } from './settings.js';
 import { isOn } from './flags.js';
+import { REASON, LABEL } from './reasons.js';
 import { BLOCK_PREFIX, splitWindow, joinWindow, gzip, orphanBlocks } from './histstore.js';
+import { t } from './i18n.js';
 
 const INDEX = 'histIndex';
 const QUIET_MS = 1500;
@@ -37,7 +39,7 @@ async function inflate(snap) {
     if (!w.block) windows.push(w);
     else if (blocks[BLOCK_PREFIX + w.block]) windows.push(await joinWindow(w, blocks[BLOCK_PREFIX + w.block]));
   }
-  if (!windows.length) throw new Error('Diese Sicherung ist beschädigt.');
+  if (!windows.length) throw new Error(t('hist_snapshotCorrupted'));
   return { ...snap, windows };
 }
 
@@ -72,13 +74,13 @@ function shapeWindow(w, groups) {
     focused: w.focused,
     incognito: w.incognito,
     state: w.state,
-    tabs: [...w.tabs].sort((a, b) => a.index - b.index).map((t) => ({
-      id: t.id,
-      url: t.url || t.pendingUrl || '',
-      title: t.title || '',
-      pinned: t.pinned,
-      active: t.active,
-      groupId: t.groupId,
+    tabs: [...w.tabs].sort((a, b) => a.index - b.index).map((tab) => ({
+      id: tab.id,
+      url: tab.url || tab.pendingUrl || '',
+      title: tab.title || '',
+      pinned: tab.pinned,
+      active: tab.active,
+      groupId: tab.groupId,
     })),
     groups: groups.filter((g) => g.windowId === w.id).map((g) => ({ id: g.id, title: g.title || '', color: g.color, collapsed: g.collapsed })),
   });
@@ -92,7 +94,7 @@ function hash(text) {
 }
 
 function windowSignature(w) {
-  return hash(JSON.stringify([w.tabs.map((t) => [t.url, t.pinned, t.groupId]), w.groups.map((g) => [g.id, g.title, g.color])]));
+  return hash(JSON.stringify([w.tabs.map((tab) => [tab.url, tab.pinned, tab.groupId]), w.groups.map((g) => [g.id, g.title, g.color])]));
 }
 
 function signature(windows) {
@@ -109,7 +111,8 @@ function summarize(windows) {
   };
 }
 
-export function takeSnapshot(reason, { force = false } = {}) {
+// reason ist ein Schlüssel aus REASON. args: Werte für den Text, etwa der Name der Aktion.
+export function takeSnapshot(reason, { force = false, args } = {}) {
   return serial(async () => {
     const windows = await capture();
     if (!windows.length) return null;
@@ -117,17 +120,17 @@ export function takeSnapshot(reason, { force = false } = {}) {
     const index = await listSnapshots();
     if (!force && index[0]?.sig === sig) {
       // Gleicher Stand. Die Aktion zeigt trotzdem auf diese Sicherung.
-      if (reason.startsWith('Vor ') && index[0].reason !== reason) {
-        index[0] = { ...index[0], reason };
+      if (reason === REASON.before && (index[0].reason !== reason || index[0].reasonArgs?.[0] !== args?.[0])) {
+        index[0] = { ...index[0], reason, reasonArgs: args };
         await chrome.storage.local.set({ [INDEX]: index });
       }
       return index[0];
     }
-    const t = Date.now();
+    const now = Date.now();
     const { refs, blocks, writes } = await packWindows(windows);
-    const entry = { id: String(t), t, reason, sig, ...summarize(windows), blocks };
+    const entry = { id: String(now), t: now, reason, ...(args ? { reasonArgs: args } : {}), sig, ...summarize(windows), blocks };
     const next = [entry, ...index];
-    const { keep, drop } = planRetention(next, t);
+    const { keep, drop } = planRetention(next, now);
     // Erst die Blöcke, dann Sicherung und Liste. So zeigt nie eine Sicherung auf einen fehlenden Block.
     await chrome.storage.local.set(writes);
     await chrome.storage.local.set({ [`hist:${entry.id}`]: { ...entry, windows: refs }, [INDEX]: keep });
@@ -143,7 +146,7 @@ export function scheduleSnapshot() {
   if (suppress) return;
   clearTimeout(timer);
   timer = setTimeout(async () => {
-    if (isOn(await getSettings(), 'history')) takeSnapshot('Tabs geändert').catch(() => {});
+    if (isOn(await getSettings(), 'history')) takeSnapshot(REASON.changed).catch(() => {});
   }, QUIET_MS);
 }
 
@@ -186,13 +189,13 @@ export function compactHistory() {
 // windowId gesetzt: nur dieses Fenster zurücksetzen, andere Fenster bleiben unberührt.
 export async function restoreSnapshot({ id, windowId = null }) {
   let snap = await getSnapshot(id);
-  if (!snap) throw new Error('Diese Sicherung gibt es nicht mehr.');
+  if (!snap) throw new Error(t('hist_snapshotGone'));
   if (windowId !== null) {
     const win = snap.windows.find((w) => w.id === windowId);
-    if (!win) throw new Error('Dieses Fenster kommt in der Sicherung nicht vor.');
+    if (!win) throw new Error(t('hist_windowNotInSnapshot'));
     snap = { ...snap, windows: [win], only: windowId };
   }
-  const before = await takeSnapshot('Vor Wiederherstellen');
+  const before = await takeSnapshot(REASON.before, { args: [LABEL.restore] });
   // Der Doppel-Schutz soll wiederhergestellte Tabs nicht gleich wieder schließen.
   await chrome.storage.session.set({ dupeQuietUntil: Date.now() + 60e3 });
   suppress += 1;
@@ -203,7 +206,7 @@ export async function restoreSnapshot({ id, windowId = null }) {
   } finally {
     suppress -= 1;
   }
-  await takeSnapshot('Wiederhergestellt');
+  await takeSnapshot(REASON.restored);
   return { ...report, before: before?.id };
 }
 
@@ -212,7 +215,7 @@ async function restore(snap, report) {
   const liveWindows = new Set(live.map((w) => w.id));
   // Pro Fenster: nur Tabs dieses Fensters wiederverwenden, nichts aus anderen Fenstern holen.
   const liveTabs = live.filter((w) => !snap.only || w.id === snap.only).flatMap((w) => w.tabs);
-  const byId = new Map(liveTabs.map((t) => [t.id, t]));
+  const byId = new Map(liveTabs.map((tab) => [tab.id, tab]));
   const used = new Set();
 
   // Erst dieselbe Tab-ID mit derselben Adresse, dann irgendein freier Tab mit derselben Adresse.
@@ -220,7 +223,7 @@ async function restore(snap, report) {
     const key = normalizeUrl(saved.url);
     const same = byId.get(saved.id);
     if (same && !used.has(same.id) && normalizeUrl(same.url || same.pendingUrl) === key) return same;
-    return liveTabs.find((t) => !used.has(t.id) && normalizeUrl(t.url || t.pendingUrl) === key);
+    return liveTabs.find((tab) => !used.has(tab.id) && normalizeUrl(tab.url || tab.pendingUrl) === key);
   };
 
   for (const win of snap.windows) {
@@ -265,7 +268,7 @@ async function restore(snap, report) {
     // Gruppen: bestehende Gruppe wiederverwenden, sonst neu anlegen.
     const liveGroups = await chrome.tabGroups.query({ windowId });
     for (const g of win.groups) {
-      const tabIds = win.tabs.map((t, i) => (t.groupId === g.id ? ids[i] : null)).filter(Boolean);
+      const tabIds = win.tabs.map((tab, i) => (tab.groupId === g.id ? ids[i] : null)).filter(Boolean);
       if (!tabIds.length) continue;
       const existing = liveGroups.find((x) => x.id === g.id);
       const groupId = existing
@@ -273,14 +276,14 @@ async function restore(snap, report) {
         : await chrome.tabs.group({ tabIds, createProperties: { windowId } });
       await chrome.tabGroups.update(groupId, { title: g.title, color: g.color, collapsed: g.collapsed });
     }
-    const loose = win.tabs.map((t, i) => (t.groupId === -1 ? ids[i] : null)).filter(Boolean);
+    const loose = win.tabs.map((tab, i) => (tab.groupId === -1 ? ids[i] : null)).filter(Boolean);
     if (loose.length) {
       const now = await Promise.all(loose.map((tabId) => chrome.tabs.get(tabId)));
-      const stray = now.filter((t) => t.groupId !== -1).map((t) => t.id);
+      const stray = now.filter((tab) => tab.groupId !== -1).map((tab) => tab.id);
       if (stray.length) await chrome.tabs.ungroup(stray);
     }
 
-    const activeIndex = win.tabs.findIndex((t) => t.active);
+    const activeIndex = win.tabs.findIndex((tab) => tab.active);
     if (ids[activeIndex]) await chrome.tabs.update(ids[activeIndex], { active: true });
   }
 }
@@ -288,9 +291,10 @@ async function restore(snap, report) {
 // ---------- Aktionen absichern ----------
 
 // Jede Tabwerk-Aktion sichert vorher den Stand. Rückgängig springt genau dorthin zurück.
+// label ist ein Schlüssel aus LABEL in reasons.js.
 export async function beforeAction(label, windowId = null) {
   if (!isOn(await getSettings(), 'undo')) return null;
-  const entry = await takeSnapshot(`Vor ${label}`);
+  const entry = await takeSnapshot(REASON.before, { args: [label] });
   if (entry) await setLastAction(windowId, { id: entry.id, label, windowId });
   return entry;
 }
@@ -298,7 +302,7 @@ export async function beforeAction(label, windowId = null) {
 // Wiederherstellen aus dem Verlauf lässt sich selbst wieder rückgängig machen.
 export async function restoreFromHistory({ id, windowId = null }) {
   const result = await restoreSnapshot({ id, windowId });
-  if (result.before) await setLastAction(windowId, { id: result.before, label: 'Wiederherstellen', windowId });
+  if (result.before) await setLastAction(windowId, { id: result.before, label: LABEL.restore, windowId });
   return result;
 }
 

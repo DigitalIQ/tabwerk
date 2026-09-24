@@ -32,6 +32,16 @@ Alles, was sich exakt berechnen lässt, erledigt Code. Für semantische Fragen n
 
 Jede Funktion lässt sich in den Einstellungen einzeln ausschalten. Abhängige Funktionen hängen an der übergeordneten.
 
+## Sprachen
+
+Tabwerk spricht Deutsch und Englisch. Es folgt der Sprache des Browsers. In den Einstellungen unter „Sprache“ lässt sich die Sprache fest wählen. Datum, Uhrzeit, Zahlen, Beträge und Mehrzahl formatiert Tabwerk passend zur Sprache über `Intl`. Testdaten für Formulare gibt es als deutsche und als US-amerikanische Adressen.
+
+Eine neue Sprache anlegen:
+
+1. `_locales/en/messages.json` nach `_locales/<code>/messages.json` kopieren und die Werte von `message` übersetzen. `$1` bis `$9` bleiben stehen. Schlüssel mit `_one` und `_other` sind Einzahl und Mehrzahl.
+2. Den Code in `LANGUAGES` in `src/lib/i18n.js` ergänzen und einen Namen unter `lang_<code>` in allen Sprachdateien anlegen.
+3. `npm test` prüft, dass alle Sprachen dieselben Schlüssel und Platzhalter haben.
+
 Jede Aktion sichert vorher den Stand. „Rückgängig“ im Popup oder `Alt+Umschalt+Z` springt genau dorthin zurück.
 
 Was Jev gut kann und wo es schwach ist, steht in [docs/jev-im-browser.md](docs/jev-im-browser.md).

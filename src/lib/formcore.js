@@ -1,6 +1,8 @@
 // Formulare: reine Logik für Zuordnung, Schutz sensibler Felder und Testdaten.
 // Die Funktionen für die Seite selbst stehen in src/content/forms.js.
 
+import { language } from './i18n.js';
+
 // Diese Felder speichert und füllt Tabwerk nie.
 export const SENSITIVE = /pass|pwd|kennwort|passwort|card|karte|cc-|cvv|cvc|csc|iban|bic|swift|konto|account.?num|pin\b|\btan\b|otp|one-time|token|secret|geheim|ssn|social.?security|steuer.?id|tax.?id|security.?code/i;
 
@@ -36,10 +38,17 @@ export function describeField(f) {
 
 // ---------- Testdaten ----------
 
-const FIRST = ['Anna', 'Ben', 'Clara', 'David', 'Emma', 'Finn', 'Greta', 'Hannes', 'Ida', 'Jonas', 'Lena', 'Mats'];
-const LAST = ['Becker', 'Fischer', 'Hartmann', 'Keller', 'Lorenz', 'Meyer', 'Neumann', 'Schulz', 'Vogel', 'Wagner'];
-const STREET = ['Lindenweg', 'Hauptstraße', 'Gartenstraße', 'Am Markt', 'Bahnhofstraße', 'Birkenallee'];
-const CITY = [['10115', 'Berlin'], ['01067', 'Dresden'], ['50667', 'Köln'], ['60311', 'Frankfurt am Main'], ['80331', 'München'], ['04109', 'Leipzig']];
+const FIRST_DE = ['Anna', 'Ben', 'Clara', 'David', 'Emma', 'Finn', 'Greta', 'Hannes', 'Ida', 'Jonas', 'Lena', 'Mats'];
+const LAST_DE = ['Becker', 'Fischer', 'Hartmann', 'Keller', 'Lorenz', 'Meyer', 'Neumann', 'Schulz', 'Vogel', 'Wagner'];
+const STREET_DE = ['Lindenweg', 'Hauptstraße', 'Gartenstraße', 'Am Markt', 'Bahnhofstraße', 'Birkenallee'];
+const CITY_DE = [['10115', 'Berlin'], ['01067', 'Dresden'], ['50667', 'Köln'], ['60311', 'Frankfurt am Main'], ['80331', 'München'], ['04109', 'Leipzig']];
+
+// Englische Testdaten für language() !== 'de'.
+const FIRST_EN = ['Alice', 'Ben', 'Clara', 'David', 'Emma', 'Finn', 'Grace', 'Henry', 'Ivy', 'Jack', 'Lena', 'Max'];
+const LAST_EN = ['Baker', 'Fisher', 'Hart', 'Keller', 'Lawrence', 'Meyer', 'Newman', 'Schultz', 'Bird', 'Wagner'];
+const STREET_EN = ['Maple Street', 'Main Street', 'Garden Street', 'Market Square', 'Station Road', 'Birch Avenue'];
+const CITY_EN = [['10001', 'New York'], ['90001', 'Los Angeles'], ['60601', 'Chicago'], ['94103', 'San Francisco'], ['02108', 'Boston'], ['73301', 'Austin']];
+
 const WORDS = 'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'.split(' ');
 
 // Kleiner, wiederholbarer Zufall, damit Tests stabil bleiben.
@@ -52,17 +61,19 @@ export function rng(seed = Date.now()) {
 }
 
 export function fakePerson(random = Math.random) {
+  const de = language() === 'de';
   const pick = (list) => list[Math.floor(random() * list.length)];
-  const first = pick(FIRST);
-  const last = pick(LAST);
-  const [zip, city] = pick(CITY);
+  const first = pick(de ? FIRST_DE : FIRST_EN);
+  const last = pick(de ? LAST_DE : LAST_EN);
+  const [zip, city] = pick(de ? CITY_DE : CITY_EN);
   return {
     first, last,
     email: `${first}.${last}@example.com`.toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue'),
-    phone: `+49 30 ${Math.floor(1000000 + random() * 8999999)}`,
-    street: `${pick(STREET)} ${1 + Math.floor(random() * 120)}`,
+    phone: de ? `+49 30 ${Math.floor(1000000 + random() * 8999999)}` : `+1 555 ${Math.floor(1000000 + random() * 8999999)}`,
+    street: `${pick(de ? STREET_DE : STREET_EN)} ${1 + Math.floor(random() * 120)}`,
     zip, city,
-    company: `${last} & Partner GmbH`,
+    country: de ? 'Deutschland' : 'United States',
+    company: de ? `${last} & Partner GmbH` : `${last} & Partners Inc.`,
     birth: `19${60 + Math.floor(random() * 40)}-0${1 + Math.floor(random() * 9)}-1${Math.floor(random() * 9)}`,
     text: Array.from({ length: 12 }, () => pick(WORDS)).join(' '),
   };
@@ -98,13 +109,13 @@ export function fakeValue(field, person, random = Math.random) {
   if (field.type === 'url' || has(/website|webseite|homepage|url/)) return 'https://example.com';
   if (field.type === 'date' || has(/geburt|birth|datum|date/)) return person.birth;
   if (field.type === 'number' || has(/anzahl|menge|alter|age|quantity/)) return String(1 + Math.floor(random() * 40));
-  if (has(/vorname|first|given/)) return person.first;
-  if (has(/nachname|last|family|surname/)) return person.last;
-  if (has(/firma|company|organi[sz]ation|unternehmen/)) return person.company;
-  if (has(/stra(ss|ß)e|street|address|adresse/)) return person.street;
+  if (has(/vorname|first|given|prenom|nombre/)) return person.first;
+  if (has(/nachname|last|family|surname|nom|apellido/)) return person.last;
+  if (has(/firma|company|organi[sz]ation|unternehmen|entreprise|empresa/)) return person.company;
+  if (has(/stra(ss|ß)e|street|address|adresse|rue|calle/)) return person.street;
   if (has(/plz|zip|postal|postleitzahl/)) return person.zip;
-  if (has(/stadt|ort|city|town/)) return person.city;
-  if (has(/land|country/)) return 'Deutschland';
+  if (has(/stadt|ort|city|town|ville|ciudad/)) return person.city;
+  if (has(/land|country|pays|país|pais/)) return person.country;
   if (has(/name/)) return `${person.first} ${person.last}`;
   if (field.type === 'textarea' || has(/nachricht|message|kommentar|comment|beschreibung/)) return person.text;
   return person.text.split(' ').slice(0, 3).join(' ');

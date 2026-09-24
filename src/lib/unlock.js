@@ -3,6 +3,7 @@
 
 import { getSettings, saveSettings } from './settings.js';
 import { isOn } from './flags.js';
+import { t } from './i18n.js';
 
 const SCRIPT_ID = 'tabwerk-unlock';
 const FILE = 'src/content/unlock.js';
@@ -13,20 +14,20 @@ export const originPatterns = (host) => ['https', 'http'].flatMap((s) => [`${s}:
 
 async function activeTab(windowId, tabId) {
   const tab = tabId ? await chrome.tabs.get(tabId).catch(() => null) : (await chrome.tabs.query({ active: true, windowId }))[0];
-  if (!tab || !/^https?:/.test(tab.url || '')) throw new Error('Das geht nur auf normalen Webseiten.');
+  if (!tab || !/^https?:/.test(tab.url || '')) throw new Error(t('unlock_onlyNormalPages'));
   return tab;
 }
 
 export async function unlockTab({ windowId, tabId } = {}) {
   const settings = await getSettings();
-  if (!isOn(settings, 'copyUnlock')) throw new Error('„Kopieren erlauben“ ist in den Einstellungen ausgeschaltet.');
+  if (!isOn(settings, 'copyUnlock')) throw new Error(t('unlock_disabled'));
   const tab = await activeTab(windowId, tabId);
   try {
     await chrome.scripting.executeScript({ target: { tabId: tab.id, allFrames: true }, files: [FILE], world: 'MAIN' });
   } catch {
-    throw new Error('Tabwerk darf diese Seite gerade nicht ändern. Nutze das Kontextmenü oder das Tastenkürzel der Schnellsuche.');
+    throw new Error(t('unlock_cannotModifyPage'));
   }
-  return { message: 'Kopieren und Rechtsklick sind jetzt erlaubt' };
+  return { message: t('unlock_nowAllowed') };
 }
 
 export async function listUnlockHosts() {
@@ -41,7 +42,7 @@ export async function setAlwaysUnlock({ host, on, windowId }) {
   await saveSettings({ unlockHosts: [...hosts].sort() });
   await syncUnlockScripts();
   if (on && windowId) await unlockTab({ windowId }).catch(() => {});
-  return { hosts: [...hosts], message: on ? `Auf ${host} immer erlaubt` : `Auf ${host} nicht mehr automatisch` };
+  return { hosts: [...hosts], message: on ? t('unlock_alwaysAllowed', host) : t('unlock_noLongerAuto', host) };
 }
 
 // Registriert das Skript für alle Websites aus der Liste, für die Chrome das Leserecht gibt.

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gesperrt im Fokus</title>
+  <title data-i18n="focus_pageTitle">Gesperrt im Fokus</title>
   <link rel="stylesheet" href="../ui/base.css">
   <style>
     html, body { height: 100%; }
@@ -19,12 +19,12 @@
 <body>
   <main>
     <div class="time" id="left" aria-live="polite"></div>
-    <h1>Diese Seite wartet bis nach dem Fokus.</h1>
+    <h1 data-i18n="focus_waitingTitle">Diese Seite wartet bis nach dem Fokus.</h1>
     <p class="site" id="site"></p>
     <div class="row-actions">
-      <button class="primary" id="back">Zurück</button>
-      <button id="once">Trotzdem öffnen</button>
-      <button class="ghost" id="end">Fokus beenden</button>
+      <button class="primary" id="back" data-i18n="focus_back">Zurück</button>
+      <button id="once" data-i18n="focus_openAnyway">Trotzdem öffnen</button>
+      <button class="ghost" id="end" data-i18n="focus_endFocus">Fokus beenden</button>
     </div>
   </main>
   <script type="module" src="blocked.js"></script>

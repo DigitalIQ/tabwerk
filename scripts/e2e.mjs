@@ -183,6 +183,9 @@ if (!worker) worker = await context.waitForEvent('serviceworker');
 const id = new URL(worker.url()).host;
 log('Extension', id, live ? '· Jev live' : '· Jev offline');
 
+// Die Tests prüfen deutsche Texte. Chrome for Testing läuft oft auf Englisch, deshalb fest Deutsch.
+await worker.evaluate(() => chrome.storage.local.set({ uiLanguage: 'de' }));
+
 // Die Einstellungsseite öffnet sich bei der Installation von selbst.
 await new Promise((r) => setTimeout(r, 800));
 for (const p of context.pages()) if (p.url().includes('options.html') || p.url() === 'about:blank') await p.close().catch(() => {});
@@ -468,9 +471,34 @@ const tabsIn = (wid) => popup.evaluate(async (w) => (await chrome.tabs.query({ w
   check('Wechsel zu geschlossenem Tab meldet verständlichen Fehler', !focus.ok && /schon geschlossen/.test(focus.error), focus.error);
 }
 
+// Sprache: Englisch einstellen, dann zurück auf Deutsch
+{
+  const textsIn = async (lang) => {
+    await popup.evaluate((l) => chrome.storage.local.set({ uiLanguage: l }), lang);
+    await popup.reload();
+    await popup.waitForSelector('[data-panel=find]');
+    return popup.evaluate(() => ({ lang: document.documentElement.lang, find: document.querySelector('[data-panel=find]').textContent.trim(), keys: document.body.innerText.match(/\b[a-z]+_[a-zA-Z0-9_]+\b/g) || [] }));
+  };
+  const en = await textsIn('en');
+  const de = await textsIn('de');
+  check('Sprache Englisch: Popup wechselt die Sprache', en.lang === 'en' && de.lang === 'de' && en.find !== de.find, `${en.find} / ${de.find}`);
+  check('Sprache: keine rohen Schlüssel im Popup', !en.keys.length && !de.keys.length, [...en.keys, ...de.keys].slice(0, 5).join(', '));
+  const menu = await worker.evaluate(async () => {
+    await chrome.storage.local.set({ uiLanguage: 'en' });
+    await new Promise((r) => setTimeout(r, 400));
+    const { i18nProbe } = await chrome.storage.session.get('i18nProbe');
+    await chrome.storage.local.set({ uiLanguage: 'de' });
+    await new Promise((r) => setTimeout(r, 400));
+    return i18nProbe || null;
+  });
+  if (menu) check('Sprache: Service Worker lädt die neue Sprache', menu === 'en', menu);
+}
+
 // Schalter: ausgeschaltete Funktion verschwindet aus dem Popup
 await setFeatures({ find: false });
 await popup.reload();
+// Das Popup lädt erst Sprache und Einstellungen. Kurz warten, bis es fertig ist.
+await popup.waitForSelector('[data-panel=find]', { state: 'hidden', timeout: 3000 }).catch(() => {});
 check('Schalter: „Finden“ aus blendet den Reiter aus', await popup.locator('[data-panel=find]').isHidden());
 await setFeatures({ find: true });
 await popup.reload();
@@ -529,6 +557,7 @@ const noteBack = await call('getNote', { url: ytTab.url });
 check('Notiz wird zur Adresse gespeichert', noteBack?.text === 'Rückflug noch offen');
 const noteWin = await context.newPage();
 await noteWin.goto(`chrome-extension://${id}/src/note/note.html?${new URLSearchParams({ url: ytTab.url, title: ytTab.title })}`);
+await noteWin.waitForFunction(() => document.querySelector('#text')?.value, null, { timeout: 3000 }).catch(() => {});
 check('Notiz-Fenster zeigt die gespeicherte Notiz', (await noteWin.inputValue('#text')) === 'Rückflug noch offen');
 await noteWin.setViewportSize({ width: 440, height: 360 });
 await noteWin.screenshot({ path: join(out, '10-notiz.png') });

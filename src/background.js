@@ -13,6 +13,11 @@ import { decide } from './lib/jev.js';
 import { getUsage, getSettings } from './lib/settings.js';
 import { isOn } from './lib/flags.js';
 import { SNOOZE_PRESETS } from './lib/snoozetime.js';
+import { REASON, labelText } from './lib/reasons.js';
+import { initI18n, t, language } from './lib/i18n.js';
+
+// Service Worker: kein Top-Level-await. Die Aktionen warten selbst darauf.
+const i18nReady = initI18n();
 
 const handlers = {
   duplicates: F.duplicates,
@@ -31,7 +36,7 @@ const handlers = {
   listSnapshots: H.listSnapshots,
   getSnapshot: ({ id }) => H.getSnapshot(id),
   restoreSnapshot: H.restoreFromHistory,
-  saveSnapshot: () => H.takeSnapshot('Von Hand gesichert', { force: true }),
+  saveSnapshot: () => H.takeSnapshot(REASON.manual, { force: true }),
   clearHistory: H.clearHistory,
   compactHistory: H.compactHistory,
   listWatches: W.listWatches,
@@ -87,7 +92,8 @@ chrome.runtime.onMessage.addListener((message, _sender, reply) => {
   if (message?.target === 'offscreen') return false;
   const handler = handlers[message?.type];
   if (!handler) return false;
-  Promise.resolve(handler(message.payload || {}))
+  i18nReady
+    .then(() => handler(message.payload || {}))
     .then((data) => reply({ ok: true, data }))
     .catch((error) => reply({ ok: false, error: error.message, code: error.code, detail: error.detail }));
   return true;
@@ -119,7 +125,7 @@ chrome.tabs.onUpdated.addListener((_id, change) => {
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === 'history') {
-    if (isOn(await getSettings(), 'history')) H.takeSnapshot('Automatisch');
+    if (isOn(await getSettings(), 'history')) H.takeSnapshot(REASON.auto);
   } else if (alarm.name === 'discard') {
     X.discardInactive();
   } else if (alarm.name === 'focus-end') {
@@ -159,28 +165,29 @@ async function ensureAlarms() {
 const WEB = ['http://*/*', 'https://*/*'];
 
 async function createMenus() {
+  await i18nReady;
   const settings = await getSettings();
   const on = (id) => isOn(settings, id);
   await chrome.contextMenus.removeAll();
   const add = (props) => chrome.contextMenus.create({ documentUrlPatterns: WEB, ...props });
   if (on('watches')) {
-    add({ id: 'watch-page', title: 'Diese Seite beobachten …', contexts: ['page'] });
-    add({ id: 'watch-selection', title: 'Auf „%s“ achten …', contexts: ['selection'] });
-    chrome.contextMenus.create({ id: 'watch-link', title: 'Verlinkte Seite beobachten …', contexts: ['link'], targetUrlPatterns: WEB });
+    add({ id: 'watch-page', title: t('bg_watchPage'), contexts: ['page'] });
+    add({ id: 'watch-selection', title: t('bg_watchSelection'), contexts: ['selection'] });
+    chrome.contextMenus.create({ id: 'watch-link', title: t('bg_watchLink'), contexts: ['link'], targetUrlPatterns: WEB });
   }
-  if (on('notes')) add({ id: 'note', title: 'Notiz zu diesem Tab …', contexts: ['page', 'selection'] });
+  if (on('notes')) add({ id: 'note', title: t('bg_noteMenu'), contexts: ['page', 'selection'] });
   if (on('snooze')) {
-    add({ id: 'snooze', title: 'Tab schlummern lassen', contexts: ['page'] });
+    add({ id: 'snooze', title: t('bg_snoozeMenu'), contexts: ['page'] });
     for (const p of SNOOZE_PRESETS) add({ id: `snooze:${p.id}`, parentId: 'snooze', title: p.label, contexts: ['page'] });
   }
-  if (on('copyUnlock')) add({ id: 'unlock', title: 'Kopieren und Rechtsklick erlauben', contexts: ['page', 'editable', 'selection', 'image', 'link'] });
+  if (on('copyUnlock')) add({ id: 'unlock', title: t('bg_unlockMenu'), contexts: ['page', 'editable', 'selection', 'image', 'link'] });
   if (on('forms')) {
-    add({ id: 'form-save', title: 'Formular speichern', contexts: ['page', 'editable'] });
-    add({ id: 'form-fill', title: 'Formular ausfüllen …', contexts: ['page', 'editable'] });
-    if (on('formsTestData')) add({ id: 'form-test', title: 'Mit Testdaten füllen', contexts: ['page', 'editable'] });
+    add({ id: 'form-save', title: t('bg_formSaveMenu'), contexts: ['page', 'editable'] });
+    add({ id: 'form-fill', title: t('bg_formFillMenu'), contexts: ['page', 'editable'] });
+    if (on('formsTestData')) add({ id: 'form-test', title: t('bg_formTestMenu'), contexts: ['page', 'editable'] });
   }
   if (await chrome.permissions.contains({ permissions: ['bookmarks'] })) {
-    add({ id: 'bookmark', title: on('bookmarkFolder') ? 'Lesezeichen mit Ordner-Vorschlag' : 'Lesezeichen setzen', contexts: ['page'] });
+    add({ id: 'bookmark', title: on('bookmarkFolder') ? t('bg_bookmarkFolderMenu') : t('bg_bookmarkPlainMenu'), contexts: ['page'] });
   }
 }
 
@@ -215,7 +222,7 @@ const hostOfTab = (tab) => { try { return new URL(tab.url).hostname.replace(/^ww
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   const id = String(info.menuItemId);
   const base = tab?.windowId ? await chrome.windows.get(tab.windowId) : await chrome.windows.getLastFocused();
-  const say = (p) => p.then((r) => toast(tab.id, r?.message || 'Erledigt')).catch((e) => toast(tab.id, e.message));
+  const say = (p) => p.then((r) => toast(tab.id, r?.message || t('bg_done'))).catch((e) => toast(tab.id, e.message));
   if (id.startsWith('watch-')) {
     const url = id === 'watch-link' ? info.linkUrl : info.pageUrl;
     const params = new URLSearchParams({ url });
@@ -244,6 +251,10 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'local' && changes.features) createMenus();
   if (area === 'local' && (changes.features || changes.unlockHosts)) U.syncUnlockScripts().catch(() => {});
+  if (area === 'local' && changes.uiLanguage) {
+    // i18nProbe: aktive Sprache des Service Workers, für den Browser-Test.
+    initI18n().then(() => { chrome.storage.session.set({ i18nProbe: language() }); return createMenus(); });
+  }
 });
 chrome.permissions.onAdded.addListener(() => { createMenus(); U.syncUnlockScripts().catch(() => {}); });
 chrome.permissions.onRemoved.addListener(() => { createMenus(); U.syncUnlockScripts().catch(() => {}); });
@@ -252,7 +263,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   await createMenus();
   await W.rescheduleAll();
   await ensureAlarms();
-  H.takeSnapshot('Erste Sicherung');
+  H.takeSnapshot(REASON.first);
   if (reason === 'update') H.compactHistory().catch(() => {});
   U.syncUnlockScripts().catch(() => {});
   if (reason === 'install') chrome.runtime.openOptionsPage();
@@ -262,9 +273,9 @@ chrome.runtime.onStartup.addListener(async () => {
   await createMenus();
   await W.rescheduleAll();
   await ensureAlarms();
-  if (isOn(await getSettings(), 'history')) H.takeSnapshot('Browserstart');
+  if (isOn(await getSettings(), 'history')) H.takeSnapshot(REASON.startup);
   H.compactHistory().catch(() => {});
-  if (await X.focusState()) chrome.action.setBadgeText({ text: 'F' });
+  if (await X.focusState()) chrome.action.setBadgeText({ text: t('bg_focusBadge') });
 });
 
 // ---------- Schnellsuche ----------
@@ -304,7 +315,7 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
   if (command === 'tab-note' && isOn(settings, 'notes')) X.openNoteEditor(target);
   if (command === 'undo' && isOn(settings, 'undo')) {
     const r = await H.undoLastAction({ windowId: target.windowId });
-    if (/^https?:/.test(target.url || '')) toast(target.id, r.ok ? `Stand vor „${r.label}“ wiederhergestellt` : 'Nichts rückgängig zu machen');
+    if (/^https?:/.test(target.url || '')) toast(target.id, r.ok ? t('bg_undoRestored', labelText(r.label)) : t('bg_undoNothing'));
   }
   if (command === 'fill-form' && isOn(settings, 'forms')) {
     const mine = (await FO.listProfiles()).filter((p) => p.host === hostOfTab(target));

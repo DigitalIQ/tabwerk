@@ -7,10 +7,11 @@ import { isOn } from './flags.js';
 import { hostOf } from './url.js';
 import { matchFields, describeField, fakePerson, fakeValue, fakeSensitive, isSensitive } from './formcore.js';
 import { collectFields, fillFields } from '../content/forms.js';
+import { t, tp, fmtDate } from './i18n.js';
 
 async function activeTab(windowId) {
   const [tab] = await chrome.tabs.query({ active: true, windowId });
-  if (!tab || !/^https?:/.test(tab.url || '')) throw new Error('Formulare gehen nur auf normalen Webseiten.');
+  if (!tab || !/^https?:/.test(tab.url || '')) throw new Error(t('form_onlyNormalPages'));
   return tab;
 }
 
@@ -19,7 +20,7 @@ async function inPage(tabId, func, args = []) {
     const [res] = await chrome.scripting.executeScript({ target: { tabId }, func, args });
     return res.result;
   } catch {
-    throw new Error('Tabwerk darf diese Seite gerade nicht lesen. Öffne die Schnellsuche per Tastenkürzel oder nutze das Kontextmenü auf der Seite.');
+    throw new Error(t('form_cannotReadPage'));
   }
 }
 
@@ -37,7 +38,7 @@ async function saveProfiles(list) {
 
 export async function saveForm({ windowId, name }) {
   const settings = await getSettings();
-  if (!isOn(settings, 'forms')) throw new Error('Formulare sind in den Einstellungen ausgeschaltet.');
+  if (!isOn(settings, 'forms')) throw new Error(t('form_disabled'));
   const tab = await activeTab(windowId);
   const all = isOn(settings, 'formsSensitive');
   const { fields } = await inPage(tab.id, collectFields, [all]);
@@ -45,11 +46,11 @@ export async function saveForm({ windowId, name }) {
   const kept = fields
     .filter((f) => (all || !guarded(f)) && f.value !== null && f.value !== undefined && f.value !== '' && f.value !== false)
     .map((f) => (guarded(f) ? { ...f, sensitive: true } : f));
-  if (!kept.length) throw new Error('Auf dieser Seite gibt es kein ausgefülltes Formularfeld.');
+  if (!kept.length) throw new Error(t('form_noFilledField'));
   const host = hostOf(tab.url);
   const profile = {
     id: crypto.randomUUID(),
-    name: (name || '').trim() || `${host} · ${new Date().toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' })}`,
+    name: (name || '').trim() || `${host} · ${fmtDate(Date.now(), { dateStyle: 'short', timeStyle: 'short' })}`,
     host,
     path: new URL(tab.url).pathname,
     t: Date.now(),
@@ -57,7 +58,8 @@ export async function saveForm({ windowId, name }) {
   };
   await saveProfiles([profile, ...(await listProfiles())]);
   const skipped = all ? 0 : fields.filter(guarded).length;
-  return { profile, message: `${kept.length} Felder gespeichert${skipped ? `, ${skipped} geschützte ausgelassen` : ''}` };
+  const skippedText = skipped ? t('form_skippedProtected', skipped) : '';
+  return { profile, message: tp('form_savedFields', kept.length, skippedText) };
 }
 
 export async function renameProfile({ id, name }) {
@@ -75,12 +77,12 @@ export async function deleteProfile({ id }) {
 
 export async function fillForm({ windowId, profileId }) {
   const settings = await getSettings();
-  if (!isOn(settings, 'forms')) throw new Error('Formulare sind in den Einstellungen ausgeschaltet.');
+  if (!isOn(settings, 'forms')) throw new Error(t('form_disabled'));
   const tab = await activeTab(windowId);
   const profiles = await listProfiles();
   const host = hostOf(tab.url);
   const profile = profileId ? profiles.find((p) => p.id === profileId) : profiles.find((p) => p.host === host);
-  if (!profile) throw new Error('Für diese Website ist noch kein Formular gespeichert.');
+  if (!profile) throw new Error(t('form_noProfileSaved'));
   const all = isOn(settings, 'formsSensitive');
   const { fields } = await inPage(tab.id, collectFields, [false]);
   const targets = fields.filter((f) => all || !guarded(f));
@@ -88,7 +90,7 @@ export async function fillForm({ windowId, profileId }) {
   let cost;
   let viaJev = 0;
   // Übrige Felder: Jev ordnet zu, sieht dabei nur Beschriftungen, keine Werte.
-  const open = targets.map((t, i) => (match[i] === -1 ? i : null)).filter((i) => i !== null);
+  const open = targets.map((tab, i) => (match[i] === -1 ? i : null)).filter((i) => i !== null);
   const free = profile.fields.map((_, i) => i).filter((i) => !match.includes(i));
   if (open.length && free.length && isOn(settings, 'formsJev') && hasKey(settings)) {
     const criteria = Object.fromEntries(free.map((i) => [`s${i}`, describeField(profile.fields[i])]));
@@ -111,18 +113,21 @@ export async function fillForm({ windowId, profileId }) {
       viaJev += 1;
     }
   }
-  const assignments = targets.map((t, i) => (match[i] === -1 ? null : { ...t, value: profile.fields[match[i]].value })).filter(Boolean);
+  const assignments = targets.map((f, i) => (match[i] === -1 ? null : { ...f, value: profile.fields[match[i]].value })).filter(Boolean);
   const res = await inPage(tab.id, fillFields, [assignments, all]);
+  const viaJevText = viaJev ? t('form_filledViaJev', viaJev) : '';
+  const emptyLeft = targets.length - res.filled;
+  const emptyText = emptyLeft > 0 ? t('form_filledEmpty', emptyLeft) : '';
   return {
     ...res,
     cost,
-    message: `${res.filled} Felder ausgefüllt${viaJev ? `, ${viaJev} davon mit Jev` : ''}${targets.length - res.filled > 0 ? `, ${targets.length - res.filled} leer gelassen` : ''}`,
+    message: tp('form_filledFields', res.filled, `${viaJevText}${emptyText}`),
   };
 }
 
 export async function fillTestData({ windowId }) {
   const settings = await getSettings();
-  if (!isOn(settings, 'formsTestData')) throw new Error('Testdaten sind in den Einstellungen ausgeschaltet.');
+  if (!isOn(settings, 'formsTestData')) throw new Error(t('form_testDataDisabled'));
   const tab = await activeTab(windowId);
   const all = isOn(settings, 'formsSensitive');
   const { fields } = await inPage(tab.id, collectFields, [false]);
@@ -136,5 +141,5 @@ export async function fillTestData({ windowId }) {
     return { ...f, value: guarded(f) ? fakeSensitive(f) : fakeValue(f, person) };
   }).filter(Boolean);
   const res = await inPage(tab.id, fillFields, [assignments, all]);
-  return { ...res, message: `${res.filled} Felder mit Testdaten gefüllt` };
+  return { ...res, message: tp('form_filledTestData', res.filled) };
 }

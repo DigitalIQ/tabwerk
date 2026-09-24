@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tabwerk</title>
+  <title data-i18n="extName">Tabwerk</title>
   <link rel="stylesheet" href="../ui/base.css">
   <link rel="stylesheet" href="popup.css">
 </head>
@@ -11,80 +11,80 @@
   <header class="top">
     <div class="brand">
       <img src="/icons/icon32.png" alt="" width="18" height="18">
-      <span class="word">Tabwerk</span>
+      <span class="word" data-i18n="extName">Tabwerk</span>
     </div>
     <span class="count mono" id="count"></span>
-    <button class="ghost icon" id="open-options" title="Einstellungen" aria-label="Einstellungen"><span class="ico i-gear"></span></button>
+    <button class="ghost icon" id="open-options" data-i18n-title="popup_settings" data-i18n-aria-label="popup_settings" title="Einstellungen" aria-label="Einstellungen"><span class="ico i-gear"></span></button>
   </header>
 
-  <nav class="strip" role="tablist" aria-label="Bereiche">
-    <button role="tab" data-panel="find" data-flag="find" aria-selected="true">Finden</button>
-    <button role="tab" data-panel="groups" data-flag="groups" aria-selected="false">Gruppen</button>
-    <button role="tab" data-panel="sort" data-flag="sort" aria-selected="false">Sortieren</button>
-    <button role="tab" data-panel="dupes" data-flag="cleanup" aria-selected="false">Aufräumen</button>
-    <button role="tab" data-panel="watch" data-flag="watches" aria-selected="false">Wächter</button>
-    <button role="tab" data-panel="history" data-flag="history|sessions" aria-selected="false">Verlauf</button>
+  <nav class="strip" role="tablist" data-i18n-aria-label="popup_areas" aria-label="Bereiche">
+    <button role="tab" data-panel="find" data-flag="find" aria-selected="true" data-i18n="popup_tabFind">Finden</button>
+    <button role="tab" data-panel="groups" data-flag="groups" aria-selected="false" data-i18n="popup_tabGroups">Gruppen</button>
+    <button role="tab" data-panel="sort" data-flag="sort" aria-selected="false" data-i18n="popup_tabSort">Sortieren</button>
+    <button role="tab" data-panel="dupes" data-flag="cleanup" aria-selected="false" data-i18n="lbl_cleanup">Aufräumen</button>
+    <button role="tab" data-panel="watch" data-flag="watches" aria-selected="false" data-i18n="popup_tabWatch">Wächter</button>
+    <button role="tab" data-panel="history" data-flag="history|sessions" aria-selected="false" data-i18n="popup_tabHistory">Verlauf</button>
   </nav>
 
   <div class="keybar" id="keybar" hidden>
     <span class="ico i-key"></span>
-    <span>Ohne Schlüssel für Jev entscheidet Tabwerk nur per Code.</span>
-    <button class="primary" id="connect">Verbinden</button>
+    <span data-i18n="popup_noKeyNotice">Ohne Schlüssel für Jev entscheidet Tabwerk nur per Code.</span>
+    <button class="primary" id="connect" data-i18n="popup_connect">Verbinden</button>
   </div>
 
   <main>
     <!-- Finden -->
     <section class="panel" id="panel-find" role="tabpanel">
       <form id="find-form" class="searchrow">
-        <label class="visually-hidden" for="find-q">Welchen Tab suchst du?</label>
-        <input id="find-q" type="text" placeholder="z. B. der Artikel über klare Berichte" autocomplete="off">
-        <button class="primary" type="submit">Suchen</button>
+        <label class="visually-hidden" for="find-q" data-i18n="popup_findLabel">Welchen Tab suchst du?</label>
+        <input id="find-q" type="text" data-i18n-placeholder="popup_findPlaceholder" placeholder="z. B. der Artikel über klare Berichte" autocomplete="off">
+        <button class="primary" type="submit" data-i18n="popup_searchSubmit">Suchen</button>
       </form>
-      <p class="help">Beschreib den Tab in deinen Worten. Jev wählt aus allen offenen Tabs.</p>
+      <p class="help" data-i18n="popup_findHelp">Beschreib den Tab in deinen Worten. Jev wählt aus allen offenen Tabs.</p>
       <div id="find-out" class="out"></div>
     </section>
 
     <!-- Gruppen -->
     <section class="panel" id="panel-groups" role="tabpanel" hidden>
       <div class="bar">
-        <label class="check"><input type="checkbox" id="only-ungrouped" checked> Nur Tabs ohne Gruppe</label>
-        <button class="primary" id="propose">Vorschlag holen</button>
+        <label class="check"><input type="checkbox" id="only-ungrouped" checked> <span data-i18n="popup_onlyUngrouped">Nur Tabs ohne Gruppe</span></label>
+        <button class="primary" id="propose" data-i18n="popup_proposeGet">Vorschlag holen</button>
       </div>
-      <button class="ghost" id="name-groups" data-flag="groupNames"><span class="ico i-bolt"></span>Gruppen ohne Titel benennen</button>
+      <button class="ghost" id="name-groups" data-flag="groupNames"><span class="ico i-bolt"></span><span data-i18n="popup_nameGroups">Gruppen ohne Titel benennen</span></button>
       <div id="groups-out" class="out"></div>
     </section>
 
     <!-- Sortieren -->
     <section class="panel" id="panel-sort" role="tabpanel" hidden>
       <fieldset class="choices">
-        <legend class="visually-hidden">Sortieren nach</legend>
-        <label><input type="radio" name="sort" value="priority" checked><span><b>Priorität</b><small>Jev bewertet jeden Tab nach deinem Fokus</small></span></label>
-        <label><input type="radio" name="sort" value="groups"><span><b>Gruppen nach Priorität</b><small>Jev bewertet jede Gruppe, wichtige Gruppen nach vorn</small></span></label>
-        <label><input type="radio" name="sort" value="site"><span><b>Website</b><small>Gleiche Domains nebeneinander</small></span></label>
-        <label><input type="radio" name="sort" value="recent"><span><b>Zuletzt benutzt</b><small>Frisch benutzte Tabs nach vorn</small></span></label>
-        <label><input type="radio" name="sort" value="opened"><span><b>Geöffnet</b><small>Älteste Tabs nach vorn</small></span></label>
-        <label><input type="radio" name="sort" value="title"><span><b>Titel</b><small>Alphabetisch</small></span></label>
+        <legend class="visually-hidden" data-i18n="popup_sortByLegend">Sortieren nach</legend>
+        <label><input type="radio" name="sort" value="priority" checked><span><b data-i18n="popup_sortPriority">Priorität</b><small data-i18n="popup_sortPriorityHint">Jev bewertet jeden Tab nach deinem Fokus</small></span></label>
+        <label><input type="radio" name="sort" value="groups"><span><b data-i18n="popup_sortGroupsLabel">Gruppen nach Priorität</b><small data-i18n="popup_sortGroupsHint">Jev bewertet jede Gruppe, wichtige Gruppen nach vorn</small></span></label>
+        <label><input type="radio" name="sort" value="site"><span><b data-i18n="popup_sortSite">Website</b><small data-i18n="popup_sortSiteHint">Gleiche Domains nebeneinander</small></span></label>
+        <label><input type="radio" name="sort" value="recent"><span><b data-i18n="popup_sortRecent">Zuletzt benutzt</b><small data-i18n="popup_sortRecentHint">Frisch benutzte Tabs nach vorn</small></span></label>
+        <label><input type="radio" name="sort" value="opened"><span><b data-i18n="popup_sortOpened">Geöffnet</b><small data-i18n="popup_sortOpenedHint">Älteste Tabs nach vorn</small></span></label>
+        <label><input type="radio" name="sort" value="title"><span><b data-i18n="popup_sortTitle">Titel</b><small data-i18n="popup_sortTitleHint">Alphabetisch</small></span></label>
       </fieldset>
       <div class="bar">
-        <p class="help">Nur dieses Fenster. Angepinnte Tabs bleiben stehen, Gruppen bleiben zusammen.</p>
-        <button class="primary" id="sort-go">Sortieren</button>
+        <p class="help" data-i18n="popup_sortHelp">Nur dieses Fenster. Angepinnte Tabs bleiben stehen, Gruppen bleiben zusammen.</p>
+        <button class="primary" id="sort-go" data-i18n="lbl_sort">Sortieren</button>
       </div>
       <div id="sort-out" class="out"></div>
     </section>
 
     <!-- Doppelte -->
     <section class="panel" id="panel-dupes" role="tabpanel" hidden>
-      <div class="subtabs" role="radiogroup" aria-label="Aufräumen">
-        <label><input type="radio" name="clean" value="dupes" checked><span>Doppelte</span></label>
-        <label data-flag="cleanupSuggest"><input type="radio" name="clean" value="suggest"><span>Vorschlag</span></label>
+      <div class="subtabs" role="radiogroup" data-i18n-aria-label="lbl_cleanup" aria-label="Aufräumen">
+        <label><input type="radio" name="clean" value="dupes" checked><span data-i18n="popup_dupesTab">Doppelte</span></label>
+        <label data-flag="cleanupSuggest"><input type="radio" name="clean" value="suggest"><span data-i18n="popup_suggestTab">Vorschlag</span></label>
       </div>
       <div class="bar" id="dupes-bar">
-        <label class="check"><input type="checkbox" id="dupes-all"> Alle Fenster</label>
-        <button id="similar" data-flag="similar">Ähnliche prüfen</button>
+        <label class="check"><input type="checkbox" id="dupes-all"> <span data-i18n="popup_allWindows">Alle Fenster</span></label>
+        <button id="similar" data-flag="similar" data-i18n="popup_checkSimilar">Ähnliche prüfen</button>
       </div>
       <div class="bar" id="suggest-bar" hidden>
-        <label class="check"><input type="checkbox" id="suggest-jev" checked> Mit Jev bewerten</label>
-        <button class="primary" id="suggest-go">Vorschlag holen</button>
+        <label class="check"><input type="checkbox" id="suggest-jev" checked> <span data-i18n="popup_useJev">Mit Jev bewerten</span></label>
+        <button class="primary" id="suggest-go" data-i18n="popup_proposeGet">Vorschlag holen</button>
       </div>
       <div id="dupes-out" class="out"></div>
     </section>
@@ -93,30 +93,30 @@
     <section class="panel" id="panel-watch" role="tabpanel" hidden>
       <div id="watch-list" class="out"></div>
       <details class="newwatch" id="newwatch">
-        <summary><span class="ico i-plus"></span>Neuer Wächter</summary>
+        <summary><span class="ico i-plus"></span><span data-i18n="popup_newWatch">Neuer Wächter</span></summary>
         <div id="watch-form-slot"></div>
       </details>
     </section>
 
     <!-- Verlauf -->
     <section class="panel" id="panel-history" role="tabpanel" hidden>
-      <div class="subtabs" role="radiogroup" aria-label="Verlauf">
-        <label data-flag="history"><input type="radio" name="hist" value="snaps" checked><span>Sicherungen</span></label>
-        <label data-flag="sessions"><input type="radio" name="hist" value="sessions"><span>Sitzungen</span></label>
+      <div class="subtabs" role="radiogroup" data-i18n-aria-label="popup_tabHistory" aria-label="Verlauf">
+        <label data-flag="history"><input type="radio" name="hist" value="snaps" checked><span data-i18n="popup_snapshotsTab">Sicherungen</span></label>
+        <label data-flag="sessions"><input type="radio" name="hist" value="sessions"><span data-i18n="popup_sessionsTab">Sitzungen</span></label>
       </div>
       <div id="snaps-view">
         <div class="bar">
-          <label class="check"><input type="checkbox" id="history-all"> Alle Fenster</label>
-          <button id="snap-now">Jetzt sichern</button>
+          <label class="check"><input type="checkbox" id="history-all"> <span data-i18n="popup_allWindows">Alle Fenster</span></label>
+          <button id="snap-now" data-i18n="popup_snapNow">Jetzt sichern</button>
         </div>
-        <p class="help">Tabwerk sichert nach jeder Änderung. Ohne Häkchen siehst du nur dieses Fenster und setzt nur dieses zurück.</p>
+        <p class="help" data-i18n="popup_historyHelp">Tabwerk sichert nach jeder Änderung. Ohne Häkchen siehst du nur dieses Fenster und setzt nur dieses zurück.</p>
         <div id="history-out" class="out"></div>
       </div>
       <div id="sessions-view" hidden>
         <form class="searchrow" id="session-form">
-          <label class="visually-hidden" for="session-name">Name der Sitzung</label>
-          <input id="session-name" type="text" placeholder="Name, z. B. Umzug planen" autocomplete="off">
-          <button class="primary" type="submit">Fenster speichern</button>
+          <label class="visually-hidden" for="session-name" data-i18n="popup_sessionNameLabel">Name der Sitzung</label>
+          <input id="session-name" type="text" data-i18n-placeholder="popup_sessionNamePlaceholder" placeholder="Name, z. B. Umzug planen" autocomplete="off">
+          <button class="primary" type="submit" data-i18n="popup_saveWindow">Fenster speichern</button>
         </form>
         <div id="sessions-out" class="out"></div>
       </div>

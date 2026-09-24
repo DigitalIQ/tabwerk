@@ -3,6 +3,7 @@
 // Doku: https://docs.typesafe.ai/api.md
 
 import { getSettings, recordUsage, connection, PRICE_PER_INPUT_TOKEN } from './settings.js';
+import { t } from './i18n.js';
 // Jev liest pro Anfrage höchstens 64k Tokens. Kleine Blöcke halten die Antworten genauer.
 export const CHUNK_SIZE = 30;
 
@@ -17,8 +18,8 @@ export class JevError extends Error {
 export async function decide(state, questions) {
   const conn = connection(await getSettings());
   const { key: apiKey, model, endpoint } = conn;
-  if (!apiKey) throw new JevError('no-key', `Kein ${conn.name}-Schlüssel. Öffne die Einstellungen.`);
-  if (!/^(~?typesafe\/)?jev-/.test(model)) throw new JevError('model', `Unbekanntes Modell: ${model}`);
+  if (!apiKey) throw new JevError('no-key', t('jev_noKey', conn.name));
+  if (!/^(~?typesafe\/)?jev-/.test(model)) throw new JevError('model', t('jev_unknownModel', model));
 
   let response;
   const started = performance.now();
@@ -34,15 +35,15 @@ export async function decide(state, questions) {
       body: JSON.stringify({ model, state, questions }),
     });
   } catch (error) {
-    throw new JevError('network', `${conn.name} ist nicht erreichbar.`, String(error));
+    throw new JevError('network', t('jev_unreachable', conn.name), String(error));
   }
   const raw = await response.text();
   if (!response.ok) {
     const hint = {
-      401: 'Der Schlüssel ist ungültig.',
-      402: `Das ${conn.name}-Guthaben ist leer.`,
-      429: 'Zu viele Anfragen. Warte kurz.',
-    }[response.status] || `${conn.name} meldet Fehler ${response.status}.`;
+      401: t('jev_invalidKey'),
+      402: t('jev_noCredit', conn.name),
+      429: t('jev_tooManyRequests'),
+    }[response.status] || t('jev_httpError', conn.name, response.status);
     const detail = raw.replaceAll(apiKey, '[REDACTED]').slice(0, 500);
     let reason = '';
     try {
@@ -56,11 +57,11 @@ export async function decide(state, questions) {
   try {
     result = JSON.parse(raw);
   } catch {
-    throw new JevError('parse', 'Jev hat keine lesbare Antwort geschickt.');
+    throw new JevError('parse', t('jev_unreadableResponse'));
   }
   const answers = result.answers;
   if (!answers || Object.keys(questions).some((id) => !answers[id])) {
-    throw new JevError('answers', 'Jev hat nicht auf alle Fragen geantwortet.');
+    throw new JevError('answers', t('jev_incompleteAnswers'));
   }
   // OpenRouter meldet Kosten. TypeSafe meldet nur Tokens, dann schätzt Tabwerk.
   let cost = result.usage?.cost;

@@ -1,0 +1,2398 @@
+{
+  "act_bookmarkAdd": {
+    "message": "Lesezeichen für diesen Tab"
+  },
+  "act_bookmarkAddWords": {
+    "message": "lesezeichen merken ordner"
+  },
+  "act_discardNow": {
+    "message": "Inaktive Tabs jetzt entladen"
+  },
+  "act_discardNowWords": {
+    "message": "entladen speicher"
+  },
+  "act_dupeguardPause": {
+    "message": "Doppel-Schutz 10 Minuten pausieren"
+  },
+  "act_dupeguardPauseWords": {
+    "message": "doppel schutz pause"
+  },
+  "act_dupesClose": {
+    "message": "Doppelte Tabs schließen"
+  },
+  "act_dupesClosed_one": {
+    "message": "$1 doppelter Tab geschlossen"
+  },
+  "act_dupesClosed_other": {
+    "message": "$1 doppelte Tabs geschlossen"
+  },
+  "act_dupesCloseWords": {
+    "message": "doppelte schließen entdoppeln"
+  },
+  "act_focusEnd": {
+    "message": "Fokus beenden"
+  },
+  "act_focusEndWords": {
+    "message": "fokus stoppen beenden"
+  },
+  "act_focusStart": {
+    "message": "Fokus starten"
+  },
+  "act_focusStartWords": {
+    "message": "fokus konzentration"
+  },
+  "act_formsFill": {
+    "message": "Formular ausfüllen"
+  },
+  "act_formsFillWords": {
+    "message": "formular füllen ausfüllen"
+  },
+  "act_formsSave": {
+    "message": "Formular speichern"
+  },
+  "act_formsSaveWords": {
+    "message": "formular merken speichern"
+  },
+  "act_formsTest": {
+    "message": "Formular mit Testdaten füllen"
+  },
+  "act_formsTestWords": {
+    "message": "formular test fake"
+  },
+  "act_groupsAuto": {
+    "message": "Tabs gruppieren (nur sichere Vorschläge)"
+  },
+  "act_groupsAutoResult_one": {
+    "message": "$1 Tab einsortiert, $2 offen gelassen"
+  },
+  "act_groupsAutoResult_other": {
+    "message": "$1 Tabs einsortiert, $2 offen gelassen"
+  },
+  "act_groupsAutoWords": {
+    "message": "gruppieren ordnen"
+  },
+  "act_groupsCollapse": {
+    "message": "Alle Gruppen einklappen"
+  },
+  "act_groupsCollapseWords": {
+    "message": "einklappen zuklappen"
+  },
+  "act_groupsDissolved": {
+    "message": "Gruppen aufgelöst"
+  },
+  "act_groupsExpand": {
+    "message": "Alle Gruppen ausklappen"
+  },
+  "act_groupsExpandWords": {
+    "message": "ausklappen aufklappen"
+  },
+  "act_groupsNames": {
+    "message": "Namen für Gruppen ohne Titel vorschlagen"
+  },
+  "act_groupsNamesWords": {
+    "message": "namen benennen gruppen"
+  },
+  "act_groupsOrderOk": {
+    "message": "Reihenfolge passt schon"
+  },
+  "act_groupsPriority": {
+    "message": "Gruppen nach Priorität sortieren"
+  },
+  "act_groupsPriorityWords": {
+    "message": "gruppen priorität sortieren"
+  },
+  "act_groupsSorted": {
+    "message": "Gruppen sortiert"
+  },
+  "act_groupsUngroup": {
+    "message": "Alle Gruppen auflösen"
+  },
+  "act_groupsUngroupWords": {
+    "message": "auflösen entgruppieren"
+  },
+  "act_linksCopied": {
+    "message": "Linkliste kopiert"
+  },
+  "act_linksCountCopied_one": {
+    "message": "$1 Link kopiert"
+  },
+  "act_linksCountCopied_other": {
+    "message": "$1 Links kopiert"
+  },
+  "act_linksGroup": {
+    "message": "Tabs dieser Gruppe als Markdown kopieren"
+  },
+  "act_linksGroupWords": {
+    "message": "links gruppe kopieren"
+  },
+  "act_linksMd": {
+    "message": "Tabs dieses Fensters als Markdown kopieren"
+  },
+  "act_linksMdWords": {
+    "message": "links kopieren liste"
+  },
+  "act_linksText": {
+    "message": "Tabs dieses Fensters als Text kopieren"
+  },
+  "act_linksTextWords": {
+    "message": "links text mail"
+  },
+  "act_noGroups": {
+    "message": "Keine Gruppen"
+  },
+  "act_noteEdit": {
+    "message": "Notiz zu diesem Tab"
+  },
+  "act_noteEditWords": {
+    "message": "notiz merken"
+  },
+  "act_options": {
+    "message": "Tabwerk-Einstellungen"
+  },
+  "act_optionsWords": {
+    "message": "einstellungen optionen"
+  },
+  "act_saved": {
+    "message": "Gesichert"
+  },
+  "act_sessionSave": {
+    "message": "Fenster als Sitzung speichern"
+  },
+  "act_sessionSavedAs": {
+    "message": "Gespeichert als „$1“",
+    "description": "$1 is the session name"
+  },
+  "act_sessionSaveWords": {
+    "message": "sitzung speichern sichern"
+  },
+  "act_shortcuts": {
+    "message": "Tastenkürzel ändern"
+  },
+  "act_shortcutsWords": {
+    "message": "tastenkürzel hotkey"
+  },
+  "act_snapshot": {
+    "message": "Jetzt sichern"
+  },
+  "act_snapshotWords": {
+    "message": "sichern sicherung"
+  },
+  "act_snoozePreset": {
+    "message": "Tab schlummern: $1",
+    "description": "$1 is a time phrase such as 'in 1 Stunde'"
+  },
+  "act_snoozeWords": {
+    "message": "schlummern später wiedervorlage"
+  },
+  "act_sortedByOpened": {
+    "message": "Nach Öffnungszeit sortiert"
+  },
+  "act_sortedByPriority": {
+    "message": "Nach Priorität sortiert"
+  },
+  "act_sortedByRecent": {
+    "message": "Nach Nutzung sortiert"
+  },
+  "act_sortedBySite": {
+    "message": "Nach Website sortiert"
+  },
+  "act_sortedByTitle": {
+    "message": "Nach Titel sortiert"
+  },
+  "act_sortOpened": {
+    "message": "Sortieren nach Öffnungszeit"
+  },
+  "act_sortOpenedWords": {
+    "message": "sortieren öffnungszeit alt"
+  },
+  "act_sortPriority": {
+    "message": "Tabs nach Priorität sortieren"
+  },
+  "act_sortPriorityWords": {
+    "message": "sortieren priorität wichtig"
+  },
+  "act_sortRecent": {
+    "message": "Sortieren nach zuletzt benutzt"
+  },
+  "act_sortRecentWords": {
+    "message": "sortieren zuletzt benutzt"
+  },
+  "act_sortSite": {
+    "message": "Sortieren nach Website"
+  },
+  "act_sortSiteWords": {
+    "message": "sortieren website domain"
+  },
+  "act_sortTitle": {
+    "message": "Sortieren nach Titel"
+  },
+  "act_sortTitleWords": {
+    "message": "sortieren titel alphabet"
+  },
+  "act_statsOpen": {
+    "message": "Statistik öffnen"
+  },
+  "act_statsOpenWords": {
+    "message": "statistik zahlen übersicht"
+  },
+  "act_tabClose": {
+    "message": "Tab schließen"
+  },
+  "act_tabCloseWords": {
+    "message": "schließen zu"
+  },
+  "act_tabDetach": {
+    "message": "Tab in neues Fenster"
+  },
+  "act_tabDetachWords": {
+    "message": "ablösen verschieben fenster"
+  },
+  "act_tabDuplicate": {
+    "message": "Tab duplizieren"
+  },
+  "act_tabDuplicateWords": {
+    "message": "duplizieren kopie klon"
+  },
+  "act_tabMute": {
+    "message": "Tab stumm oder laut"
+  },
+  "act_tabMuteWords": {
+    "message": "stumm laut ton"
+  },
+  "act_tabNew": {
+    "message": "Neuer Tab"
+  },
+  "act_tabNewWords": {
+    "message": "neu öffnen tab"
+  },
+  "act_tabPin": {
+    "message": "Tab anpinnen oder lösen"
+  },
+  "act_tabPinWords": {
+    "message": "anpinnen anheften lösen"
+  },
+  "act_tabReload": {
+    "message": "Tab neu laden"
+  },
+  "act_tabReloadWords": {
+    "message": "neu laden aktualisieren"
+  },
+  "act_undo": {
+    "message": "Rückgängig"
+  },
+  "act_undoNothing": {
+    "message": "Nichts rückgängig zu machen"
+  },
+  "act_undoRestored": {
+    "message": "Stand vor „$1“ wiederhergestellt",
+    "description": "$1 is an action label such as 'Sort'"
+  },
+  "act_undoWords": {
+    "message": "rückgängig zurück"
+  },
+  "act_unknownAction": {
+    "message": "Unbekannte Aktion."
+  },
+  "act_unlockAlways": {
+    "message": "Kopieren auf dieser Website immer erlauben"
+  },
+  "act_unlockAlwaysWords": {
+    "message": "immer entsperren website"
+  },
+  "act_unlockTab": {
+    "message": "Kopieren und Rechtsklick erlauben"
+  },
+  "act_unlockTabWords": {
+    "message": "entsperren kopieren rechtsklick"
+  },
+  "act_windowIncognito": {
+    "message": "Neues Inkognito-Fenster"
+  },
+  "act_windowIncognitoWords": {
+    "message": "inkognito privat"
+  },
+  "act_windowNew": {
+    "message": "Neues Fenster"
+  },
+  "act_windowNewWords": {
+    "message": "neues fenster"
+  },
+  "bg_bookmarkFolderMenu": {
+    "message": "Lesezeichen mit Ordner-Vorschlag"
+  },
+  "bg_bookmarkPlainMenu": {
+    "message": "Lesezeichen setzen"
+  },
+  "bg_done": {
+    "message": "Erledigt"
+  },
+  "bg_focusBadge": {
+    "message": "F",
+    "description": "Single-letter toolbar badge for focus mode. Keep it to one character."
+  },
+  "bg_formFillMenu": {
+    "message": "Formular ausfüllen …"
+  },
+  "bg_formSaveMenu": {
+    "message": "Formular speichern"
+  },
+  "bg_formTestMenu": {
+    "message": "Mit Testdaten füllen"
+  },
+  "bg_noteMenu": {
+    "message": "Notiz zu diesem Tab …"
+  },
+  "bg_snoozeMenu": {
+    "message": "Tab schlummern lassen"
+  },
+  "bg_undoNothing": {
+    "message": "Nichts rückgängig zu machen"
+  },
+  "bg_undoRestored": {
+    "message": "Stand vor „$1“ wiederhergestellt",
+    "description": "$1 is an action label such as 'Sort'"
+  },
+  "bg_unlockMenu": {
+    "message": "Kopieren und Rechtsklick erlauben"
+  },
+  "bg_watchLink": {
+    "message": "Verlinkte Seite beobachten …"
+  },
+  "bg_watchPage": {
+    "message": "Diese Seite beobachten …"
+  },
+  "bg_watchSelection": {
+    "message": "Auf „%s“ achten …",
+    "description": "%s is filled in by Chrome with the selected text. Keep %s as-is."
+  },
+  "bm_untitledGroup": {
+    "message": "Gruppe"
+  },
+  "cmdFillForm": {
+    "message": "Formular ausfüllen"
+  },
+  "cmdNote": {
+    "message": "Notiz zum aktuellen Tab"
+  },
+  "cmdOpen": {
+    "message": "Tabwerk öffnen"
+  },
+  "cmdPalette": {
+    "message": "Schnellsuche öffnen"
+  },
+  "cmdUndo": {
+    "message": "Letzte Tabwerk-Aktion rückgängig machen"
+  },
+  "dom_agoNever": {
+    "message": "noch nie"
+  },
+  "dom_costUnknown": {
+    "message": "Kosten unbekannt"
+  },
+  "dom_meterSure": {
+    "message": "sicher"
+  },
+  "dom_meterTitle": {
+    "message": "Jev ist sich zu $1 $2",
+    "description": "$1 is a formatted percent, $2 is the confidence reason (e.g. 'sure')"
+  },
+  "dom_noResponse": {
+    "message": "Keine Antwort vom Hintergrunddienst."
+  },
+  "dur_hours_one": {
+    "message": "$1 Stunde"
+  },
+  "dur_hours_other": {
+    "message": "$1 Stunden"
+  },
+  "dur_minutes_one": {
+    "message": "$1 Minute"
+  },
+  "dur_minutes_other": {
+    "message": "$1 Minuten"
+  },
+  "extActionTitle": {
+    "message": "Tabwerk"
+  },
+  "extDescription": {
+    "message": "Viele Tabs, klar geordnet: Schnellsuche, Gruppen, Aufräumen, Verlauf mit Rückgängig und Wächter für Webseiten."
+  },
+  "extName": {
+    "message": "Tabwerk",
+    "description": "Name of the extension. Do not translate."
+  },
+  "focus_back": {
+    "message": "Zurück"
+  },
+  "focus_endFocus": {
+    "message": "Fokus beenden"
+  },
+  "focus_minutesLeft_one": {
+    "message": "$1 Minute"
+  },
+  "focus_minutesLeft_other": {
+    "message": "$1 Minuten"
+  },
+  "focus_openAnyway": {
+    "message": "Trotzdem öffnen"
+  },
+  "focus_pageTitle": {
+    "message": "Gesperrt im Fokus"
+  },
+  "focus_secondsLeft_one": {
+    "message": "$1 Sekunde"
+  },
+  "focus_secondsLeft_other": {
+    "message": "$1 Sekunden"
+  },
+  "focus_waitingTitle": {
+    "message": "Diese Seite wartet bis nach dem Fokus."
+  },
+  "form_cannotReadPage": {
+    "message": "Tabwerk darf diese Seite gerade nicht lesen. Öffne die Schnellsuche per Tastenkürzel oder nutze das Kontextmenü auf der Seite."
+  },
+  "form_disabled": {
+    "message": "Formulare sind in den Einstellungen ausgeschaltet."
+  },
+  "form_filledEmpty": {
+    "message": ", $1 leer gelassen",
+    "description": "Appended to form_filledFields as $3"
+  },
+  "form_filledFields_one": {
+    "message": "$1 Feld ausgefüllt$2",
+    "description": "$2 is an optional appended clause, or empty"
+  },
+  "form_filledFields_other": {
+    "message": "$1 Felder ausgefüllt$2",
+    "description": "$2 is an optional appended clause, or empty"
+  },
+  "form_filledTestData_one": {
+    "message": "$1 Feld mit Testdaten gefüllt"
+  },
+  "form_filledTestData_other": {
+    "message": "$1 Felder mit Testdaten gefüllt"
+  },
+  "form_filledViaJev": {
+    "message": ", $1 davon mit Jev",
+    "description": "Appended to form_filledFields as $2"
+  },
+  "form_noFilledField": {
+    "message": "Auf dieser Seite gibt es kein ausgefülltes Formularfeld."
+  },
+  "form_noProfileSaved": {
+    "message": "Für diese Website ist noch kein Formular gespeichert."
+  },
+  "form_onlyNormalPages": {
+    "message": "Formulare gehen nur auf normalen Webseiten."
+  },
+  "form_savedFields_one": {
+    "message": "$1 Feld gespeichert$2",
+    "description": "$2 is an optional appended clause about skipped protected fields, or empty"
+  },
+  "form_savedFields_other": {
+    "message": "$1 Felder gespeichert$2",
+    "description": "$2 is an optional appended clause about skipped protected fields, or empty"
+  },
+  "form_skippedProtected": {
+    "message": ", $1 geschützte ausgelassen",
+    "description": "Appended to form_savedFields as $2"
+  },
+  "form_testDataDisabled": {
+    "message": "Testdaten sind in den Einstellungen ausgeschaltet."
+  },
+  "ft_area_backup": {
+    "message": "Sichern"
+  },
+  "ft_area_bookmarksForms": {
+    "message": "Lesezeichen und Formulare"
+  },
+  "ft_area_cleanup": {
+    "message": "Aufräumen"
+  },
+  "ft_area_organize": {
+    "message": "Ordnen"
+  },
+  "ft_area_search": {
+    "message": "Suchen"
+  },
+  "ft_area_watch": {
+    "message": "Beobachten"
+  },
+  "ft_autoGroup_hint": {
+    "message": "Nach deinen Regeln wie „github.com = Entwicklung“."
+  },
+  "ft_autoGroup_label": {
+    "message": "Neue Tabs automatisch einsortieren"
+  },
+  "ft_autoGroupJev_hint": {
+    "message": "Nur bei hoher Sicherheit, sonst bleibt der Tab ohne Gruppe."
+  },
+  "ft_autoGroupJev_label": {
+    "message": "Ohne passende Regel Jev fragen"
+  },
+  "ft_bookmarkFolder_hint": {
+    "message": "Jev wählt beim Speichern den passenden Ordner."
+  },
+  "ft_bookmarkFolder_label": {
+    "message": "Lesezeichen-Ordner vorschlagen"
+  },
+  "ft_cleanup_hint": {
+    "message": "Gleiche Adressen finden und einzeln schließen."
+  },
+  "ft_cleanup_label": {
+    "message": "Doppelte finden"
+  },
+  "ft_cleanupSuggest_hint": {
+    "message": "Markiert alte und unwichtige Tabs zum Schließen. Mit Jev genauer."
+  },
+  "ft_cleanupSuggest_label": {
+    "message": "Aufräum-Vorschlag"
+  },
+  "ft_copyLinks_hint": {
+    "message": "Als Markdown oder Text, für Notizen und Mails."
+  },
+  "ft_copyLinks_label": {
+    "message": "Tabs als Linkliste kopieren"
+  },
+  "ft_copyUnlock_hint": {
+    "message": "Hebt Sperren für Kopieren, Einfügen, Markieren und Rechtsklick auf. Für einen Tab oder immer für eine Website."
+  },
+  "ft_copyUnlock_label": {
+    "message": "Kopieren erlauben"
+  },
+  "ft_discard_hint": {
+    "message": "Spart Speicher. Der Tab bleibt sichtbar und lädt beim Anklicken neu."
+  },
+  "ft_discard_label": {
+    "message": "Inaktive Tabs entladen"
+  },
+  "ft_dupeGuard_hint": {
+    "message": "Springt zum schon offenen Tab. Zweimal öffnen hintereinander behält beide."
+  },
+  "ft_dupeGuard_label": {
+    "message": "Doppelte beim Öffnen abfangen"
+  },
+  "ft_find_hint": {
+    "message": "Tab per Beschreibung finden, im Popup."
+  },
+  "ft_find_label": {
+    "message": "Finden mit Jev"
+  },
+  "ft_focus_hint": {
+    "message": "Klappt andere Gruppen ein und sperrt ablenkende Seiten auf Zeit."
+  },
+  "ft_focus_label": {
+    "message": "Fokus-Modus"
+  },
+  "ft_forms_hint": {
+    "message": "Passwort-, Karten- und Kontofelder speichert Tabwerk nie."
+  },
+  "ft_forms_label": {
+    "message": "Formulare speichern und ausfüllen"
+  },
+  "ft_formsJev_hint": {
+    "message": "Jev sieht nur Feldnamen und Beschriftungen, keine Werte."
+  },
+  "ft_formsJev_label": {
+    "message": "Unbekannte Felder mit Jev zuordnen"
+  },
+  "ft_formsSensitive_hint": {
+    "message": "Speichert auch Passwort-, Karten-, Konto-, IBAN- und TAN-Felder. Tabwerk legt sie unverschlüsselt in Chrome ab und nimmt sie in den Export auf. Jev sieht nie Werte."
+  },
+  "ft_formsSensitive_label": {
+    "message": "Auch geschützte Felder speichern"
+  },
+  "ft_formsTestData_hint": {
+    "message": "Erfundene Namen, Adressen und Zahlen, für Entwickler."
+  },
+  "ft_formsTestData_label": {
+    "message": "Mit Testdaten füllen"
+  },
+  "ft_groupNames_hint": {
+    "message": "Für Gruppen ohne Titel wählt Jev einen kurzen Namen aus Wörtern der Tab-Titel."
+  },
+  "ft_groupNames_label": {
+    "message": "Gruppennamen vorschlagen"
+  },
+  "ft_groups_hint": {
+    "message": "Jev schlägt für jeden Tab eine Gruppe vor."
+  },
+  "ft_groups_label": {
+    "message": "Gruppen-Vorschläge"
+  },
+  "ft_history_hint": {
+    "message": "Sichert Fenster, Tabs und Gruppen nach jeder Änderung."
+  },
+  "ft_history_label": {
+    "message": "Verlauf"
+  },
+  "ft_notes_hint": {
+    "message": "Per Rechtsklick, Tastenkürzel oder Schnellsuche."
+  },
+  "ft_notes_label": {
+    "message": "Notizen an Tabs"
+  },
+  "ft_palette_hint": {
+    "message": "Suche per Tastenkürzel über jeder Seite."
+  },
+  "ft_palette_label": {
+    "message": "Schnellsuche"
+  },
+  "ft_paletteFulltext_hint": {
+    "message": "Sucht auch im sichtbaren Text der Seiten. Braucht Leserecht für alle Websites."
+  },
+  "ft_paletteFulltext_label": {
+    "message": "Volltext in offenen Tabs"
+  },
+  "ft_paletteHistoryJev_hint": {
+    "message": "Mit /h und Umschalt+Enter: „der Artikel über Solarstrom von letzter Woche“."
+  },
+  "ft_paletteHistoryJev_label": {
+    "message": "Verlauf in Alltagssprache"
+  },
+  "ft_sessions_hint": {
+    "message": "Fenster unter einem Namen speichern und später öffnen."
+  },
+  "ft_sessions_label": {
+    "message": "Benannte Sitzungen"
+  },
+  "ft_similar_hint": {
+    "message": "Jev vergleicht Tabs derselben Website."
+  },
+  "ft_similar_label": {
+    "message": "Gleichen Inhalt finden"
+  },
+  "ft_snooze_hint": {
+    "message": "Tab schließen und zur gewählten Zeit wieder öffnen."
+  },
+  "ft_snooze_label": {
+    "message": "Tabs schlummern lassen"
+  },
+  "ft_sort_hint": {
+    "message": "Nach Website, Nutzung, Titel und mit Jev nach Priorität."
+  },
+  "ft_sort_label": {
+    "message": "Sortieren"
+  },
+  "ft_stats_hint": {
+    "message": "Tabs pro Fenster und Website, älteste Tabs, Verlauf der Anzahl."
+  },
+  "ft_stats_label": {
+    "message": "Statistik"
+  },
+  "ft_transfer_hint": {
+    "message": "Alles als Datei sichern, Sitzungen auch als Lesezeichen-Datei."
+  },
+  "ft_transfer_label": {
+    "message": "Export und Import"
+  },
+  "ft_undo_hint": {
+    "message": "Springt zum Stand vor der letzten Tabwerk-Aktion."
+  },
+  "ft_undo_label": {
+    "message": "Rückgängig"
+  },
+  "ft_watchDiff_hint": {
+    "message": "Zeigt neue und entfernte Zeilen jeder Prüfung."
+  },
+  "ft_watchDiff_label": {
+    "message": "Änderungen anzeigen"
+  },
+  "ft_watches_hint": {
+    "message": "Seiten beobachten und bei passender Änderung melden."
+  },
+  "ft_watches_label": {
+    "message": "Wächter"
+  },
+  "ft_watchNumbers_hint": {
+    "message": "Code vergleicht exakt, Jev wählt die richtige Zahl auf der Seite."
+  },
+  "ft_watchNumbers_label": {
+    "message": "Zahlen und Preise vergleichen"
+  },
+  "hist_reasonAuto": {
+    "message": "Automatisch"
+  },
+  "hist_reasonBefore": {
+    "message": "Vor $1",
+    "description": "$1 is an action name such as 'Sort'"
+  },
+  "hist_reasonChanged": {
+    "message": "Tabs geändert"
+  },
+  "hist_reasonFirst": {
+    "message": "Erste Sicherung"
+  },
+  "hist_reasonManual": {
+    "message": "Von Hand gesichert"
+  },
+  "hist_reasonRestored": {
+    "message": "Wiederhergestellt"
+  },
+  "hist_reasonStartup": {
+    "message": "Browserstart"
+  },
+  "hist_snapshotCorrupted": {
+    "message": "Diese Sicherung ist beschädigt."
+  },
+  "hist_snapshotGone": {
+    "message": "Diese Sicherung gibt es nicht mehr."
+  },
+  "hist_windowNotInSnapshot": {
+    "message": "Dieses Fenster kommt in der Sicherung nicht vor."
+  },
+  "jev_httpError": {
+    "message": "$1 meldet Fehler $2.",
+    "description": "$1 is a provider name, $2 an HTTP status code"
+  },
+  "jev_incompleteAnswers": {
+    "message": "Jev hat nicht auf alle Fragen geantwortet."
+  },
+  "jev_invalidKey": {
+    "message": "Der Schlüssel ist ungültig."
+  },
+  "jev_noCredit": {
+    "message": "Das $1-Guthaben ist leer.",
+    "description": "$1 is a provider name"
+  },
+  "jev_noKey": {
+    "message": "Kein $1-Schlüssel. Öffne die Einstellungen.",
+    "description": "$1 is a provider name such as OpenRouter"
+  },
+  "jev_tooManyRequests": {
+    "message": "Zu viele Anfragen. Warte kurz."
+  },
+  "jev_unknownModel": {
+    "message": "Unbekanntes Modell: $1"
+  },
+  "jev_unreachable": {
+    "message": "$1 ist nicht erreichbar.",
+    "description": "$1 is a provider name"
+  },
+  "jev_unreadableResponse": {
+    "message": "Jev hat keine lesbare Antwort geschickt."
+  },
+  "lang_auto": {
+    "message": "Wie der Browser"
+  },
+  "lang_de": {
+    "message": "Deutsch",
+    "description": "Always the language's own name"
+  },
+  "lang_en": {
+    "message": "English",
+    "description": "Always the language's own name"
+  },
+  "lbl_cleanup": {
+    "message": "Aufräumen"
+  },
+  "lbl_closeDupes": {
+    "message": "Doppelte schließen"
+  },
+  "lbl_group": {
+    "message": "Gruppieren"
+  },
+  "lbl_restore": {
+    "message": "Wiederherstellen"
+  },
+  "lbl_snooze": {
+    "message": "Schlummern"
+  },
+  "lbl_sort": {
+    "message": "Sortieren"
+  },
+  "lbl_sortGroups": {
+    "message": "Gruppen sortieren"
+  },
+  "lbl_ungroup": {
+    "message": "Gruppen auflösen"
+  },
+  "note_heading": {
+    "message": "Notiz zum Tab"
+  },
+  "note_label": {
+    "message": "Notiz"
+  },
+  "note_pageTitle": {
+    "message": "Notiz"
+  },
+  "note_placeholder": {
+    "message": "Worum ging es hier? Was ist noch offen?"
+  },
+  "note_remove": {
+    "message": "Löschen"
+  },
+  "note_save": {
+    "message": "Speichern"
+  },
+  "note_saveHint": {
+    "message": "⌘↵ speichert"
+  },
+  "opt_add": {
+    "message": "Hinzufügen"
+  },
+  "opt_addCategory": {
+    "message": "Kategorie hinzufügen"
+  },
+  "opt_authCancelled": {
+    "message": "Die Anmeldung wurde abgebrochen."
+  },
+  "opt_autoGroupRulesLabel": {
+    "message": "Regeln, eine pro Zeile: domain = Gruppe"
+  },
+  "opt_autoGroupRulesPlaceholder": {
+    "message": "github.com = Entwicklung\nyoutube.com = Medien"
+  },
+  "opt_backupsDeleted_one": {
+    "message": "$1 Sicherung gelöscht."
+  },
+  "opt_backupsDeleted_other": {
+    "message": "$1 Sicherungen gelöscht."
+  },
+  "opt_backupsLabel_one": {
+    "message": "Sicherung"
+  },
+  "opt_backupsLabel_other": {
+    "message": "Sicherungen"
+  },
+  "opt_categoryHintAriaLabel": {
+    "message": "Beschreibung für Jev"
+  },
+  "opt_categoryHintPlaceholder": {
+    "message": "Wofür ist die Gruppe? z. B. online shops and orders"
+  },
+  "opt_categoryNoName": {
+    "message": "Ohne Namen"
+  },
+  "opt_changeShortcut": {
+    "message": "Kürzel ändern"
+  },
+  "opt_cleanupDaysPrefix": {
+    "message": "Alt ab"
+  },
+  "opt_cleanupDaysSuffix": {
+    "message": "Tagen ohne Nutzung"
+  },
+  "opt_clearHistory": {
+    "message": "Verlauf leeren"
+  },
+  "opt_clearHistoryConfirm": {
+    "message": "Wirklich leeren"
+  },
+  "opt_clearHistoryNote": {
+    "message": "Danach gibt es kein Zurück zu früheren Ständen."
+  },
+  "opt_colorAriaLabel": {
+    "message": "Farbe $1",
+    "description": "$1 is a color name such as blue or green"
+  },
+  "opt_colorGroupLabel": {
+    "message": "Farbe"
+  },
+  "opt_colorModeLabel": {
+    "message": "Farbmodus"
+  },
+  "opt_confidenceHelp": {
+    "message": "Darunter markiert Tabwerk den Tab mit „prüfen“ und wählt ihn ab."
+  },
+  "opt_confidenceLabel": {
+    "message": "Vorschläge vorauswählen ab"
+  },
+  "opt_confirmEnableWarn": {
+    "message": "Trotzdem einschalten?"
+  },
+  "opt_connectedWith": {
+    "message": "Verbunden mit $1",
+    "description": "$1 is the provider name"
+  },
+  "opt_connectHelp": {
+    "message": "Verbinden öffnet OpenRouter. Dort meldest du dich an und gibst Tabwerk einen eigenen Schlüssel frei."
+  },
+  "opt_connectionDesc": {
+    "message": "Tabwerk fragt Jev über OpenRouter oder direkt bei TypeSafe, dem Hersteller von Jev. Der Schlüssel bleibt auf diesem Rechner."
+  },
+  "opt_connectionNoKey": {
+    "message": "Ohne Schlüssel laufen alle Funktionen, die nur Code brauchen: Schnellsuche, Doppelte, Sortieren ohne Priorität, Verlauf."
+  },
+  "opt_connectionTitle": {
+    "message": "Verbindung"
+  },
+  "opt_connectOpenRouter": {
+    "message": "Mit OpenRouter verbinden"
+  },
+  "opt_copyUnlockHelp": {
+    "message": "Für einen Tab: Rechtsklick, „Kopieren und Rechtsklick erlauben“. Auf diesen Websites passiert das bei jedem Laden:"
+  },
+  "opt_costsEstimatedLabel": {
+    "message": "Kosten, teils geschätzt"
+  },
+  "opt_costsReportedLabel": {
+    "message": "gemeldete Kosten"
+  },
+  "opt_delete": {
+    "message": "Löschen"
+  },
+  "opt_discardAfterPrefix": {
+    "message": "Entladen nach"
+  },
+  "opt_discardAfterSuffix": {
+    "message": "Minuten ohne Nutzung"
+  },
+  "opt_dupeGuardAllowLabel": {
+    "message": "Diese Websites immer doppelt erlauben"
+  },
+  "opt_dupeGuardAsk": {
+    "message": "Per Meldung fragen"
+  },
+  "opt_dupeGuardHelp": {
+    "message": "Zweimal öffnen innerhalb von 20 Sekunden behält beide Tabs. Die Schnellsuche kann den Schutz 10 Minuten pausieren."
+  },
+  "opt_dupeGuardModeLabel": {
+    "message": "Wenn eine Seite schon offen ist"
+  },
+  "opt_dupeGuardSwitch": {
+    "message": "Zum offenen Tab springen"
+  },
+  "opt_enterKey": {
+    "message": "Trag einen Schlüssel ein."
+  },
+  "opt_excludedHelp": {
+    "message": "Eine Website pro Zeile. Subdomains zählen mit."
+  },
+  "opt_excludedLabel": {
+    "message": "Diese Websites nie an Jev schicken"
+  },
+  "opt_exportAll": {
+    "message": "Alles exportieren"
+  },
+  "opt_exportBookmarks": {
+    "message": "Sitzungen als Lesezeichen-Datei"
+  },
+  "opt_exported": {
+    "message": "Exportiert."
+  },
+  "opt_featuresDesc": {
+    "message": "Schalte ein, was du brauchst. Eingerückte Funktionen hängen an der darüber und wirken nur, wenn diese an ist."
+  },
+  "opt_featuresJevErlaubnis": {
+    "message": "„Jev“ heißt: braucht einen Schlüssel. „Erlaubnis“ heißt: Chrome fragt beim Einschalten einmal nach."
+  },
+  "opt_featuresTitle": {
+    "message": "Funktionen"
+  },
+  "opt_fieldsCount_one": {
+    "message": "$1 Feld"
+  },
+  "opt_fieldsCount_other": {
+    "message": "$1 Felder"
+  },
+  "opt_focusBlockLabel": {
+    "message": "Während des Fokus gesperrt"
+  },
+  "opt_focusDurationPrefix": {
+    "message": "Dauer"
+  },
+  "opt_focusDurationSuffix": {
+    "message": "Minuten"
+  },
+  "opt_formsDesc": {
+    "message": "Gespeicherte Formulare füllst du per Schnellsuche mit /f, per Rechtsklick oder per Tastenkürzel wieder aus."
+  },
+  "opt_formsFaint": {
+    "message": "Passwort-, Karten-, Konto- und TAN-Felder speichert Tabwerk nie."
+  },
+  "opt_formsTitle": {
+    "message": "Formulare"
+  },
+  "opt_groupNameAriaLabel": {
+    "message": "Name der Gruppe"
+  },
+  "opt_groupsDesc": {
+    "message": "Diese Kategorien schlägt Jev für neue Gruppen vor. Bestehende Gruppen im Fenster kennt Jev von selbst."
+  },
+  "opt_groupsDescFaint": {
+    "message": "Die Beschreibung darf englisch sein. Dort ist Jev am genauesten."
+  },
+  "opt_groupsTitle": {
+    "message": "Gruppen"
+  },
+  "opt_hideValues": {
+    "message": "Werte verbergen"
+  },
+  "opt_historyDesc": {
+    "message": "Tabwerk sichert Fenster, Tabs und Gruppen nach jeder Änderung. Den Verlauf findest du im Popup."
+  },
+  "opt_historyFaint": {
+    "message": "Letzte 24 Stunden vollständig, bis 7 Tage stündlich, bis 90 Tage täglich."
+  },
+  "opt_historyTitle": {
+    "message": "Verlauf"
+  },
+  "opt_importFailed": {
+    "message": "Import fehlgeschlagen: $1",
+    "description": "$1 is the error message"
+  },
+  "opt_importFile": {
+    "message": "Datei importieren"
+  },
+  "opt_importSummary": {
+    "message": "Importiert: $1 Sitzungen, $2 Wächter, $3 Sicherungen. Lade die Seite neu, um alles zu sehen.",
+    "description": "$1 sessions, $2 watches, $3 backups, all already formatted numbers"
+  },
+  "opt_keyMustStartWith": {
+    "message": "Ein $1-Schlüssel beginnt mit $2.",
+    "description": "$1 is the provider name, $2 is the required key prefix"
+  },
+  "opt_keySuffix": {
+    "message": "Schlüssel …$1",
+    "description": "$1 is the last four characters of the key"
+  },
+  "opt_languageDesc": {
+    "message": "Wähle, in welcher Sprache Tabwerk zu dir spricht."
+  },
+  "opt_languageHelp": {
+    "message": "Die Sprache gilt für Tabwerk. Einträge im Rechtsklick-Menü wechseln sofort, der Name der Erweiterung in Chrome folgt immer der Browsersprache."
+  },
+  "opt_languageLabel": {
+    "message": "Sprache"
+  },
+  "opt_languageTitle": {
+    "message": "Sprache"
+  },
+  "opt_levelHigh": {
+    "message": "hoch"
+  },
+  "opt_levelLater": {
+    "message": "später"
+  },
+  "opt_levelLow": {
+    "message": "niedrig"
+  },
+  "opt_levelRelevant": {
+    "message": "relevant"
+  },
+  "opt_levelsHelp": {
+    "message": "Stufen von unwichtig bis wichtig. Jev liest sie wörtlich."
+  },
+  "opt_manualKeyToggle": {
+    "message": "Schlüssel selbst eintragen"
+  },
+  "opt_modelHelp": {
+    "message": "jev-latest wechselt von selbst auf neue Versionen. Die Sicherheitswerte können sich dann leicht verschieben."
+  },
+  "opt_modelLabel": {
+    "message": "Modell"
+  },
+  "opt_needsJevKey": {
+    "message": "Braucht einen Schlüssel für Jev"
+  },
+  "opt_noKeyFor": {
+    "message": "Kein $1-Schlüssel",
+    "description": "$1 is the provider name"
+  },
+  "opt_noOAuthCode": {
+    "message": "OpenRouter hat keinen Code zurückgegeben."
+  },
+  "opt_noProfilesYet": {
+    "message": "Noch nichts gespeichert. Auf einer Seite mit ausgefülltem Formular: Rechtsklick, „Formular speichern“."
+  },
+  "opt_noSessionsYet": {
+    "message": "Es gibt noch keine Sitzung."
+  },
+  "opt_noShortcut": {
+    "message": "Kein Tastenkürzel gesetzt. Vielleicht nutzt eine andere Erweiterung es schon."
+  },
+  "opt_notifyAtHelp": {
+    "message": "Gilt auch für „Ähnliche prüfen“ bei den Doppelten."
+  },
+  "opt_notifyAtLabel": {
+    "message": "Wächter melden sich ab"
+  },
+  "opt_oauthRejected": {
+    "message": "OpenRouter hat den Code abgelehnt ($1).",
+    "description": "$1 is an HTTP status code"
+  },
+  "opt_oldestBackupLabel": {
+    "message": "älteste Sicherung"
+  },
+  "opt_openrouterKeyLabel": {
+    "message": "OpenRouter-Schlüssel"
+  },
+  "opt_openStats": {
+    "message": "Statistik öffnen"
+  },
+  "opt_orKeyPlaceholder": {
+    "message": "sk-or-v1-…"
+  },
+  "opt_paletteBookmarksHint": {
+    "message": "Chrome fragt einmal nach der Erlaubnis."
+  },
+  "opt_paletteBookmarksLabel": {
+    "message": "Lesezeichen durchsuchen"
+  },
+  "opt_paletteDesc": {
+    "message": "Öffnet sich per Tastenkürzel über jeder Seite, ähnlich wie Spotlight. Sucht in Tabs, Aktionen, Lesezeichen und Verlauf."
+  },
+  "opt_paletteFree": {
+    "message": "Gesucht wird per Code bei jedem Tastendruck. Das kostet nichts."
+  },
+  "opt_paletteHistoryHint": {
+    "message": "Die letzten 90 Tage. Chrome fragt einmal nach der Erlaubnis."
+  },
+  "opt_paletteHistoryLabel": {
+    "message": "Verlauf durchsuchen"
+  },
+  "opt_paletteJevHint": {
+    "message": "Nur auf Tastendruck, nie beim Tippen. Jev sucht dann in allen offenen Tabs."
+  },
+  "opt_paletteJevLabel": {
+    "message": "Jev mit Umschalt+Enter fragen"
+  },
+  "opt_paletteNoPermission": {
+    "message": "Ohne Erlaubnis kann Tabwerk hier nicht suchen."
+  },
+  "opt_paletteTitle": {
+    "message": "Schnellsuche"
+  },
+  "opt_permissionTag": {
+    "message": "Erlaubnis"
+  },
+  "opt_priorityDesc": {
+    "message": "Beim Sortieren nach Priorität ordnet Jev jeden Tab einer Stufe zu. Wichtige Tabs kommen nach vorn."
+  },
+  "opt_priorityFocusHelp": {
+    "message": "Leer lassen geht auch. Dann bewertet Jev nur nach den Stufen."
+  },
+  "opt_priorityFocusLabel": {
+    "message": "Woran arbeitest du gerade?"
+  },
+  "opt_priorityFocusPlaceholder": {
+    "message": "Ich schreibe heute den Quartalsbericht. Alles dazu ist wichtig."
+  },
+  "opt_priorityTitle": {
+    "message": "Priorität"
+  },
+  "opt_privacyDesc": {
+    "message": "An Jev gehen Tab-Titel, Website und Pfad. Parameter nach „?“ und Anker nach „#“ schickt Tabwerk nicht mit."
+  },
+  "opt_privacyFaint": {
+    "message": "Wächter schicken nur geänderte Zeilen der beobachteten Seite."
+  },
+  "opt_privacyTitle": {
+    "message": "Datenschutz"
+  },
+  "opt_providerAriaLabel": {
+    "message": "Anbieter"
+  },
+  "opt_providerTypesafeDirect": {
+    "message": "TypeSafe direkt"
+  },
+  "opt_remove": {
+    "message": "Entfernen"
+  },
+  "opt_removeKey": {
+    "message": "Schlüssel entfernen"
+  },
+  "opt_removeNamed": {
+    "message": "$1 entfernen",
+    "description": "$1 is a website host or category name"
+  },
+  "opt_rename": {
+    "message": "Umbenennen"
+  },
+  "opt_renamePrompt": {
+    "message": "Neuer Name"
+  },
+  "opt_requestsInMonth_one": {
+    "message": "Anfrage im $2",
+    "description": "$1 is the request count (unused in this text), $2 is the formatted month and year"
+  },
+  "opt_requestsInMonth_other": {
+    "message": "Anfragen im $2",
+    "description": "$1 is the request count (unused in this text), $2 is the formatted month and year"
+  },
+  "opt_requestsWithoutCostLabel_one": {
+    "message": "Anfrage ohne Kostenangabe"
+  },
+  "opt_requestsWithoutCostLabel_other": {
+    "message": "Anfragen ohne Kostenangabe"
+  },
+  "opt_saved": {
+    "message": "Gespeichert"
+  },
+  "opt_saveKey": {
+    "message": "Schlüssel speichern"
+  },
+  "opt_sessionsSavedAsBookmarks_one": {
+    "message": "$1 Sitzung als Lesezeichen-Datei gespeichert."
+  },
+  "opt_sessionsSavedAsBookmarks_other": {
+    "message": "$1 Sitzungen als Lesezeichen-Datei gespeichert."
+  },
+  "opt_shortcutSet": {
+    "message": "Tastenkürzel"
+  },
+  "opt_showValues": {
+    "message": "Werte zeigen"
+  },
+  "opt_storageUsedLabel": {
+    "message": "Speicher von Tabwerk"
+  },
+  "opt_tagline": {
+    "message": "Jev trifft kleine Entscheidungen über deine Tabs. Du legst fest, wonach."
+  },
+  "opt_testConnection": {
+    "message": "Verbindung testen"
+  },
+  "opt_themeDark": {
+    "message": "Immer dunkel"
+  },
+  "opt_themeHelp": {
+    "message": "„Automatisch nach Website“ misst die Hintergrundfarbe der Seite hinter der Suche."
+  },
+  "opt_themeLight": {
+    "message": "Immer hell"
+  },
+  "opt_themeSite": {
+    "message": "Automatisch nach Website"
+  },
+  "opt_themeSystem": {
+    "message": "Wie das System"
+  },
+  "opt_thresholdsDesc": {
+    "message": "Jev sagt zu jeder Antwort, wie sicher es ist. Diese Sicherheit ist keine Garantie, aber ein guter Filter."
+  },
+  "opt_thresholdsTitle": {
+    "message": "Schwellen"
+  },
+  "opt_title": {
+    "message": "Tabwerk Einstellungen"
+  },
+  "opt_transferDesc": {
+    "message": "Sichert Einstellungen, Sitzungen, Wächter, Notizen, geschlummerte Tabs, Formulare und den Verlauf in einer Datei."
+  },
+  "opt_transferFaint": {
+    "message": "Import führt zusammen. Vorhandenes bleibt erhalten."
+  },
+  "opt_transferTitle": {
+    "message": "Export und Import"
+  },
+  "opt_typesafeHelp": {
+    "message": "Den Schlüssel erstellst du unter console.typesafe.ai. TypeSafe meldet keine Kosten, Tabwerk schätzt sie aus den gelesenen Tokens."
+  },
+  "opt_typesafeKeyLabel": {
+    "message": "TypeSafe-Schlüssel"
+  },
+  "opt_typesafeKeyPlaceholder": {
+    "message": "Schlüssel aus der TypeSafe-Konsole"
+  },
+  "opt_usageDesc": {
+    "message": "Jev rechnet pro gelesenem Token ab. Antworten sind kostenlos."
+  },
+  "opt_usageTitle": {
+    "message": "Verbrauch"
+  },
+  "opt_usesJev": {
+    "message": "Nutzt Jev"
+  },
+  "opt_websiteAriaLabel": {
+    "message": "Website"
+  },
+  "opt_xFormsHint": {
+    "message": "Die Datei enthält dann deine Formulardaten im Klartext."
+  },
+  "opt_xFormsLabel": {
+    "message": "Formulare mitnehmen"
+  },
+  "opt_xHistoryHint": {
+    "message": "Macht die Datei größer."
+  },
+  "opt_xHistoryLabel": {
+    "message": "Verlauf mitnehmen"
+  },
+  "opt_xKeysHint": {
+    "message": "Nur für den eigenen Umzug. Gib die Datei dann nicht weiter."
+  },
+  "opt_xKeysLabel": {
+    "message": "Schlüssel mitnehmen"
+  },
+  "pal_dialogLabel": {
+    "message": "Schnellsuche"
+  },
+  "pal_fieldsCount_one": {
+    "message": "$1 Feld"
+  },
+  "pal_fieldsCount_other": {
+    "message": "$1 Felder"
+  },
+  "pal_fillingForm": {
+    "message": "Füllt aus …"
+  },
+  "pal_jevDeciding": {
+    "message": "Jev entscheidet …"
+  },
+  "pal_jevHint": {
+    "message": "fragt Jev"
+  },
+  "pal_jevNoHistoryHits": {
+    "message": "Jev findet nichts im Zeitraum „$1“.",
+    "description": "$1 is a time period such as 'diese Woche'"
+  },
+  "pal_jevNoTabHits": {
+    "message": "Jev findet keinen passenden Tab."
+  },
+  "pal_jevPercent": {
+    "message": "Jev $1 %",
+    "description": "$1 is a rounded percentage"
+  },
+  "pal_jevSearchingHistory": {
+    "message": "Jev sucht im Verlauf …"
+  },
+  "pal_jevSearchingTabs": {
+    "message": "Jev sucht in allen offenen Tabs …"
+  },
+  "pal_kbdCloseTab": {
+    "message": "Tab schließen"
+  },
+  "pal_kbdJevSearch": {
+    "message": "mit Jev suchen"
+  },
+  "pal_kbdOpen": {
+    "message": "öffnen"
+  },
+  "pal_kbdSelect": {
+    "message": "wählen"
+  },
+  "pal_kindAction": {
+    "message": "Aktion"
+  },
+  "pal_kindBookmark": {
+    "message": "Lesezeichen"
+  },
+  "pal_kindForm": {
+    "message": "Formular"
+  },
+  "pal_kindHistory": {
+    "message": "Verlauf"
+  },
+  "pal_kindJev": {
+    "message": "Jev"
+  },
+  "pal_kindNewnote": {
+    "message": "Notiz"
+  },
+  "pal_kindNote": {
+    "message": "Notiz"
+  },
+  "pal_kindSession": {
+    "message": "Sitzung"
+  },
+  "pal_kindSnooze": {
+    "message": "Schlummert"
+  },
+  "pal_kindTab": {
+    "message": "Tab"
+  },
+  "pal_needJevKey": {
+    "message": "Für diese Aktion braucht Tabwerk einen Schlüssel für Jev. Trag ihn in den Einstellungen ein."
+  },
+  "pal_needPermission": {
+    "message": "Ohne Erlaubnis für diese Website geht das nicht."
+  },
+  "pal_newNoteAppend": {
+    "message": "wird an die vorhandene Notiz angehängt"
+  },
+  "pal_newNoteOpen": {
+    "message": "Notiz-Fenster für diesen Tab öffnen"
+  },
+  "pal_newNoteSave": {
+    "message": "Als Notiz speichern: „$1“",
+    "description": "$1 is the note text the user typed"
+  },
+  "pal_noResults": {
+    "message": "Kein Treffer."
+  },
+  "pal_noResultsJev": {
+    "message": "Kein Treffer. Umschalt+Enter fragt Jev."
+  },
+  "pal_notePrefix": {
+    "message": "✎ $1",
+    "description": "$1 is the note text"
+  },
+  "pal_resultsLabel": {
+    "message": "Treffer"
+  },
+  "pal_running": {
+    "message": "Läuft …"
+  },
+  "pal_scopeAction": {
+    "message": "nur Aktionen"
+  },
+  "pal_scopeBookmark": {
+    "message": "nur Lesezeichen"
+  },
+  "pal_scopeForm": {
+    "message": "nur Formulare"
+  },
+  "pal_scopeHistory": {
+    "message": "nur Verlauf"
+  },
+  "pal_scopeNewNote": {
+    "message": "neue Notiz"
+  },
+  "pal_scopeNote": {
+    "message": "nur Notizen"
+  },
+  "pal_scopeSession": {
+    "message": "nur Sitzungen"
+  },
+  "pal_scopeSnooze": {
+    "message": "nur Schlummernde"
+  },
+  "pal_scopeTab": {
+    "message": "nur Tabs"
+  },
+  "pal_searchLabel": {
+    "message": "Suchen"
+  },
+  "pal_searchPlaceholder": {
+    "message": "Tabs, Aktionen, Lesezeichen, Verlauf"
+  },
+  "pal_snippet": {
+    "message": "„…$1…“",
+    "description": "$1 is an excerpt of page text found by full-text search"
+  },
+  "pal_snoozeWakesAt": {
+    "message": "kommt $1",
+    "description": "$1 is a formatted date/time"
+  },
+  "pal_tabInWindow": {
+    "message": "Tab · Fenster $1",
+    "description": "$1 is a window number"
+  },
+  "pal_tabsCount_one": {
+    "message": "$1 Tab"
+  },
+  "pal_tabsCount_other": {
+    "message": "$1 Tabs"
+  },
+  "pal_title": {
+    "message": "Tabwerk Schnellsuche"
+  },
+  "popup_active": {
+    "message": "aktiv"
+  },
+  "popup_allMarkedWarning": {
+    "message": "Alle Tabs dieser Seite sind markiert. Dann ist die Seite ganz zu."
+  },
+  "popup_allWindows": {
+    "message": "Alle Fenster"
+  },
+  "popup_alreadyInOrder": {
+    "message": "Schon in dieser Reihenfolge."
+  },
+  "popup_andMoreCount_one": {
+    "message": "und $1 weitere"
+  },
+  "popup_andMoreCount_other": {
+    "message": "und $1 weitere"
+  },
+  "popup_areas": {
+    "message": "Bereiche"
+  },
+  "popup_changeTarget": {
+    "message": "Ziel ändern"
+  },
+  "popup_checking": {
+    "message": "wird geprüft"
+  },
+  "popup_checkNow": {
+    "message": "Jetzt prüfen"
+  },
+  "popup_checksEvery": {
+    "message": "prüft alle $1",
+    "description": "$1 is a duration description, e.g. '1 Stunde'"
+  },
+  "popup_checkSimilar": {
+    "message": "Ähnliche prüfen"
+  },
+  "popup_closeCount_one": {
+    "message": "$1 schließen"
+  },
+  "popup_closeCount_other": {
+    "message": "$1 schließen"
+  },
+  "popup_closedTabs_one": {
+    "message": "$1 Tab geschlossen"
+  },
+  "popup_closedTabs_other": {
+    "message": "$1 Tabs geschlossen"
+  },
+  "popup_closeHereCount_one": {
+    "message": "$1 hier schließen"
+  },
+  "popup_closeHereCount_other": {
+    "message": "$1 hier schließen"
+  },
+  "popup_closeMarkedCount_one": {
+    "message": "$1 markierte schließen"
+  },
+  "popup_closeMarkedCount_other": {
+    "message": "$1 markierte schließen"
+  },
+  "popup_closeTab": {
+    "message": "$1 schließen",
+    "description": "$1 is a tab title"
+  },
+  "popup_confirmRestore": {
+    "message": "Wirklich wiederherstellen"
+  },
+  "popup_connect": {
+    "message": "Verbinden"
+  },
+  "popup_delete": {
+    "message": "Löschen"
+  },
+  "popup_diffSummary": {
+    "message": "Änderungen $1: +$2 −$3 Zeilen",
+    "description": "$1 relative time, $2 added lines, $3 removed lines"
+  },
+  "popup_done": {
+    "message": "Erledigt."
+  },
+  "popup_dupeIntro": {
+    "message": "Markiert ist, was zugeht. Ein Tab pro Seite bleibt vorausgewählt offen."
+  },
+  "popup_dupesTab": {
+    "message": "Doppelte"
+  },
+  "popup_filedCount_one": {
+    "message": "$1 Tab einsortiert."
+  },
+  "popup_filedCount_other": {
+    "message": "$1 Tabs einsortiert."
+  },
+  "popup_fileInCount_one": {
+    "message": "$1 Tab einsortieren"
+  },
+  "popup_fileInCount_other": {
+    "message": "$1 Tabs einsortieren"
+  },
+  "popup_fileTab": {
+    "message": "$1 einsortieren",
+    "description": "$1 is a tab title"
+  },
+  "popup_findHelp": {
+    "message": "Beschreib den Tab in deinen Worten. Jev wählt aus allen offenen Tabs."
+  },
+  "popup_findLabel": {
+    "message": "Welchen Tab suchst du?"
+  },
+  "popup_findOldTabs": {
+    "message": "Alte und unwichtige Tabs finden."
+  },
+  "popup_findPlaceholder": {
+    "message": "z. B. der Artikel über klare Berichte"
+  },
+  "popup_groupsAbbrCount_one": {
+    "message": "$1 Gr."
+  },
+  "popup_groupsAbbrCount_other": {
+    "message": "$1 Gr."
+  },
+  "popup_groupsCount_one": {
+    "message": "$1 Gruppe"
+  },
+  "popup_groupsCount_other": {
+    "message": "$1 Gruppen"
+  },
+  "popup_groupsSorted": {
+    "message": "Gruppen sortiert, wichtigste zuerst:"
+  },
+  "popup_historyHelp": {
+    "message": "Tabwerk sichert nach jeder Änderung. Ohne Häkchen siehst du nur dieses Fenster und setzt nur dieses zurück."
+  },
+  "popup_jevDeciding": {
+    "message": "Jev entscheidet"
+  },
+  "popup_jevRatingFirst": {
+    "message": "Jevs Bewertung, wichtigste zuerst:"
+  },
+  "popup_lastValue": {
+    "message": "zuletzt $1"
+  },
+  "popup_levelClose": {
+    "message": "schließen"
+  },
+  "popup_levelLater": {
+    "message": "später"
+  },
+  "popup_levelNow": {
+    "message": "jetzt"
+  },
+  "popup_levelNumber": {
+    "message": "Stufe $1"
+  },
+  "popup_levelRelevant": {
+    "message": "relevant"
+  },
+  "popup_markedWillCloseHint": {
+    "message": "Markiert ist, was zugeht. Alles bleibt im Verlauf."
+  },
+  "popup_matchingChange": {
+    "message": "Passende Änderung"
+  },
+  "popup_meterSureSameContent": {
+    "message": "sicher, dass der Inhalt gleich ist"
+  },
+  "popup_meterSureTab": {
+    "message": "sicher, dass es dieser Tab ist"
+  },
+  "popup_multipleOpenCount_one": {
+    "message": "$1 Seite mehrfach offen"
+  },
+  "popup_multipleOpenCount_other": {
+    "message": "$1 Seiten mehrfach offen"
+  },
+  "popup_named": {
+    "message": "Benannt:"
+  },
+  "popup_nameGroups": {
+    "message": "Gruppen ohne Titel benennen"
+  },
+  "popup_newNameLabel": {
+    "message": "Neuer Name"
+  },
+  "popup_newWatch": {
+    "message": "Neuer Wächter"
+  },
+  "popup_noDupes": {
+    "message": "Keine doppelten Tabs."
+  },
+  "popup_noDupesHint": {
+    "message": "Mit „$1“ sucht Jev nach gleichem Inhalt unter anderer Adresse.",
+    "description": "$1 is the button label for checking similar tabs"
+  },
+  "popup_noKeyError": {
+    "message": "Kein Schlüssel für Jev. Verbinde Tabwerk in den Einstellungen."
+  },
+  "popup_noKeyNotice": {
+    "message": "Ohne Schlüssel für Jev entscheidet Tabwerk nur per Code."
+  },
+  "popup_noMatchingTab": {
+    "message": "Kein passender Tab: $1"
+  },
+  "popup_noSameContent": {
+    "message": "Kein gleicher Inhalt gefunden."
+  },
+  "popup_noSameContentHint": {
+    "message": "Jev hat Tabs derselben Website verglichen."
+  },
+  "popup_noSessionsYet": {
+    "message": "Noch keine Sitzung."
+  },
+  "popup_noSessionsYetHint": {
+    "message": "Speicher dieses Fenster unter einem Namen. Später öffnest du es wieder, mit allen Gruppen."
+  },
+  "popup_noSnapshotsYet": {
+    "message": "Noch keine Sicherung."
+  },
+  "popup_noSnapshotsYetHint": {
+    "message": "Sobald sich ein Tab ändert, legt Tabwerk die erste an."
+  },
+  "popup_noTabMatch": {
+    "message": "Kein Tab passt."
+  },
+  "popup_noTabMatchHint": {
+    "message": "Beschreib ihn anders, zum Beispiel mit der Website."
+  },
+  "popup_nothingMarked": {
+    "message": "nichts markiert"
+  },
+  "popup_nothingToClean": {
+    "message": "Nichts zum Aufräumen."
+  },
+  "popup_nothingToCleanHint": {
+    "message": "Kein Tab ist alt oder laut Jev überflüssig."
+  },
+  "popup_nothingToGroup": {
+    "message": "Nichts zu gruppieren."
+  },
+  "popup_nothingToGroupHint": {
+    "message": "Alle Tabs haben schon eine Gruppe."
+  },
+  "popup_noTitle": {
+    "message": "Ohne Titel"
+  },
+  "popup_noWatchers": {
+    "message": "Noch kein Wächter."
+  },
+  "popup_noWatchersHint": {
+    "message": "Leg unten einen an. Tabwerk prüft die Seite und meldet sich, wenn deine Bedingung eintritt."
+  },
+  "popup_oldMeansHint_one": {
+    "message": "Alt heißt: länger als $1 Tag nicht benutzt. Mit Jev zählt auch, ob der Tab zu deinem Fokus passt."
+  },
+  "popup_oldMeansHint_other": {
+    "message": "Alt heißt: länger als $1 Tage nicht benutzt. Mit Jev zählt auch, ob der Tab zu deinem Fokus passt."
+  },
+  "popup_onlyUngrouped": {
+    "message": "Nur Tabs ohne Gruppe"
+  },
+  "popup_open": {
+    "message": "Öffnen"
+  },
+  "popup_openPage": {
+    "message": "Seite öffnen"
+  },
+  "popup_orderAlreadyFine": {
+    "message": "Die Reihenfolge passt schon:"
+  },
+  "popup_pause": {
+    "message": "Pausieren"
+  },
+  "popup_pinned": {
+    "message": "angepinnt"
+  },
+  "popup_proposeGet": {
+    "message": "Vorschlag holen"
+  },
+  "popup_rename": {
+    "message": "Umbenennen"
+  },
+  "popup_requests_one": {
+    "message": "$1 Anfrage"
+  },
+  "popup_requests_other": {
+    "message": "$1 Anfragen"
+  },
+  "popup_resetAllButton": {
+    "message": "Alle Fenster zurücksetzen"
+  },
+  "popup_resetWindowButton": {
+    "message": "Fenster zurücksetzen"
+  },
+  "popup_restoreAllWarning": {
+    "message": "Alle Fenster. Tabs, die damals nicht offen waren, bleiben offen und rücken ans Ende."
+  },
+  "popup_restoreBefore": {
+    "message": "Stand vor „$1“ wiederherstellen",
+    "description": "$1 is an action name"
+  },
+  "popup_restoreDone": {
+    "message": "Fertig. $1 Tabs zurück an ihrem Platz, $2 neu geöffnet$3.",
+    "description": "$3 is an optional failure clause, may be empty"
+  },
+  "popup_restoreFailedSuffix": {
+    "message": ", $1 nicht möglich",
+    "description": "$1 is a count of tabs that couldn't be restored"
+  },
+  "popup_restoreWindowOnlyWarning": {
+    "message": "Nur dieses Fenster. Tabs, die damals nicht offen waren, bleiben offen und rücken ans Ende."
+  },
+  "popup_resume": {
+    "message": "Fortsetzen"
+  },
+  "popup_reviewCount": {
+    "message": "$1 prüfen"
+  },
+  "popup_sameAddress": {
+    "message": "gleiche Adresse"
+  },
+  "popup_saveWindow": {
+    "message": "Fenster speichern"
+  },
+  "popup_searchSubmit": {
+    "message": "Suchen"
+  },
+  "popup_sessionNameLabel": {
+    "message": "Name der Sitzung"
+  },
+  "popup_sessionNamePlaceholder": {
+    "message": "Name, z. B. Umzug planen"
+  },
+  "popup_sessionsTab": {
+    "message": "Sitzungen"
+  },
+  "popup_settings": {
+    "message": "Einstellungen"
+  },
+  "popup_similarIntro": {
+    "message": "Gleicher Inhalt, andere Adresse. Markiert ist, was zugeht."
+  },
+  "popup_snapNow": {
+    "message": "Jetzt sichern"
+  },
+  "popup_snapshotGone": {
+    "message": "Diese Sicherung gibt es nicht mehr."
+  },
+  "popup_snapshotsTab": {
+    "message": "Sicherungen"
+  },
+  "popup_sortByLegend": {
+    "message": "Sortieren nach"
+  },
+  "popup_sorted": {
+    "message": "Sortiert."
+  },
+  "popup_sortGroupsHint": {
+    "message": "Jev bewertet jede Gruppe, wichtige Gruppen nach vorn"
+  },
+  "popup_sortGroupsLabel": {
+    "message": "Gruppen nach Priorität"
+  },
+  "popup_sortHelp": {
+    "message": "Nur dieses Fenster. Angepinnte Tabs bleiben stehen, Gruppen bleiben zusammen."
+  },
+  "popup_sortOpened": {
+    "message": "Geöffnet"
+  },
+  "popup_sortOpenedHint": {
+    "message": "Älteste Tabs nach vorn"
+  },
+  "popup_sortPriority": {
+    "message": "Priorität"
+  },
+  "popup_sortPriorityHint": {
+    "message": "Jev bewertet jeden Tab nach deinem Fokus"
+  },
+  "popup_sortRecent": {
+    "message": "Zuletzt benutzt"
+  },
+  "popup_sortRecentHint": {
+    "message": "Frisch benutzte Tabs nach vorn"
+  },
+  "popup_sortSite": {
+    "message": "Website"
+  },
+  "popup_sortSiteHint": {
+    "message": "Gleiche Domains nebeneinander"
+  },
+  "popup_sortTitle": {
+    "message": "Titel"
+  },
+  "popup_sortTitleHint": {
+    "message": "Alphabetisch"
+  },
+  "popup_statusBaseline": {
+    "message": "Vergleichsbasis gespeichert"
+  },
+  "popup_statusError": {
+    "message": "Fehler"
+  },
+  "popup_statusMatch": {
+    "message": "passende Änderung"
+  },
+  "popup_statusNoise": {
+    "message": "geändert, passt nicht"
+  },
+  "popup_statusSame": {
+    "message": "keine Änderung"
+  },
+  "popup_suggestTab": {
+    "message": "Vorschlag"
+  },
+  "popup_tabFind": {
+    "message": "Finden"
+  },
+  "popup_tabGroups": {
+    "message": "Gruppen"
+  },
+  "popup_tabHistory": {
+    "message": "Verlauf"
+  },
+  "popup_tabsCount_one": {
+    "message": "$1 Tab"
+  },
+  "popup_tabsCount_other": {
+    "message": "$1 Tabs"
+  },
+  "popup_tabSort": {
+    "message": "Sortieren"
+  },
+  "popup_tabWatch": {
+    "message": "Wächter"
+  },
+  "popup_thisMarker": {
+    "message": " (dieses)"
+  },
+  "popup_thisWindow": {
+    "message": "Dieses Fenster"
+  },
+  "popup_today": {
+    "message": "Heute"
+  },
+  "popup_tooFewGroups": {
+    "message": "Weniger als zwei Gruppen."
+  },
+  "popup_tooFewGroupsHint": {
+    "message": "Gruppiere erst ein paar Tabs."
+  },
+  "popup_undo": {
+    "message": "Rückgängig"
+  },
+  "popup_undoBringBackHint": {
+    "message": "Mit Rückgängig holst du sie zurück."
+  },
+  "popup_undoClosedHint": {
+    "message": "Mit Rückgängig holst du geschlossene Tabs zurück."
+  },
+  "popup_undoRestoreHint": {
+    "message": "Mit Rückgängig stellst du den alten Stand her."
+  },
+  "popup_unsureHint": {
+    "message": "Hier ist Jev unsicher. Diese Tabs sind abgewählt."
+  },
+  "popup_usageTitle": {
+    "message": "Jev-Anfragen und gemeldete Kosten im $1",
+    "description": "$1 is a month name"
+  },
+  "popup_useJev": {
+    "message": "Mit Jev bewerten"
+  },
+  "popup_viaCode": {
+    "message": "Code"
+  },
+  "popup_windowNumber": {
+    "message": "Fenster $1"
+  },
+  "popup_windowsCount_one": {
+    "message": "$1 Fenster"
+  },
+  "popup_windowsCount_other": {
+    "message": "$1 Fenster"
+  },
+  "popup_withoutJev": {
+    "message": "ohne Jev"
+  },
+  "popup_yesterday": {
+    "message": "Gestern"
+  },
+  "set_categoryDevelopment": {
+    "message": "Entwicklung"
+  },
+  "set_categoryMedia": {
+    "message": "Medien"
+  },
+  "set_categoryOrganization": {
+    "message": "Organisation"
+  },
+  "set_categoryResearch": {
+    "message": "Recherche"
+  },
+  "set_categoryShopping": {
+    "message": "Einkaufen"
+  },
+  "set_categoryWork": {
+    "message": "Arbeit"
+  },
+  "set_modelFixed": {
+    "message": "jev-1.13 (feste Version)"
+  },
+  "set_modelLatest": {
+    "message": "jev-latest (immer die neueste Version)"
+  },
+  "snooze_inOneHour": {
+    "message": "in 1 Stunde"
+  },
+  "snooze_inOneWeek": {
+    "message": "in einer Woche"
+  },
+  "snooze_todayEvening": {
+    "message": "heute um 18 Uhr"
+  },
+  "snooze_tomorrowMorning": {
+    "message": "morgen um 9 Uhr"
+  },
+  "snooze_weekdayMorning": {
+    "message": "$1 um 9 Uhr",
+    "description": "$1 is a weekday name, e.g. Monday"
+  },
+  "stats_asOf": {
+    "message": "Stand $1",
+    "description": "$1 is a formatted time"
+  },
+  "stats_dailyChartLabel_one": {
+    "message": "Höchste Tab-Zahl pro Tag, $1 Tag"
+  },
+  "stats_dailyChartLabel_other": {
+    "message": "Höchste Tab-Zahl pro Tag, $1 Tage"
+  },
+  "stats_dailyHeading": {
+    "message": "Höchste Tab-Zahl pro Tag"
+  },
+  "stats_dailyHelp": {
+    "message": "Aus dem Verlauf, letzte 14 Tage."
+  },
+  "stats_dayColumnTitle_one": {
+    "message": "$2: höchstens $1 Tab",
+    "description": "$1 is the tab count (from tp), $2 is a formatted date"
+  },
+  "stats_dayColumnTitle_other": {
+    "message": "$2: höchstens $1 Tabs",
+    "description": "$1 is the tab count (from tp), $2 is a formatted date"
+  },
+  "stats_dayHeader": {
+    "message": "Tag"
+  },
+  "stats_discarded_one": {
+    "message": "Tab entladen"
+  },
+  "stats_discarded_other": {
+    "message": "Tabs entladen"
+  },
+  "stats_groups_one": {
+    "message": "Gruppe"
+  },
+  "stats_groups_other": {
+    "message": "Gruppen"
+  },
+  "stats_heading": {
+    "message": "Statistik"
+  },
+  "stats_hostTabsTitle_one": {
+    "message": "$2: $1 Tab",
+    "description": "$1 is the tab count (from tp), $2 is the host name"
+  },
+  "stats_hostTabsTitle_other": {
+    "message": "$2: $1 Tabs",
+    "description": "$1 is the tab count (from tp), $2 is the host name"
+  },
+  "stats_noHistory": {
+    "message": "Noch keine Sicherungen im Verlauf."
+  },
+  "stats_oldestHeading": {
+    "message": "Am längsten nicht benutzt"
+  },
+  "stats_overviewLabel": {
+    "message": "Überblick"
+  },
+  "stats_pageTitle": {
+    "message": "Tabwerk Statistik"
+  },
+  "stats_tabsHeader": {
+    "message": "Tabs"
+  },
+  "stats_tabsOpen_one": {
+    "message": "Tab offen"
+  },
+  "stats_tabsOpen_other": {
+    "message": "Tabs offen"
+  },
+  "stats_topHostsHeading": {
+    "message": "Websites mit den meisten Tabs"
+  },
+  "stats_windows_one": {
+    "message": "Fenster"
+  },
+  "stats_windows_other": {
+    "message": "Fenster"
+  },
+  "tabs_noGroup": {
+    "message": "Keine Gruppe"
+  },
+  "tabs_tabAlreadyClosed": {
+    "message": "Dieser Tab ist schon geschlossen."
+  },
+  "tabs_untitledGroup": {
+    "message": "Ohne Titel"
+  },
+  "tw_dayBeforeYesterday": {
+    "message": "vorgestern"
+  },
+  "tw_daysAgo_one": {
+    "message": "vor $1 Tag"
+  },
+  "tw_daysAgo_other": {
+    "message": "vor $1 Tagen"
+  },
+  "tw_last90Days": {
+    "message": "letzte 90 Tage"
+  },
+  "tw_lastMonth": {
+    "message": "letzter Monat"
+  },
+  "tw_lastWeek": {
+    "message": "letzte Woche"
+  },
+  "tw_thisWeek": {
+    "message": "diese Woche"
+  },
+  "tw_today": {
+    "message": "heute"
+  },
+  "tw_yesterday": {
+    "message": "gestern"
+  },
+  "unlock_alwaysAllowed": {
+    "message": "Auf $1 immer erlaubt",
+    "description": "$1 is a host name"
+  },
+  "unlock_cannotModifyPage": {
+    "message": "Tabwerk darf diese Seite gerade nicht ändern. Nutze das Kontextmenü oder das Tastenkürzel der Schnellsuche."
+  },
+  "unlock_disabled": {
+    "message": "„Kopieren erlauben“ ist in den Einstellungen ausgeschaltet."
+  },
+  "unlock_noLongerAuto": {
+    "message": "Auf $1 nicht mehr automatisch",
+    "description": "$1 is a host name"
+  },
+  "unlock_nowAllowed": {
+    "message": "Kopieren und Rechtsklick sind jetzt erlaubt"
+  },
+  "unlock_onlyNormalPages": {
+    "message": "Das geht nur auf normalen Webseiten."
+  },
+  "watch_noNumberOnPage": {
+    "message": "Auf der Seite steht keine Zahl mit Währung oder Prozent."
+  },
+  "watch_notifyTitle": {
+    "message": "$1: passende Änderung",
+    "description": "$1 is the watched website's host name"
+  },
+  "watch_numberNotFound": {
+    "message": "Jev findet die gemeinte Zahl nicht auf der Seite."
+  },
+  "watch_pageError": {
+    "message": "Die Seite antwortet mit $1.",
+    "description": "$1 is an HTTP status code"
+  },
+  "watch_permissionDenied": {
+    "message": "Tabwerk darf diese Website nicht lesen. Lege den Wächter neu an."
+  },
+  "wf_checkEvery": {
+    "message": "Prüfen alle",
+    "description": "Aria label used as a test selector, German text must stay exact"
+  },
+  "wf_compareLabel": {
+    "message": "Vergleich"
+  },
+  "wf_conditionPlaceholder": {
+    "message": "der Kopfhörer wieder lieferbar ist"
+  },
+  "wf_createWatch": {
+    "message": "Wächter anlegen"
+  },
+  "wf_customInterval": {
+    "message": "Eigenes Intervall",
+    "description": "Aria label used as a test selector, German text must stay exact"
+  },
+  "wf_customIntervalLabel": {
+    "message": "Eigenes Intervall (hh:mm:ss, mindestens 00:00:30)"
+  },
+  "wf_customOption": {
+    "message": "Individuell …"
+  },
+  "wf_exactCompare": {
+    "message": "Zahl oder Preis exakt vergleichen"
+  },
+  "wf_hhmmssPlaceholder": {
+    "message": "hh:mm:ss"
+  },
+  "wf_intervalTooShort": {
+    "message": "Chrome prüft höchstens alle 30 Sekunden. Du hast $1 eingetragen.",
+    "description": "$1 is the duration the user entered, e.g. 00:00:10"
+  },
+  "wf_invalidInterval": {
+    "message": "Schreib das Intervall als hh:mm:ss, zum Beispiel 00:10:00."
+  },
+  "wf_invalidLimit": {
+    "message": "Trag die Grenze als Zahl ein, zum Beispiel 199,99."
+  },
+  "wf_invalidUrl": {
+    "message": "Gib eine Adresse mit http:// oder https:// ein."
+  },
+  "wf_limit": {
+    "message": "Grenze"
+  },
+  "wf_limitPlaceholder": {
+    "message": "199,99"
+  },
+  "wf_missingCondition": {
+    "message": "Beschreib, worauf Tabwerk achten soll."
+  },
+  "wf_noPermission": {
+    "message": "Ohne Leseerlaubnis für diese Website kann Tabwerk nicht prüfen."
+  },
+  "wf_notifyWhen": {
+    "message": "Sag mir Bescheid, wenn …"
+  },
+  "wf_numericHint": {
+    "message": "Jev rechnet nicht genau. Bei Zahlen und Preisen erkennt es die Änderung, vergleicht aber keine Beträge."
+  },
+  "wf_opAbove": {
+    "message": "über"
+  },
+  "wf_opAtleast": {
+    "message": "mindestens"
+  },
+  "wf_opAtmost": {
+    "message": "höchstens"
+  },
+  "wf_opBelow": {
+    "message": "unter"
+  },
+  "wf_page": {
+    "message": "Seite"
+  },
+  "wf_selectedPrefix": {
+    "message": "Markiert: "
+  },
+  "wf_selectedQuote": {
+    "message": "„$1“",
+    "description": "$1 is the marked/selected text"
+  },
+  "wnew_created": {
+    "message": "Wächter angelegt."
+  },
+  "wnew_pageTitle": {
+    "message": "Neuer Wächter"
+  },
+  "wnew_sectionChanges": {
+    "message": "sich der Abschnitt „$1“ ändert",
+    "description": "$1 is the text the user selected on the page"
+  },
+  "wnew_willCheck": {
+    "message": "Tabwerk prüft $1 und meldet sich.",
+    "description": "$1 is the site name"
+  },
+  "x_allGroupsNamed": {
+    "message": "Alle Gruppen haben schon einen Namen"
+  },
+  "x_bookmarkPermission": {
+    "message": "Tabwerk darf keine Lesezeichen anlegen. Schalte es in den Einstellungen ein."
+  },
+  "x_bookmarkSaved": {
+    "message": "Gespeichert in „$1“",
+    "description": "$1 is a bookmark folder path"
+  },
+  "x_browserPages": {
+    "message": "Browser-Seiten"
+  },
+  "x_dupeAlreadyOpenTitle": {
+    "message": "Diese Seite ist schon offen"
+  },
+  "x_dupeGoToTab": {
+    "message": "Zum offenen Tab"
+  },
+  "x_dupeGuardPaused_one": {
+    "message": "Doppel-Schutz $1 Minute pausiert"
+  },
+  "x_dupeGuardPaused_other": {
+    "message": "Doppel-Schutz $1 Minuten pausiert"
+  },
+  "x_dupeKeepBoth": {
+    "message": "Beide behalten"
+  },
+  "x_dupeSwitchedMessage": {
+    "message": "Öffne die Seite innerhalb von 20 Sekunden noch einmal, dann bleiben beide offen."
+  },
+  "x_dupeSwitchedTitle": {
+    "message": "Zum offenen Tab gewechselt"
+  },
+  "x_featureCleanup": {
+    "message": "Der Aufräum-Vorschlag"
+  },
+  "x_featureFocus": {
+    "message": "Der Fokus-Modus"
+  },
+  "x_featureFulltext": {
+    "message": "Die Volltext-Suche"
+  },
+  "x_featureGroupNames": {
+    "message": "Gruppennamen vorschlagen"
+  },
+  "x_featureHistorySearch": {
+    "message": "Verlauf in Alltagssprache"
+  },
+  "x_featureOff": {
+    "message": "$1 ist in den Einstellungen ausgeschaltet.",
+    "description": "$1 is an already-translated feature name such as 'Snooze'"
+  },
+  "x_featureSessions": {
+    "message": "Sitzungen"
+  },
+  "x_featureSnooze": {
+    "message": "Schlummern"
+  },
+  "x_featureStats": {
+    "message": "Die Statistik"
+  },
+  "x_focusBadge": {
+    "message": "F",
+    "description": "Single-letter toolbar badge for focus mode. Keep it to one character."
+  },
+  "x_focusEnded": {
+    "message": "Fokus beendet"
+  },
+  "x_focusUntil": {
+    "message": "Fokus bis $1",
+    "description": "$1 is a formatted time"
+  },
+  "x_groupsNamed_one": {
+    "message": "$1 Gruppe benannt"
+  },
+  "x_groupsNamed_other": {
+    "message": "$1 Gruppen benannt"
+  },
+  "x_historyPermission": {
+    "message": "Tabwerk darf den Verlauf nicht lesen. Schalte es in den Einstellungen ein."
+  },
+  "x_jevCanGo": {
+    "message": "Jev: kann weg"
+  },
+  "x_noteAppended": {
+    "message": "Notiz ergänzt"
+  },
+  "x_noteSaved": {
+    "message": "Notiz gespeichert"
+  },
+  "x_notesWebOnly": {
+    "message": "Notizen gehen nur auf normalen Webseiten."
+  },
+  "x_notUsedDays_one": {
+    "message": "seit $1 Tag nicht benutzt"
+  },
+  "x_notUsedDays_other": {
+    "message": "seit $1 Tagen nicht benutzt"
+  },
+  "x_onlyWebSnooze": {
+    "message": "Nur Webseiten lassen sich schlummern."
+  },
+  "x_sessionGone": {
+    "message": "Diese Sitzung gibt es nicht mehr."
+  },
+  "x_sessionOpened": {
+    "message": "„$1“ geöffnet",
+    "description": "$1 is the session name"
+  },
+  "x_snoozeReopened": {
+    "message": "Wieder geöffnet"
+  },
+  "x_snoozeReturn": {
+    "message": "Kommt $1 wieder",
+    "description": "$1 is a time phrase such as 'in 1 Stunde' / 'in 1 hour'"
+  },
+  "x_snoozeWokeTitle": {
+    "message": "Wieder da"
+  },
+  "x_tabAlreadyClosed": {
+    "message": "Dieser Tab ist schon geschlossen."
+  },
+  "x_tabsDiscarded_one": {
+    "message": "$1 Tab entladen"
+  },
+  "x_tabsDiscarded_other": {
+    "message": "$1 Tabs entladen"
+  },
+  "x_unknownWakeTime": {
+    "message": "Unbekannte Weckzeit."
+  },
+  "x_windowFallback": {
+    "message": "Fenster"
+  },
+  "xfer_notATabwerkFile": {
+    "message": "Das ist keine Tabwerk-Datei."
+  }
+}

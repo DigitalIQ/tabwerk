@@ -1,5 +1,7 @@
 // Sitzungen als Lesezeichen-Datei im Netscape-Format. Jeder Browser kann sie importieren.
 
+import { t } from './i18n.js';
+
 const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 export function toBookmarkHtml(sessions) {
@@ -11,8 +13,8 @@ export function toBookmarkHtml(sessions) {
     '<DL><p>',
   ];
   for (const s of sessions) {
-    const t = Math.round((s.t || Date.now()) / 1000);
-    lines.push(`  <DT><H3 ADD_DATE="${t}">${esc(s.name)}</H3>`, '  <DL><p>');
+    const added = Math.round((s.t || Date.now()) / 1000);
+    lines.push(`  <DT><H3 ADD_DATE="${added}">${esc(s.name)}</H3>`, '  <DL><p>');
     for (const w of s.windows) {
       const groups = new Map((w.groups || []).map((g) => [g.id, g]));
       let open = null;
@@ -21,10 +23,10 @@ export function toBookmarkHtml(sessions) {
         const g = tab.groupId !== -1 ? groups.get(tab.groupId) : null;
         if ((g?.id ?? null) !== open) {
           if (open !== null) lines.push('    </DL><p>');
-          if (g) lines.push(`    <DT><H3>${esc(g.title || 'Gruppe')}</H3>`, '    <DL><p>');
+          if (g) lines.push(`    <DT><H3>${esc(g.title || t('bm_untitledGroup'))}</H3>`, '    <DL><p>');
           open = g?.id ?? null;
         }
-        lines.push(`${open !== null ? '      ' : '    '}<DT><A HREF="${esc(tab.url)}" ADD_DATE="${t}">${esc(tab.title || tab.url)}</A>`);
+        lines.push(`${open !== null ? '      ' : '    '}<DT><A HREF="${esc(tab.url)}" ADD_DATE="${added}">${esc(tab.title || tab.url)}</A>`);
       }
       if (open !== null) lines.push('    </DL><p>');
     }

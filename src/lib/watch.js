@@ -9,6 +9,7 @@ import { hostOf, normalizeUrl } from './url.js';
 import { isOn } from './flags.js';
 import { hasKey } from './settings.js';
 import { numberCandidates, compare } from './numbers.js';
+import { t } from './i18n.js';
 
 const HISTORY = 12;
 
@@ -83,7 +84,7 @@ export async function rescheduleAll() {
 async function textFromOpenTab(url) {
   const key = normalizeUrl(url);
   const tabs = await chrome.tabs.query({});
-  const tab = tabs.find((t) => t.url && normalizeUrl(t.url) === key && t.status === 'complete' && !t.discarded);
+  const tab = tabs.find((tab) => tab.url && normalizeUrl(tab.url) === key && tab.status === 'complete' && !tab.discarded);
   if (!tab) return null;
   try {
     const [res] = await chrome.scripting.executeScript({ target: { tabId: tab.id }, func: () => document.body?.innerText || '' });
@@ -104,7 +105,7 @@ async function ensureOffscreen() {
 
 async function textFromFetch(url) {
   const response = await fetch(url, { credentials: 'include', cache: 'no-store', redirect: 'follow' });
-  if (!response.ok) throw new Error(`Die Seite antwortet mit ${response.status}.`);
+  if (!response.ok) throw new Error(t('watch_pageError', response.status));
   const html = await response.text();
   await ensureOffscreen();
   const parsed = await chrome.runtime.sendMessage({ target: 'offscreen', type: 'parse-html', html });
@@ -137,7 +138,7 @@ async function runCheck(id) {
   const entry = { t: Date.now() };
   try {
     const allowed = await chrome.permissions.contains({ origins: [new URL(watch.url).origin + '/*'] });
-    if (!allowed) throw new Error('Tabwerk darf diese Website nicht lesen. Lege den Wächter neu an.');
+    if (!allowed) throw new Error(t('watch_permissionDenied'));
     const page = await pageText(watch.url);
     const key = `snap:${id}`;
     const { [key]: before } = await chrome.storage.local.get(key);
@@ -184,7 +185,7 @@ async function runCheck(id) {
 // Gemeldet wird nur beim Wechsel von „nicht erfüllt“ zu „erfüllt“.
 async function checkNumber(watch, page, text, entry, settings) {
   const candidates = numberCandidates(text);
-  if (!candidates.length) throw new Error('Auf der Seite steht keine Zahl mit Währung oder Prozent.');
+  if (!candidates.length) throw new Error(t('watch_noNumberOnPage'));
   let pick = candidates[0];
   if (candidates.length > 1 && hasKey(settings)) {
     const criteria = Object.fromEntries(candidates.map((c, i) => [`n${i}`, c.context]));
@@ -194,7 +195,7 @@ async function checkNumber(watch, page, text, entry, settings) {
     });
     entry.cost = result.cost;
     const choice = result.answers.number.choice;
-    if (choice === 'none') throw new Error('Jev findet die gemeinte Zahl nicht auf der Seite.');
+    if (choice === 'none') throw new Error(t('watch_numberNotFound'));
     pick = candidates[Number(choice.slice(1))];
     entry.confidence = result.answers.number.confidence;
   }
@@ -211,7 +212,7 @@ function notify(watch, entry) {
   chrome.notifications.create(`watch:${watch.id}:${entry.t}`, {
     type: 'basic',
     iconUrl: chrome.runtime.getURL('icons/icon128.png'),
-    title: `${watch.site}: passende Änderung`,
+    title: t('watch_notifyTitle', watch.site),
     message: entry.evidence || watch.condition,
     contextMessage: watch.condition,
     priority: 1,

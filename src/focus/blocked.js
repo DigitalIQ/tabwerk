@@ -1,4 +1,8 @@
 import { send } from '../ui/dom.js';
+import { tp, fmtNumber, initI18n, localizeDom } from '../lib/i18n.js';
+
+await initI18n();
+localizeDom();
 
 const params = new URLSearchParams(location.search);
 const url = params.get('u') || '';
@@ -10,7 +14,8 @@ function tick() {
   const left = Math.max(0, until - Date.now());
   const m = Math.floor(left / 60000);
   const s = Math.floor((left % 60000) / 1000);
-  $('#left').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  $('#left').textContent = `${fmtNumber(m, { minimumIntegerDigits: 2 })}:${fmtNumber(s, { minimumIntegerDigits: 2 })}`;
+  $('#left').setAttribute('aria-label', `${tp('focus_minutesLeft', m)} ${tp('focus_secondsLeft', s)}`);
   if (left <= 0) location.replace(url);
 }
 tick();

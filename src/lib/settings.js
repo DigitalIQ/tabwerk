@@ -1,6 +1,8 @@
 // Einstellungen und Nutzungszähler in chrome.storage.local.
 // Der API-Schlüssel bleibt lokal und wird nie synchronisiert.
 
+import { t } from './i18n.js';
+
 export const CHROME_COLORS = {
   grey: '#5f6368',
   blue: '#1a73e8',
@@ -24,8 +26,8 @@ export const PROVIDERS = {
     modelField: 'model',
     keyPrefix: 'sk-or-',
     models: {
-      'typesafe/jev-1.13': 'jev-1.13 (feste Version)',
-      '~typesafe/jev-latest': 'jev-latest (immer die neueste Version)',
+      get 'typesafe/jev-1.13'() { return t('set_modelFixed'); },
+      get '~typesafe/jev-latest'() { return t('set_modelLatest'); },
     },
   },
   typesafe: {
@@ -35,8 +37,8 @@ export const PROVIDERS = {
     modelField: 'typesafeModel',
     keyPrefix: '',
     models: {
-      'jev-1.13': 'jev-1.13 (feste Version)',
-      'jev-latest': 'jev-latest (immer die neueste Version)',
+      get 'jev-1.13'() { return t('set_modelFixed'); },
+      get 'jev-latest'() { return t('set_modelLatest'); },
     },
   },
 };
@@ -59,17 +61,19 @@ export const DEFAULTS = {
   model: 'typesafe/jev-1.13',
   typesafeKey: '',
   typesafeModel: 'jev-1.13',
+  // "auto" heißt: Sprache des Browsers. Siehe initI18n() in i18n.js.
+  uiLanguage: 'auto',
   // Ab dieser Sicherheit übernimmt Tabwerk einen Vorschlag ohne Nachfrage.
   confidence: 0.8,
   // Ab dieser Wahrscheinlichkeit meldet ein Wächter eine Änderung.
   notifyAt: 0.7,
   categories: [
-    { name: 'Arbeit', color: 'blue', hint: 'Work tools, email, documents, tickets, internal business systems' },
-    { name: 'Recherche', color: 'purple', hint: 'Articles, documentation, papers and search results being read or researched' },
-    { name: 'Entwicklung', color: 'cyan', hint: 'Source code, repositories, developer documentation, APIs, local dev servers' },
-    { name: 'Einkaufen', color: 'orange', hint: 'Online shops, product pages, price comparisons, orders and deliveries' },
-    { name: 'Medien', color: 'red', hint: 'Video, music, podcasts, social media and entertainment' },
-    { name: 'Organisation', color: 'green', hint: 'Calendar, travel, banking, appointments and personal admin' },
+    { get name() { return t('set_categoryWork'); }, color: 'blue', hint: 'Work tools, email, documents, tickets, internal business systems' },
+    { get name() { return t('set_categoryResearch'); }, color: 'purple', hint: 'Articles, documentation, papers and search results being read or researched' },
+    { get name() { return t('set_categoryDevelopment'); }, color: 'cyan', hint: 'Source code, repositories, developer documentation, APIs, local dev servers' },
+    { get name() { return t('set_categoryShopping'); }, color: 'orange', hint: 'Online shops, product pages, price comparisons, orders and deliveries' },
+    { get name() { return t('set_categoryMedia'); }, color: 'red', hint: 'Video, music, podcasts, social media and entertainment' },
+    { get name() { return t('set_categoryOrganization'); }, color: 'green', hint: 'Calendar, travel, banking, appointments and personal admin' },
   ],
   priorityFocus: '',
   priorityLevels: [
@@ -104,6 +108,9 @@ export const DEFAULTS = {
 export async function getSettings() {
   const stored = await chrome.storage.local.get(Object.keys(DEFAULTS));
   const settings = { ...DEFAULTS, ...stored };
+  // Wertet die name-Getter der Standard-Kategorien aus, damit nie ein Getter-Objekt
+  // zurückgegeben oder später ungeprüft in den Speicher zurückgeschrieben wird.
+  settings.categories = (settings.categories || []).map((c) => ({ ...c }));
   // Alte Einstellung ohne Tilde auf den gültigen Alias umstellen.
   if (settings.model === 'typesafe/jev-latest') settings.model = '~typesafe/jev-latest';
   if (!PROVIDERS.openrouter.models[settings.model]) settings.model = DEFAULTS.model;

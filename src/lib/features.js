@@ -6,6 +6,8 @@ import { findDuplicates, similarCandidates, hostOf } from './url.js';
 import { planSort, SORTERS } from './order.js';
 import * as P from './prompts.js';
 import { beforeAction } from './history.js';
+import { LABEL } from './reasons.js';
+import { t } from './i18n.js';
 
 async function openedTimes() {
   const { openedAt = {} } = await chrome.storage.session.get('openedAt');
@@ -21,14 +23,14 @@ export async function trackOpened(tabId) {
 async function windowTabs(windowId, allWindows = false) {
   const tabs = await chrome.tabs.query(allWindows ? {} : { windowId });
   const opened = await openedTimes();
-  return tabs.map((t) => ({ ...t, openedAt: opened[t.id] }));
+  return tabs.map((tab) => ({ ...tab, openedAt: opened[tab.id] }));
 }
 
 // Tabs von ausgeschlossenen Websites und Tabwerks eigene Seiten gehen nie an Jev.
 async function shareable(tabs) {
   const { excludedHosts } = await getSettings();
   const own = chrome.runtime.getURL('');
-  return tabs.filter((t) => !(t.url || '').startsWith(own) && !hostMatches(hostOf(t.url), excludedHosts));
+  return tabs.filter((tab) => !(tab.url || '').startsWith(own) && !hostMatches(hostOf(tab.url), excludedHosts));
 }
 
 function brief(tab) {
@@ -47,7 +49,7 @@ export async function similar({ windowId, allWindows }) {
   const tabs = await shareable(await windowTabs(windowId, allWindows));
   const pairs = similarCandidates(tabs);
   if (!pairs.length) return { pairs: [] };
-  const involved = [...new Map(pairs.flat().map((t) => [t.id, t])).values()];
+  const involved = [...new Map(pairs.flat().map((tab) => [tab.id, tab])).values()];
   const questions = Object.fromEntries(pairs.map(([a, b], i) => [`p${i}`, P.similarQuestion(P.tabKey(a), P.tabKey(b))]));
   const result = await decide(P.tabState(involved), questions);
   const found = pairs
@@ -60,11 +62,11 @@ export async function similar({ windowId, allWindows }) {
 // windowId null heißt: Tabs aus mehreren Fenstern, Rückgängig gilt dann für alle.
 // Tabs können zwischen Anzeige und Klick schon zu sein. Chrome bricht dann den ganzen Aufruf ab.
 export async function liveTabIds(tabIds) {
-  const open = new Set((await chrome.tabs.query({})).map((t) => t.id));
+  const open = new Set((await chrome.tabs.query({})).map((tab) => tab.id));
   return tabIds.filter((id) => open.has(id));
 }
 
-export async function closeTabs({ tabIds, windowId = null, label = 'Doppelte schließen' }) {
+export async function closeTabs({ tabIds, windowId = null, label = LABEL.closeDupes }) {
   const ids = await liveTabIds(tabIds);
   if (!ids.length) return { closed: 0, gone: tabIds.length };
   await beforeAction(label, windowId);
@@ -81,7 +83,7 @@ export async function find({ query }) {
   const req = P.findRequest(tabs, query);
   const result = await decide(req.state, req.questions);
   const answer = result.answers.match;
-  const byKey = new Map(tabs.map((t) => [P.tabKey(t), t]));
+  const byKey = new Map(tabs.map((tab) => [P.tabKey(tab), tab]));
   const hits = P.ranked(answer, 4)
     .filter((r) => r.p >= 0.05)
     .map((r) => (r.key === 'none' ? { none: true, p: r.p } : { ...brief(byKey.get(r.key)), p: r.p }));
@@ -90,7 +92,7 @@ export async function find({ query }) {
 
 export async function focusTab({ tabId, windowId }) {
   const tab = await chrome.tabs.get(tabId).catch(() => null);
-  if (!tab) throw new Error('Dieser Tab ist schon geschlossen.');
+  if (!tab) throw new Error(t('tabs_tabAlreadyClosed'));
   await chrome.tabs.update(tabId, { active: true });
   await chrome.windows.update(tab.windowId ?? windowId, { focused: true });
   return { ok: true };
@@ -103,13 +105,13 @@ export async function proposeGroups({ windowId, onlyUngrouped }) {
   const tabs = await windowTabs(windowId);
   const groups = await chrome.tabGroups.query({ windowId });
   const members = {};
-  for (const t of tabs) if (t.groupId !== -1) (members[t.groupId] ||= []).push(t);
+  for (const tab of tabs) if (tab.groupId !== -1) (members[tab.groupId] ||= []).push(tab);
   const { criteria, meta } = P.groupOptions(groups, settings.categories, members);
 
-  const candidates = (await shareable(tabs)).filter((t) => !t.pinned && (!onlyUngrouped || t.groupId === -1));
+  const candidates = (await shareable(tabs)).filter((tab) => !tab.pinned && (!onlyUngrouped || tab.groupId === -1));
   if (!candidates.length) return { items: [], options: meta };
 
-  const byKey = new Map(candidates.map((t) => [P.tabKey(t), t]));
+  const byKey = new Map(candidates.map((tab) => [P.tabKey(tab), tab]));
   const { answers, cost } = await decideChunked(
     [...byKey.keys()],
     (keys) => P.tabState(keys.map((k) => byKey.get(k))),
@@ -130,7 +132,7 @@ export async function proposeGroups({ windowId, onlyUngrouped }) {
 
 // plan: [{tabId, target}] mit target = gX, cY oder none.
 export async function applyGroups({ windowId, plan, options }) {
-  await beforeAction('Gruppieren', windowId);
+  await beforeAction(LABEL.group, windowId);
   const live = new Set(await liveTabIds(plan.map((p) => p.tabId)));
   const byTarget = new Map();
   for (const { tabId, target } of plan) {
@@ -168,8 +170,8 @@ export async function sortTabs({ windowId, by }) {
   let scores = null;
   let cost;
   if (by === 'priority') {
-    const candidates = (await shareable(tabs)).filter((t) => !t.pinned);
-    const byKey = new Map(candidates.map((t) => [P.tabKey(t), t]));
+    const candidates = (await shareable(tabs)).filter((tab) => !tab.pinned);
+    const byKey = new Map(candidates.map((tab) => [P.tabKey(tab), tab]));
     const result = await decideChunked(
       [...byKey.keys()],
       (keys) => P.tabState(keys.map((k) => byKey.get(k))),
@@ -178,24 +180,24 @@ export async function sortTabs({ windowId, by }) {
     cost = result.cost;
     scores = Object.fromEntries(Object.entries(result.answers).map(([k, a]) => [P.idFromKey(k), { score: a.score, confidence: a.confidence }]));
     // Jev braucht ein paar Sekunden. In der Zeit können Tabs zu- oder aufgehen.
-    tabs = (await windowTabs(windowId)).map((t) => ({ ...t, score: scores[t.id]?.score }));
+    tabs = (await windowTabs(windowId)).map((tab) => ({ ...tab, score: scores[tab.id]?.score }));
   }
   const plan = planSort(tabs, SORTERS[by]);
-  if (plan.length) await beforeAction('Sortieren', windowId);
+  if (plan.length) await beforeAction(LABEL.sort, windowId);
   for (const seg of plan) {
     await chrome.tabs.move(seg.order, { index: seg.start });
     // Verschieben kann Tabs aus einer Gruppe lösen oder in eine fremde ziehen.
     if (seg.groupId !== -1) await chrome.tabs.group({ groupId: seg.groupId, tabIds: seg.order });
     else {
       const moved = await Promise.all(seg.order.map((id) => chrome.tabs.get(id)));
-      const stray = moved.filter((t) => t.groupId !== -1).map((t) => t.id);
+      const stray = moved.filter((tab) => tab.groupId !== -1).map((tab) => tab.id);
       if (stray.length) await chrome.tabs.ungroup(stray);
     }
   }
   const levels = settings.priorityLevels.length;
   const list = scores
     ? Object.entries(scores)
-      .map(([id, s]) => ({ ...brief(tabs.find((t) => t.id === Number(id))), level: Math.round(s.score), levels, ...s }))
+      .map(([id, s]) => ({ ...brief(tabs.find((tab) => tab.id === Number(id))), level: Math.round(s.score), levels, ...s }))
       .sort((a, b) => b.score - a.score)
     : null;
   return { segments: plan.length, scores: list, cost, threshold: settings.confidence };
@@ -210,27 +212,27 @@ export async function sortGroups({ windowId }) {
   const tabs = await windowTabs(windowId);
   const groups = await chrome.tabGroups.query({ windowId });
   if (groups.length < 2) return { groups: [], moved: false };
-  const shared = new Set((await shareable(tabs)).map((t) => t.id));
+  const shared = new Set((await shareable(tabs)).map((tab) => tab.id));
   const members = {};
-  for (const t of [...tabs].sort((a, b) => a.index - b.index)) {
-    if (t.groupId !== -1) (members[t.groupId] ||= []).push(t);
+  for (const tab of [...tabs].sort((a, b) => a.index - b.index)) {
+    if (tab.groupId !== -1) (members[tab.groupId] ||= []).push(tab);
   }
   const state = {
     groups: Object.fromEntries(groups.map((g) => [`g${g.id}`, {
       title: g.title || '(untitled group)',
-      tabs: (members[g.id] || []).filter((t) => shared.has(t.id)).slice(0, 8).map((t) => t.title),
+      tabs: (members[g.id] || []).filter((tab) => shared.has(tab.id)).slice(0, 8).map((tab) => tab.title),
     }])),
   };
   const questions = Object.fromEntries(groups.map((g) => [`g${g.id}`, P.groupPriorityQuestion(`g${g.id}`, settings.priorityLevels, settings.priorityFocus)]));
   const result = await decide(state, questions);
   const ranked = groups
-    .map((g) => ({ id: g.id, title: g.title || 'Ohne Titel', color: g.color, first: Math.min(...(members[g.id] || []).map((t) => t.index)), ...result.answers[`g${g.id}`] }))
+    .map((g) => ({ id: g.id, title: g.title || t('tabs_untitledGroup'), color: g.color, first: Math.min(...(members[g.id] || []).map((tab) => tab.index)), ...result.answers[`g${g.id}`] }))
     .sort((a, b) => b.score - a.score || a.first - b.first);
-  const current = [...groups].sort((a, b) => Math.min(...(members[a.id] || []).map((t) => t.index)) - Math.min(...(members[b.id] || []).map((t) => t.index)));
+  const current = [...groups].sort((a, b) => Math.min(...(members[a.id] || []).map((tab) => tab.index)) - Math.min(...(members[b.id] || []).map((tab) => tab.index)));
   const changed = ranked.some((g, i) => g.id !== current[i].id);
   if (changed) {
-    await beforeAction('Gruppen sortieren', windowId);
-    let index = tabs.filter((t) => t.pinned).length;
+    await beforeAction(LABEL.sortGroups, windowId);
+    let index = tabs.filter((tab) => tab.pinned).length;
     for (const g of ranked) {
       await chrome.tabGroups.move(g.id, { index });
       index += (members[g.id] || []).length;

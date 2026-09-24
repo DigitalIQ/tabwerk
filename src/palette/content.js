@@ -38,7 +38,7 @@
   const frame = document.createElement('iframe');
   frame.src = chrome.runtime.getURL(`src/palette/palette.html?${params}`);
   frame.allow = 'clipboard-write';
-  frame.title = 'Tabwerk Schnellsuche';
+  frame.title = chrome.i18n.getMessage('pal_title') || 'Tabwerk Schnellsuche';
   // color-scheme muss beim iFrame-Element und im Dokument darin gleich sein, sonst malt Chrome
   // bei dunklen Seiten (etwa GitHub) einen deckenden Hintergrund. Das Dunkel-Design der Suche
   // hängt an prefers-color-scheme und bleibt davon unberührt.

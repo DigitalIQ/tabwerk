@@ -5,12 +5,13 @@
 // Rechnen und Datumsvergleiche bleiben im Code.
 
 import { describeTab } from './url.js';
+import { t } from './i18n.js';
 
 export const tabKey = (tab) => `t${tab.id}`;
 export const idFromKey = (key) => Number(key.slice(1));
 
 export function tabState(tabs) {
-  return { tabs: Object.fromEntries(tabs.map((t) => [tabKey(t), describeTab(t)])) };
+  return { tabs: Object.fromEntries(tabs.map((tab) => [tabKey(tab), describeTab(tab)])) };
 }
 
 // Optionen für die Gruppenfrage: bestehende Gruppen, Kategorien für neue Gruppen, keine.
@@ -20,13 +21,13 @@ export function groupOptions(groups, categories, membersByGroup = {}) {
   const taken = new Set();
   for (const g of groups) {
     const key = `g${g.id}`;
-    const examples = (membersByGroup[g.id] || []).slice(0, 3).map((t) => t.title).filter(Boolean);
+    const examples = (membersByGroup[g.id] || []).slice(0, 3).map((tab) => tab.title).filter(Boolean);
     criteria[key] = {
       kind: 'existing tab group',
       name: g.title || '(untitled group)',
       ...(examples.length ? { contains_tabs_like: examples } : {}),
     };
-    meta[key] = { type: 'existing', groupId: g.id, name: g.title || 'Ohne Titel', color: g.color };
+    meta[key] = { type: 'existing', groupId: g.id, name: g.title || t('tabs_untitledGroup'), color: g.color };
     if (g.title) taken.add(g.title.trim().toLowerCase());
   }
   categories.forEach((c, i) => {
@@ -36,7 +37,7 @@ export function groupOptions(groups, categories, membersByGroup = {}) {
     meta[key] = { type: 'new', name: c.name, color: c.color };
   });
   criteria.none = 'None of the other groups fits this tab well';
-  meta.none = { type: 'none', name: 'Keine Gruppe' };
+  meta.none = { type: 'none', name: t('tabs_noGroup') };
   return { criteria, meta };
 }
 
@@ -68,7 +69,7 @@ export function groupPriorityQuestion(key, levels, focus) {
 
 // Choice hat höchstens 255 Optionen. Aufrufer kürzt die Liste vorher.
 export function findRequest(tabs, query) {
-  const criteria = Object.fromEntries(tabs.map((t) => [tabKey(t), describeTab(t)]));
+  const criteria = Object.fromEntries(tabs.map((tab) => [tabKey(tab), describeTab(tab)]));
   criteria.none = 'No open tab matches the search';
   return {
     state: { search: query },

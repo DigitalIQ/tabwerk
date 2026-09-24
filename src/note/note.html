@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Notiz</title>
+  <title data-i18n="note_pageTitle">Notiz</title>
   <link rel="stylesheet" href="../ui/base.css">
   <style>
     html, body { background: var(--surface); height: 100%; }
@@ -17,15 +17,15 @@
   </style>
 </head>
 <body>
-  <header><img src="/icons/icon32.png" alt="" width="20" height="20"><h1>Notiz zum Tab</h1></header>
+  <header><img src="/icons/icon32.png" alt="" width="20" height="20"><h1 data-i18n="note_heading">Notiz zum Tab</h1></header>
   <div class="page" id="page"></div>
-  <label class="visually-hidden" for="text">Notiz</label>
-  <textarea id="text" placeholder="Worum ging es hier? Was ist noch offen?"></textarea>
+  <label class="visually-hidden" for="text" data-i18n="note_label">Notiz</label>
+  <textarea id="text" placeholder="Worum ging es hier? Was ist noch offen?" data-i18n-placeholder="note_placeholder"></textarea>
   <div class="bar">
-    <span class="help mono" id="hint">⌘↵ speichert</span>
+    <span class="help mono" id="hint" data-i18n="note_saveHint">⌘↵ speichert</span>
     <span>
-      <button class="ghost danger" id="remove" hidden>Löschen</button>
-      <button class="primary" id="save">Speichern</button>
+      <button class="ghost danger" id="remove" hidden data-i18n="note_remove">Löschen</button>
+      <button class="primary" id="save" data-i18n="note_save">Speichern</button>
     </span>
   </div>
   <script type="module" src="note.js"></script>

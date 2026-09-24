@@ -1,5 +1,9 @@
 // Notiz an einem Tab. Gespeichert wird zur Adresse, damit sie einen Neustart übersteht.
 import { send, favicon, h } from '../ui/dom.js';
+import { initI18n, localizeDom } from '../lib/i18n.js';
+
+await initI18n();
+localizeDom();
 
 const params = new URLSearchParams(location.search);
 const url = params.get('url') || '';

@@ -2,6 +2,7 @@
 
 import { getSettings, saveSettings, DEFAULTS } from './settings.js';
 import { listSnapshots, getSnapshot, compactHistory } from './history.js';
+import { t } from './i18n.js';
 
 const KEYS = ['apiKey', 'typesafeKey'];
 
@@ -39,7 +40,7 @@ const mergeById = (a = [], b = []) => {
 
 // Führt zusammen, statt zu ersetzen. Vorhandenes bleibt.
 export async function importAll({ data }) {
-  if (data?.format !== 'tabwerk') throw new Error('Das ist keine Tabwerk-Datei.');
+  if (data?.format !== 'tabwerk') throw new Error(t('xfer_notATabwerkFile'));
   const store = await chrome.storage.local.get(['sessions', 'watches', 'notes', 'snoozed', 'formProfiles']);
   const next = {
     sessions: mergeById(store.sessions, data.sessions),
