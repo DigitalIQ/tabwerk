@@ -23,7 +23,7 @@ Zum Kopieren besser `store/berechtigungen.txt` nehmen: dort steht ein Text pro F
 | identity | Anmeldung bei OpenRouter per OAuth (PKCE), damit der Nutzer keinen Schlüssel kopieren muss. |
 | favicon | Website-Symbole in Listen anzeigen, ohne die Seiten erneut zu laden. |
 | Host: openrouter.ai, api.typesafe.ai | Anfragen an das Entscheidungsmodell Jev, nur mit dem Schlüssel des Nutzers. |
-| optional: http(s)://*/* | Leserecht pro Website für Wächter und, nur auf Wunsch, für die Volltext-Suche in offenen Tabs. |
+| optional: http(s)://*/* | Leserecht pro Website für Wächter und, nur auf Wunsch, für alle Websites: für die Volltext-Suche in offenen Tabs und für „Seite aufräumen“, das Werbung und Cookie-Banner beim Laden ausblendet. |
 | optional: bookmarks | Lesezeichen durchsuchen und mit Ordner-Vorschlag anlegen, nur wenn eingeschaltet. |
 | optional: history | Verlauf in der Schnellsuche durchsuchen, nur wenn eingeschaltet. |
 

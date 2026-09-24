@@ -8,6 +8,7 @@ import * as X from './extras.js';
 import * as FO from './formsbg.js';
 import * as U from './unlock.js';
 import * as PS from './pagesearchbg.js';
+import * as DC from './declutterbg.js';
 import { getSettings, hasKey } from './settings.js';
 import { isOn } from './flags.js';
 import { toLinkList } from './links.js';
@@ -104,6 +105,11 @@ const ACTIONS = [
     return U.setAlwaysUnlock({ host: U.hostKey(tab.url), on: true, windowId }).then((r) => r.message);
   } },
   { id: 'pagesearch.open', flag: 'pageSearch', jev: true, get title() { return t('act_pageSearchOpen'); }, get words() { return `${t('act_pageSearchOpenWords')} seitensuche needle bedeutung find page`; }, run: ({ windowId }) => PS.openPageSearch({ windowId }) },
+  { id: 'declutter.page', flag: 'declutter', jev: true, get title() { return t('act_declutterPage'); }, get words() { return `${t('act_declutterPageWords')} declutter unclutter werbung ads cookie aufräumen`; }, run: async ({ windowId }) => {
+    const r = await DC.analyzeTab({ windowId });
+    return tp('act_declutterDone', r.rules ?? 0);
+  } },
+  { id: 'declutter.pause', flag: 'declutter', get title() { return t('act_declutterPause'); }, get words() { return `${t('act_declutterPauseWords')} declutter pause`; }, run: ({ windowId }) => DC.toggle({ windowId }).then((r) => r.message) },
   { id: 'options', get title() { return t('act_options'); }, get words() { return `${t('act_optionsWords')} settings options`; }, run: () => chrome.runtime.openOptionsPage() },
   { id: 'shortcuts', get title() { return t('act_shortcuts'); }, get words() { return `${t('act_shortcutsWords')} shortcut hotkey`; }, run: () => chrome.tabs.create({ url: 'chrome://extensions/shortcuts' }) },
 ];

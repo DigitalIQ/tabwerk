@@ -263,3 +263,19 @@ button.row:hover { background: var(--sunken); border-color: var(--line); }
 .rule-hints { display: grid; gap: 6px; margin: 0 0 10px; }
 .rule-hint { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 8px; padding: 8px 10px; border-radius: var(--r); background: var(--accent-soft, var(--bg)); font-size: 12.5px; }
 .watch .feedback { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12px; margin-top: 4px; }
+
+/* Seite aufräumen */
+.dc-card { display: grid; gap: 8px; padding: 12px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+.dc-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.dc-host { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dc-badge { flex: none; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: rgb(127 127 127 / 0.12); color: var(--ink-2); }
+.dc-badge.on { background: var(--accent-soft, rgb(26 115 232 / 0.12)); color: var(--ink); }
+.dc-count { margin: 0; font-size: 12.5px; color: var(--ink-2); }
+.dc-count b { font-size: 22px; color: var(--ink); }
+.dc-error { color: var(--danger); }
+.dc-sub { margin: 4px 0 0; font-size: 12px; font-weight: 600; color: var(--ink-2); }
+.dc-rule { grid-template-columns: auto 1fr; cursor: pointer; }
+.dc-rule.off { opacity: 0.55; }
+/* Mit dem siebten Reiter „Seite“ wird die Leiste eng. */
+.strip:has(> [data-panel=page]:not([hidden])) { gap: 0; padding: 0 4px; }
+.strip:has(> [data-panel=page]:not([hidden])) button { font-size: 11.5px; padding: 0 2px; }

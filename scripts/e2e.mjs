@@ -40,10 +40,21 @@ let lastJevBody = null;
 const tmp = mkdtempSync(join(tmpdir(), 'tabwerk-e2e-'));
 chmodSync(tmp, 0o700);
 
+// Seite aufräumen: offline ordnet der Stub nach den Klassennamen der Testseite zu.
+function fakeDeclutter(body, id) {
+  const signals = body.state?.elements?.[id]?.signals || '';
+  const choice = /ad-banner|advert/.test(signals) ? 'ad'
+    : /cookie|consent/.test(signals) ? 'cookie'
+      : /comment/.test(signals) ? 'comments'
+        : /outbrain|recommended/.test(signals) ? 'related' : 'keep';
+  return { type: 'choice', choice, confidence: 1, probabilities: { [choice]: 1 } };
+}
+
 function fakeAnswers(body) {
   const answers = {};
   for (const [id, q] of Object.entries(body.questions)) {
-    if (q.type === 'noul') answers[id] = { type: 'noul', noul: 0.9 };
+    if (q.type === 'choice' && q.criteria?.cookie && q.criteria?.comments) answers[id] = fakeDeclutter(body, id);
+    else if (q.type === 'noul') answers[id] = { type: 'noul', noul: 0.9 };
     else if (q.type === 'score') answers[id] = { type: 'score', score: 1, confidence: 0.9, probabilities: {} };
     else {
       const first = Object.keys(q.criteria)[0];
@@ -111,6 +122,19 @@ const server = createServer((req, res) => {
       <textarea name="nachricht" aria-label="Nachricht"></textarea></form></body>`);
     return;
   }
+  if (req.url.startsWith('/clutter')) {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(`<!doctype html><title>Artikel – Beispielzeitung</title><meta property="og:type" content="article"><body>
+      <nav>Start · Politik · Sport</nav>
+      <main><article><h1 id="headline">Klare Berichte schreiben</h1><p id="body">Wer klar schreibt, wird verstanden. Dieser Artikel zeigt sieben Regeln.</p></article>
+      <div class="ad-banner" id="ad">Anzeige: 30 % auf Reisen</div>
+      <aside class="article-context" id="context">Hintergrund: Quellen und Methoden dieses Artikels.</aside>
+      <section id="comments"><article class="comment"><p>Anna: Sehr hilfreich!</p></article><form><textarea name="reply" aria-label="Antwort"></textarea></form></section>
+      <div class="outbrain-widget" id="outbrain">Das könnte dich auch interessieren: 10 Promis, die sich verändert haben</div></main>
+      <div id="cookie-consent" style="position:fixed;bottom:0;left:0;right:0;background:#eee;padding:20px">Wir nutzen Cookies. <button>Akzeptieren</button> <button>Ablehnen</button></div>
+      </body>`);
+    return;
+  }
   if (req.url.startsWith('/locked')) {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(LOCKED_PAGE);
@@ -135,7 +159,7 @@ const local = `http://127.0.0.1:${port}`;
 const ext = join(tmp, 'ext');
 cpSync(root, ext, { recursive: true, filter: (src) => !/node_modules|test-results|\.git(\/|$)/.test(src) });
 const manifest = JSON.parse(readFileSync(join(ext, 'manifest.json'), 'utf8'));
-manifest.host_permissions.push('http://127.0.0.1/*', 'https://*/*');
+manifest.host_permissions.push('http://127.0.0.1/*', 'https://*/*', 'http://*/*');
 // Optionale Rechte fest vergeben, weil der Test keine Chrome-Rückfrage bestätigen kann.
 manifest.permissions.push('history', 'bookmarks');
 writeFileSync(join(ext, 'manifest.json'), JSON.stringify(manifest, null, 2));
@@ -828,6 +852,84 @@ if (live) {
   const hist = await call('findHistory', { query: 'die Seite mit dem Preisvergleich für Kopfhörer von heute' });
   checkJev('Verlauf in Alltagssprache findet den Preisvergleich', /idealo/.test(hist.hits[0]?.url || ''), hist.hits[0]?.title);
 }
+
+// ---------- Seite aufräumen ----------
+
+await setFeatures({ declutter: true, declutterAuto: false });
+await popup.waitForTimeout(600);
+const registered = await popup.evaluate(async () => (await chrome.scripting.getRegisteredContentScripts()).map((s) => s.id));
+check('Aufräumen: Seitenskript beim Einschalten angemeldet', registered.includes('tabwerk-declutter'), registered.join(','));
+const clutterWin = await popup.evaluate(async (url) => (await chrome.windows.create({ url })).id, `${local}/clutter/artikel-eins`);
+await popup.waitForTimeout(1500);
+const clutter = context.pages().find((p) => p.url().includes('/clutter/artikel-eins'));
+const shown = (sel) => clutter.evaluate((s) => { const el = document.querySelector(s); return Boolean(el) && getComputedStyle(el).display !== 'none'; }, sel);
+const clutterTab = await popup.evaluate(async (w) => (await chrome.tabs.query({ windowId: w }))[0].id, clutterWin);
+const callsBefore = jevCalls;
+const analyzed = await call('declutterAnalyze', { tabId: clutterTab });
+await clutter.waitForTimeout(500);
+check('Aufräumen: Analyse speichert Regeln', analyzed.rules >= 2, `${analyzed.rules} Regeln, ${jevCalls - callsBefore} Anfragen`);
+check('Aufräumen: Werbung ausgeblendet', !(await shown('#ad')));
+check('Aufräumen: Cookie-Banner ausgeblendet, nichts geklickt', !(await shown('#cookie-consent')));
+check('Aufräumen: Überschrift und Artikel bleiben', (await shown('#headline')) && (await shown('#body')));
+check('Aufräumen: Hintergrund-Kasten bleibt', await shown('#context'));
+check('Aufräumen: Kommentare bleiben, solange die Kategorie aus ist', await shown('#comments'));
+const sentBody = JSON.stringify(lastJevBody || {});
+check('Aufräumen: keine Adresse und kein Artikeltext an Jev', !sentBody.includes('127.0.0.1') && !sentBody.includes('sieben Regeln'));
+
+await popup.evaluate(() => chrome.storage.local.set({ declutterHidden: ['ad', 'cookie', 'promotion', 'newsletter', 'social', 'comments', 'related'] }));
+await clutter.waitForTimeout(800);
+check('Aufräumen: Kommentare verschwinden nach dem Einschalten der Kategorie', !(await shown('#comments')));
+check('Aufräumen: Empfehlungen verschwinden nach dem Einschalten der Kategorie', !(await shown('#outbrain')));
+
+// Gleicher Seitentyp: Regeln gelten ohne neue Anfrage.
+const callsReuse = jevCalls;
+await clutter.goto(`${local}/clutter/artikel-zwei`);
+await clutter.waitForTimeout(1200);
+check('Aufräumen: gleicher Seitentyp ohne neue Jev-Anfrage aufgeräumt', !(await shown('#ad')) && jevCalls === callsReuse, `${jevCalls - callsReuse} Anfragen`);
+
+// Wieder einblenden: sichtbar und als Lern-Ereignis gemerkt.
+await call('declutterRule', { tabId: clutterTab, selector: 'div.ad-banner', enabled: false });
+await clutter.waitForTimeout(500);
+check('Aufräumen: Häkchen weg blendet wieder ein', await shown('#ad'));
+const dcLearn = await popup.evaluate(async () => ((await chrome.storage.local.get('learnLog')).learnLog || []).filter((e) => e.f === 'declutter'));
+check('Aufräumen: Wiedereinblenden als Korrektur gelernt', dcLearn.some((e) => e.ok === false && e.jev === 'ad'), `${dcLearn.length} Ereignisse`);
+const dcThreshold = await popup.evaluate(async () => (await chrome.runtime.sendMessage({ type: 'learnState' })).data.per.declutter.fallback);
+check('Aufräumen: Schwelle startet bei 90 %', dcThreshold === 0.9, String(dcThreshold));
+
+// Popup: Bereich „Seite“ für den aktiven Tab im Aufräum-Fenster.
+const dcPopupTab = await popup.evaluate(async ([w, url]) => (await chrome.tabs.create({ windowId: w, url, active: false })).id, [clutterWin, `chrome-extension://${id}/src/popup/popup.html`]);
+await popup.waitForTimeout(800);
+const dcPopup = context.pages().find((p) => p.url().endsWith('/src/popup/popup.html') && p !== popup);
+dcPopup.on('pageerror', (e) => errors.push(e.message));
+await dcPopup.setViewportSize({ width: 408, height: 600 });
+await dcPopup.click('[data-panel=page]');
+await dcPopup.waitForSelector('.dc-card');
+const dcText = await dcPopup.textContent('#panel-page');
+check('Popup: Bereich Seite zeigt Status und Regeln', /Gespeichert/.test(dcText) && /Regel/.test(dcText), dcText.replace(/\s+/g, ' ').slice(0, 80));
+await dcPopup.screenshot({ path: join(out, '10-seite-aufraeumen.png') });
+const stripOverflow = await dcPopup.evaluate(() => document.querySelector('.strip').scrollWidth > document.querySelector('.strip').clientWidth + 1);
+check('Popup: Reiter passen auch mit „Seite“ in die Leiste', !stripOverflow);
+await popup.evaluate((t) => chrome.tabs.remove(t), dcPopupTab);
+
+// Nie aufräumen: nichts mehr ausgeblendet, danach wieder erlaubt.
+await call('declutterRule', { tabId: clutterTab, selector: 'div.ad-banner', enabled: true });
+await call('declutterNever', { host: '127.0.0.1', on: true });
+await clutter.waitForTimeout(600);
+check('Aufräumen: „Nie aufräumen“ zeigt alles wieder', (await shown('#cookie-consent')) && (await shown('#ad')));
+await call('declutterNever', { host: '127.0.0.1', on: false });
+await clutter.waitForTimeout(600);
+check('Aufräumen: wieder erlaubt blendet erneut aus', !(await shown('#ad')));
+
+// Schnellsuche kennt den Befehl.
+const dcActions = await call('paletteActions');
+check('Schnellsuche: Befehl „Seite aufräumen“', dcActions.some((a) => a.id === 'declutter.page' && a.jev));
+
+// Ausschalten: Skript abgemeldet, Seite frei.
+await setFeatures({ declutter: false });
+await popup.waitForTimeout(800);
+const afterOff = await popup.evaluate(async () => (await chrome.scripting.getRegisteredContentScripts()).map((s) => s.id));
+check('Aufräumen: Ausschalten meldet das Skript ab und zeigt alles', !afterOff.includes('tabwerk-declutter') && (await shown('#ad')));
+await popup.evaluate((w) => chrome.windows.remove(w), clutterWin);
 
 // Einstellungen
 const options = await context.newPage();

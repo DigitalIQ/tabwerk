@@ -26,6 +26,7 @@ Nur wenn du einen Schlüssel einträgst und eine Funktion nutzt, die Jev braucht
 |---|---|
 | Finden, Gruppen, Sortieren, Aufräumen, Gruppennamen | Titel, Website und Pfad der Tabs. Keine Parameter nach „?“ und keine Anker nach „#“ |
 | Seitensuche nach Bedeutung | deine Suche und der sichtbare Text der aktuellen Seite: Absätze, Listenpunkte, Überschriften, Zitate und Tabellenzellen, höchstens 160 Stellen und 60.000 Zeichen. Werte aus Formularfeldern gehen nie mit |
+| Seite aufräumen | Seitentyp (etwa Artikel oder Startseite) und bis zu 60 kurze Beschreibungen von Elementen der Seite: Tag, Klassen- und ID-Namen, Position und bis zu 450 Zeichen sichtbarer Text je Element. Links, E-Mail-Adressen und lange Zahlen ersetzt Tabwerk vorher durch Platzhalter. Keine Adresse, kein Seitentitel, kein Artikeltext und keine Formularwerte. Dazu deine eigene Regel, falls du eine angelegt hast |
 | Gleichen Inhalt finden | Titel, Website und Pfad der verglichenen Tabs |
 | Wächter | deine Bedingung, Titel und Website der Seite, die geänderten Zeilen oder Textstellen um Zahlen |
 | Verlauf in Alltagssprache | deine Suche und Titel, Website und Pfad von bis zu 200 besuchten Seiten aus dem gewählten Zeitraum |
@@ -41,7 +42,7 @@ Tabwerk fragt Rechte erst an, wenn eine Funktion sie braucht:
 
 - Leserecht für eine Website erst beim Anlegen eines Wächters für genau diese Website
 - Lesezeichen und Verlauf erst, wenn du die Suche darin einschaltest
-- Leserecht für alle Websites nur für die Volltext-Suche. Der gelesene Text bleibt im Browser.
+- Leserecht für alle Websites nur für die Volltext-Suche und für „Seite aufräumen“. Bei der Volltext-Suche bleibt der gelesene Text im Browser. Beim Aufräumen gehen nur die Beschreibungen aus der Tabelle oben an Jev, und nur bei einer Analyse. Schaltest du „Seite aufräumen“ aus, gibt Tabwerk das Recht zurück, sofern die Volltext-Suche aus ist.
 - Leserecht für eine Website, wenn du dort Kopieren immer erlauben willst
 
 ## Kontakt

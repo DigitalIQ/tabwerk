@@ -27,6 +27,7 @@ Alles, was sich exakt berechnen lässt, erledigt Code. Für semantische Fragen n
 | Schlummern | Tab schließen und zur gewählten Zeit wieder öffnen | Code |
 | Linkliste | Tabs als Markdown oder Text kopieren | Code |
 | Statistik | Tabs pro Fenster und Website, älteste Tabs, Verlauf der Anzahl | Code |
+| Seite aufräumen | blendet Werbung, Cookie-Banner, Aktionen, Newsletter-Kästen, Social-Media-Knöpfe und auf Wunsch Kommentare, Empfehlungen oder eine eigene Regel aus. Einmal pro Seitentyp analysiert, danach ohne Anfrage | Kandidaten und Ausblenden: Code, Einordnung: Jev (`choice`) |
 | Formulare | speichern, ausfüllen, mit Testdaten füllen; geschützte Felder nur mit eigenem Schalter | Code, unbekannte Felder optional Jev |
 | Lernen | merkt sich lokal, wo du Jev folgst oder korrigierst: schlägt Regeln vor, passt die Sicherheitsschwelle je Funktion an, gibt frühere Zuordnungen als Beispiele an Jev, Daumen bei Wächtern | Code, Beispiele optional an Jev |
 | Kopieren erlauben | hebt Sperren für Kopieren, Einfügen, Markieren und Rechtsklick auf, für einen Tab oder immer für eine Website | Code |
@@ -94,6 +95,20 @@ Auf normalen Webseiten liegt die Suche über der Seite, der Hintergrund bleibt a
 Statt nach einem genauen Wort zu suchen wie mit `Strg+F`, beschreibst du in eigenen Worten, was auf der Seite stehen soll, etwa „Kosten außer dem angegebenen Preis“ oder „was passiert, wenn ich kündige“. Tabwerk liest die sichtbaren Absätze, Listenpunkte, Überschriften, Zitate und Tabellenzellen der Seite, Jev bewertet jede Stelle und wählt pro Treffer den stärksten Satz aus, ohne einen neuen zu schreiben. Der stärkste Satz erscheint kräftig grün, der Rest der Stelle blass grün. Mit den Pfeilen in der Leiste oder `↵`/`⇧↵` springst du zwischen den Treffern.
 
 Am schnellsten geht es in der Schnellsuche mit `/F Suchtext`. Die Suche startet dann sofort. Alternativ: der Knopf „Seite durchsuchen“ im Popup unter „Finden“ oder ein eigenes Tastenkürzel unter `chrome://extensions/shortcuts`. Ein zweiter Druck auf das Kürzel schließt die Leiste. Die Suche läuft nur auf Aufruf, nicht laufend im Hintergrund, und nur auf der sichtbaren Seite selbst: eingebettete Rahmen fremder Herkunft, der PDF-Betrachter und Inhalte in einem Schatten-DOM bleiben außen vor. Auf `chrome://`-Seiten und im Web Store öffnet sich ein kurzer Hinweis statt der Leiste. Ohne Schlüssel für Jev zeigt Tabwerk einen Hinweis statt zu suchen.
+
+## Seite aufräumen
+
+Nach dem Vorbild von [Unclutter](https://github.com/kitze/unclutter) von Kitze (MIT-Lizenz, siehe `NOTICE`), neu geschrieben für Tabwerk.
+
+- Einschalten unter Einstellungen, Funktionen, Seiten. Chrome fragt einmal nach dem Zugriff auf alle Websites, weil gespeicherte Regeln beim Laden jeder Seite greifen sollen.
+- Im Popup unter „Seite“ oder in der Schnellsuche mit „Seite aufräumen“ startet die Analyse. Tabwerk sammelt bis zu 60 verdächtige Elemente per Code, Jev ordnet jedes einer Kategorie zu. Nur was Jev mit mindestens 90 % Sicherheit einordnet, verschwindet.
+- Das Ergebnis gilt für den ganzen Seitentyp, etwa alle Artikel einer Rubrik. Weitere Seiten desselben Typs räumt Tabwerk ohne neue Anfrage auf.
+- Kategorien: Werbung, Cookie-Banner, Aktionen, Newsletter, Social Media sind an. Kommentare, empfohlene Artikel und eine eigene Regel in deinen Worten schaltest du dazu. Umschalten wirkt sofort, ohne neue Analyse.
+- Cookie-Banner verschwinden nur optisch. Tabwerk klickt nichts und gibt keine Einwilligung. Wer die Auswahl treffen will, pausiert das Aufräumen auf der Seite.
+- Häkchen weg im Popup blendet ein Element wieder ein. Das zählt als Korrektur: Liegt Jev auf einer Seite öfter daneben, hebt Tabwerk die Schwelle an. Unter 90 % geht sie nie.
+- „Nie aufräumen“ gilt für eine Website mit allen Subdomains. Websites auf der Datenschutz-Liste analysiert Tabwerk nie.
+- „Beim Seitenaufruf analysieren“ analysiert neue Seitentypen von selbst, einmal pro Typ. Die Kosten laufen in den Verbrauch des Monats, eine Analyse kostet etwa 0,0001 bis 0,001 $.
+- Nie geschützt ausgeblendet werden Hauptinhalt, Navigation, Überschrift, Login, Zahlung und Paywalls.
 
 ## Wächter
 

@@ -8,6 +8,6 @@ mkdirSync(`${root}dist`, { recursive: true });
 const out = `${root}dist/tabwerk-${version}.zip`;
 // Nur das aktuelle Paket bleibt liegen, damit beim Hochladen keine alte Version erwischt wird.
 for (const f of readdirSync(`${root}dist`)) if (/^tabwerk-.*\.zip$/.test(f)) rmSync(`${root}dist/${f}`);
-execFileSync('zip', ['-r', '-X', '-q', out, 'manifest.json', 'LICENSE', '_locales', 'src', 'assets', 'icons', '-x', '*.DS_Store'], { cwd: root });
+execFileSync('zip', ['-r', '-X', '-q', out, 'manifest.json', 'LICENSE', 'NOTICE', '_locales', 'src', 'assets', 'icons', '-x', '*.DS_Store'], { cwd: root });
 const list = execFileSync('unzip', ['-l', out], { encoding: 'utf8' });
 console.log(list.trim().split('\n').slice(-1)[0].trim(), '->', out);

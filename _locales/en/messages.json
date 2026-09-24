@@ -5,6 +5,24 @@
   "act_bookmarkAddWords": {
     "message": "bookmark save folder"
   },
+  "act_declutterDone_one": {
+    "message": "$1 rule saved"
+  },
+  "act_declutterDone_other": {
+    "message": "$1 rules saved"
+  },
+  "act_declutterPage": {
+    "message": "Declutter page"
+  },
+  "act_declutterPageWords": {
+    "message": "declutter page ads cookie banner hide clean"
+  },
+  "act_declutterPause": {
+    "message": "Pause or resume decluttering for this page type"
+  },
+  "act_declutterPauseWords": {
+    "message": "declutter pause resume"
+  },
   "act_discardNow": {
     "message": "Discard inactive tabs now"
   },
@@ -383,11 +401,90 @@
   "cmdOpen": {
     "message": "Open Tabwerk"
   },
+  "cmdPageSearch": {
+    "message": "Open in-page search by meaning"
+  },
   "cmdPalette": {
     "message": "Open quick search"
   },
   "cmdUndo": {
     "message": "Undo the last Tabwerk action"
+  },
+  "dc_analyzeFirst": {
+    "message": "Analyze this page type first."
+  },
+  "dc_badAnswer": {
+    "message": "Jev answered incompletely. The previous rules stay."
+  },
+  "dc_badHost": {
+    "message": "That is not a valid website."
+  },
+  "dc_cannotAccess": {
+    "message": "Tabwerk cannot change this page. Reload the tab or check the site access in the settings."
+  },
+  "dc_cat_ad": {
+    "message": "Ads"
+  },
+  "dc_cat_comments": {
+    "message": "Comments"
+  },
+  "dc_cat_cookie": {
+    "message": "Cookie banners"
+  },
+  "dc_cat_custom": {
+    "message": "Own rule"
+  },
+  "dc_cat_newsletter": {
+    "message": "Newsletter prompts"
+  },
+  "dc_cat_promotion": {
+    "message": "Promotions"
+  },
+  "dc_cat_related": {
+    "message": "Recommended articles"
+  },
+  "dc_cat_social": {
+    "message": "Social media"
+  },
+  "dc_excluded": {
+    "message": "$1 is on the list of websites never sent to Jev.",
+    "description": "$1 is a host name"
+  },
+  "dc_featureOff": {
+    "message": "Declutter pages is switched off in the settings."
+  },
+  "dc_neverAdded": {
+    "message": "Tabwerk no longer hides anything on $1",
+    "description": "$1 is a host name"
+  },
+  "dc_neverHere": {
+    "message": "$1 is on the “Never declutter” list.",
+    "description": "$1 is a host name"
+  },
+  "dc_neverRemoved": {
+    "message": "Tabwerk hides clutter on $1 again",
+    "description": "$1 is a host name"
+  },
+  "dc_noKey": {
+    "message": "Connect Tabwerk to Jev first."
+  },
+  "dc_onlyNormalPages": {
+    "message": "This only works on normal websites, not on browser pages, in the Web Store or in PDFs."
+  },
+  "dc_pageChanged": {
+    "message": "The page changed during the analysis. Result discarded."
+  },
+  "dc_pageUnavailable": {
+    "message": "No connection to the page. Reload the tab."
+  },
+  "dc_paused": {
+    "message": "Decluttering paused"
+  },
+  "dc_resumed": {
+    "message": "Decluttering resumed"
+  },
+  "dc_ruleMissing": {
+    "message": "Rule not found."
   },
   "dom_agoNever": {
     "message": "never"
@@ -521,6 +618,9 @@
   "ft_area_organize": {
     "message": "Organize"
   },
+  "ft_area_pages": {
+    "message": "Pages"
+  },
   "ft_area_search": {
     "message": "Search"
   },
@@ -568,6 +668,18 @@
   },
   "ft_copyUnlock_label": {
     "message": "Allow copying"
+  },
+  "ft_declutter_hint": {
+    "message": "Jev finds ads, cookie banners and other clutter. Tabwerk remembers the result per page type and hides it from then on without another request. Needs access to all websites."
+  },
+  "ft_declutter_label": {
+    "message": "Declutter pages"
+  },
+  "ft_declutterAuto_hint": {
+    "message": "Tabwerk analyzes new page types by itself, once per type. Each new type costs one request."
+  },
+  "ft_declutterAuto_label": {
+    "message": "Analyze on page visit"
   },
   "ft_discard_hint": {
     "message": "Saves memory. The tab stays visible and reloads when clicked."
@@ -974,6 +1086,30 @@
   "opt_costsReportedLabel": {
     "message": "reported costs"
   },
+  "opt_declutterCustomLabel": {
+    "message": "Own rule, in your words"
+  },
+  "opt_declutterCustomPlaceholder": {
+    "message": "e.g. floating autoplay video players"
+  },
+  "opt_declutterHiddenHelp": {
+    "message": "This should disappear. Switching takes effect at once, without a new analysis."
+  },
+  "opt_declutterKeywordsLabel": {
+    "message": "Keywords in the page code (optional)"
+  },
+  "opt_declutterNeverHelp": {
+    "message": "One website per line. Subdomains count too. Websites on the privacy list are never analyzed anyway."
+  },
+  "opt_declutterNeverLabel": {
+    "message": "Never declutter on"
+  },
+  "opt_declutterOwnHelp": {
+    "message": "Keywords help find matching elements, for example parts of class names. Re-analyze the page after a change."
+  },
+  "opt_declutterSaveOwn": {
+    "message": "Save own rule"
+  },
   "opt_delete": {
     "message": "Delete"
   },
@@ -1121,6 +1257,9 @@
   },
   "opt_learnFeature_cleanup": {
     "message": "Cleanup"
+  },
+  "opt_learnFeature_declutter": {
+    "message": "Declutter pages"
   },
   "opt_learnFeature_groups": {
     "message": "Groups"
@@ -1650,6 +1789,95 @@
   "popup_connect": {
     "message": "Connect"
   },
+  "popup_dcAllowHere": {
+    "message": "Declutter $1 again",
+    "description": "$1 is a host name"
+  },
+  "popup_dcAnalyze": {
+    "message": "Analyze page"
+  },
+  "popup_dcAnalyzedAt": {
+    "message": "Analyzed on $1 · cost $2",
+    "description": "$1 is a date, $2 a cost"
+  },
+  "popup_dcBusy": {
+    "message": "Analyzing"
+  },
+  "popup_dcCategoryOff": {
+    "message": "category off"
+  },
+  "popup_dcExcluded": {
+    "message": "This website is on the privacy list. Tabwerk sends nothing from it to Jev."
+  },
+  "popup_dcForget": {
+    "message": "Forget this page type"
+  },
+  "popup_dcHiddenCount": {
+    "message": "hidden"
+  },
+  "popup_dcLastError": {
+    "message": "Last analysis: $1",
+    "description": "$1 is an error message"
+  },
+  "popup_dcNever": {
+    "message": "Excluded"
+  },
+  "popup_dcNeverHere": {
+    "message": "Never declutter $1",
+    "description": "$1 is a host name"
+  },
+  "popup_dcNew": {
+    "message": "Not analyzed"
+  },
+  "popup_dcNoCandidates": {
+    "message": "No elements found that can be targeted safely."
+  },
+  "popup_dcNothingSafe": {
+    "message": "Nothing found that can safely go."
+  },
+  "popup_dcOutdated": {
+    "message": "Update available"
+  },
+  "popup_dcPause": {
+    "message": "Pause"
+  },
+  "popup_dcPaused": {
+    "message": "Paused"
+  },
+  "popup_dcPrivacy": {
+    "message": "The analysis sends up to 60 short element descriptions to Jev. Article text, address and form values stay out."
+  },
+  "popup_dcReanalyze": {
+    "message": "Re-analyze"
+  },
+  "popup_dcResume": {
+    "message": "Resume"
+  },
+  "popup_dcRuleAria": {
+    "message": "Hide $1",
+    "description": "$1 is a CSS selector"
+  },
+  "popup_dcRulesTitle_one": {
+    "message": "$1 active rule"
+  },
+  "popup_dcRulesTitle_other": {
+    "message": "$1 active rules"
+  },
+  "popup_dcSaved": {
+    "message": "Saved"
+  },
+  "popup_dcSettings": {
+    "message": "Categories and lists"
+  },
+  "popup_dcUncheckHelp": {
+    "message": "Unticking shows the element again. Tabwerk learns from it."
+  },
+  "popup_dcUnsupported": {
+    "message": "Not available here"
+  },
+  "popup_dcUnsupportedHint": {
+    "message": "Declutter pages only works on normal websites."
+  },
   "popup_delete": {
     "message": "Delete"
   },
@@ -2037,6 +2265,9 @@
   "popup_tabHistory": {
     "message": "History"
   },
+  "popup_tabPage": {
+    "message": "Page"
+  },
   "popup_tabsCount_one": {
     "message": "$1 tab"
   },
@@ -2103,6 +2334,48 @@
   },
   "popup_yesterday": {
     "message": "Yesterday"
+  },
+  "ps_close": {
+    "message": "Close"
+  },
+  "ps_count": {
+    "message": "$1 of $2"
+  },
+  "ps_error": {
+    "message": "Error: $1"
+  },
+  "ps_featureOff": {
+    "message": "Page search is turned off in settings."
+  },
+  "ps_next": {
+    "message": "Next match"
+  },
+  "ps_noKey": {
+    "message": "Without a key for Jev, page search finds nothing. Add one in Tabwerk's settings."
+  },
+  "ps_noMatch": {
+    "message": "No spot matches well enough."
+  },
+  "ps_pageTitle": {
+    "message": "In-page search by meaning"
+  },
+  "ps_placeholder": {
+    "message": "What are you looking for on this page?"
+  },
+  "ps_prev": {
+    "message": "Previous match"
+  },
+  "ps_privacyHint": {
+    "message": "The visible text of this page and your search go to Jev."
+  },
+  "ps_searching": {
+    "message": "Searching…"
+  },
+  "ps_unknownError": {
+    "message": "unknown error"
+  },
+  "ps_unsupportedPage": {
+    "message": "Tabwerk cannot show anything on this page. That includes chrome:// pages, the Web Store and the PDF viewer."
   },
   "set_categoryDevelopment": {
     "message": "Development"
@@ -2533,50 +2806,5 @@
   },
   "xfer_notATabwerkFile": {
     "message": "This isn't a Tabwerk file."
-  },
-  "cmdPageSearch": {
-    "message": "Open in-page search by meaning"
-  },
-  "ps_close": {
-    "message": "Close"
-  },
-  "ps_count": {
-    "message": "$1 of $2"
-  },
-  "ps_error": {
-    "message": "Error: $1"
-  },
-  "ps_featureOff": {
-    "message": "Page search is turned off in settings."
-  },
-  "ps_next": {
-    "message": "Next match"
-  },
-  "ps_noKey": {
-    "message": "Without a key for Jev, page search finds nothing. Add one in Tabwerk's settings."
-  },
-  "ps_noMatch": {
-    "message": "No spot matches well enough."
-  },
-  "ps_pageTitle": {
-    "message": "In-page search by meaning"
-  },
-  "ps_placeholder": {
-    "message": "What are you looking for on this page?"
-  },
-  "ps_prev": {
-    "message": "Previous match"
-  },
-  "ps_privacyHint": {
-    "message": "The visible text of this page and your search go to Jev."
-  },
-  "ps_searching": {
-    "message": "Searching…"
-  },
-  "ps_unknownError": {
-    "message": "unknown error"
-  },
-  "ps_unsupportedPage": {
-    "message": "Tabwerk cannot show anything on this page. That includes chrome:// pages, the Web Store and the PDF viewer."
   }
 }

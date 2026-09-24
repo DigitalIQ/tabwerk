@@ -47,6 +47,7 @@ Formulare und Seiten
 • Formulare speichern und wieder ausfüllen. Passwort-, Karten- und Kontofelder speichert Tabwerk nur, wenn du das ausdrücklich einschaltest.
 • Formulare mit Testdaten füllen
 • Kopieren, Einfügen und Rechtsklick auf Seiten erlauben, die das sperren
+• Seite aufräumen: Werbung, Cookie-Banner und andere Störer ausblenden, einmal pro Seitentyp analysiert. Auf Wunsch auch Kommentare und empfohlene Artikel. Cookie-Banner verschwinden nur optisch, Tabwerk gibt keine Einwilligung.
 
 Optional mit Jev
 Für Entscheidungen wie „Welche Gruppe passt?“ nutzt Tabwerk auf Wunsch Jev, ein Entscheidungsmodell von TypeSafe. Du brauchst dafür einen eigenen Schlüssel von OpenRouter oder TypeSafe. Tabwerk zeigt bei jeder Entscheidung, wie sicher Jev ist, und lässt Unsicheres abgewählt. Ohne Schlüssel laufen alle Funktionen, die nur Code brauchen.
@@ -67,7 +68,7 @@ Back up: every change is saved as a snapshot of your windows, tabs and groups. U
 
 Watch: page watchers check pages on your schedule and notify you when your plain-language condition is met, including exact price limits.
 
-Forms and pages: save and refill forms (password, card and account fields only if you explicitly turn that on), fill forms with test data, and re-enable copy, paste and right-click on pages that block them.
+Forms and pages: save and refill forms (password, card and account fields only if you explicitly turn that on), fill forms with test data, re-enable copy, paste and right-click on pages that block them, and declutter pages: hide ads, cookie banners and other clutter, analyzed once per page type, optionally comments and recommended articles too. Cookie banners are only hidden visually; Tabwerk never gives consent.
 
 Optional decision model: Tabwerk can use Jev by TypeSafe for choices such as which group fits. You need your own OpenRouter or TypeSafe key. Without a key, all code-only features work.
 

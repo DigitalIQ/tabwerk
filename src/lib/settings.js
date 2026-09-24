@@ -102,6 +102,12 @@ export const DEFAULTS = {
   focusMinutes: 25,
   // Kopieren erlauben: Websites, auf denen Tabwerk Sperren immer aufhebt.
   unlockHosts: [],
+  // Seite aufräumen: Kategorien, die verschwinden, eigene Regel, Stichwörter für die Suche
+  // nach Kandidaten und Websites, auf denen nie etwas verschwindet.
+  declutterHidden: ['ad', 'cookie', 'promotion', 'newsletter', 'social'],
+  declutterCustom: '',
+  declutterKeywords: [],
+  declutterNever: [],
   focusBlock: ['youtube.com', 'x.com', 'twitter.com', 'reddit.com', 'instagram.com', 'facebook.com', 'tiktok.com'],
 };
 

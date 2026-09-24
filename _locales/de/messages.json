@@ -5,6 +5,24 @@
   "act_bookmarkAddWords": {
     "message": "lesezeichen merken ordner"
   },
+  "act_declutterDone_one": {
+    "message": "$1 Regel gespeichert"
+  },
+  "act_declutterDone_other": {
+    "message": "$1 Regeln gespeichert"
+  },
+  "act_declutterPage": {
+    "message": "Seite aufräumen"
+  },
+  "act_declutterPageWords": {
+    "message": "seite aufräumen werbung cookie banner ausblenden"
+  },
+  "act_declutterPause": {
+    "message": "Aufräumen für diesen Seitentyp pausieren oder fortsetzen"
+  },
+  "act_declutterPauseWords": {
+    "message": "aufräumen pause fortsetzen"
+  },
   "act_discardNow": {
     "message": "Inaktive Tabs jetzt entladen"
   },
@@ -383,11 +401,90 @@
   "cmdOpen": {
     "message": "Tabwerk öffnen"
   },
+  "cmdPageSearch": {
+    "message": "Seitensuche nach Bedeutung öffnen"
+  },
   "cmdPalette": {
     "message": "Schnellsuche öffnen"
   },
   "cmdUndo": {
     "message": "Letzte Tabwerk-Aktion rückgängig machen"
+  },
+  "dc_analyzeFirst": {
+    "message": "Analysiere diesen Seitentyp zuerst."
+  },
+  "dc_badAnswer": {
+    "message": "Jev hat unvollständig geantwortet. Die alten Regeln bleiben."
+  },
+  "dc_badHost": {
+    "message": "Das ist keine gültige Website."
+  },
+  "dc_cannotAccess": {
+    "message": "Tabwerk darf auf dieser Seite nichts ausblenden. Lade den Tab neu oder prüfe den Zugriff in den Einstellungen."
+  },
+  "dc_cat_ad": {
+    "message": "Werbung"
+  },
+  "dc_cat_comments": {
+    "message": "Kommentare"
+  },
+  "dc_cat_cookie": {
+    "message": "Cookie-Banner"
+  },
+  "dc_cat_custom": {
+    "message": "Eigene Regel"
+  },
+  "dc_cat_newsletter": {
+    "message": "Newsletter"
+  },
+  "dc_cat_promotion": {
+    "message": "Aktionen"
+  },
+  "dc_cat_related": {
+    "message": "Empfohlene Artikel"
+  },
+  "dc_cat_social": {
+    "message": "Social Media"
+  },
+  "dc_excluded": {
+    "message": "$1 steht auf der Liste der Websites, die nie an Jev gehen.",
+    "description": "$1 is a host name"
+  },
+  "dc_featureOff": {
+    "message": "Seite aufräumen ist in den Einstellungen aus."
+  },
+  "dc_neverAdded": {
+    "message": "Auf $1 blendet Tabwerk nichts mehr aus",
+    "description": "$1 is a host name"
+  },
+  "dc_neverHere": {
+    "message": "$1 steht auf der Liste „Nie aufräumen“.",
+    "description": "$1 is a host name"
+  },
+  "dc_neverRemoved": {
+    "message": "Auf $1 blendet Tabwerk wieder aus",
+    "description": "$1 is a host name"
+  },
+  "dc_noKey": {
+    "message": "Verbinde Tabwerk zuerst mit Jev."
+  },
+  "dc_onlyNormalPages": {
+    "message": "Das geht nur auf normalen Websites, nicht auf Browser-Seiten, im Web Store oder in PDFs."
+  },
+  "dc_pageChanged": {
+    "message": "Die Seite hat sich während der Analyse geändert. Ergebnis verworfen."
+  },
+  "dc_pageUnavailable": {
+    "message": "Keine Verbindung zur Seite. Lade den Tab neu."
+  },
+  "dc_paused": {
+    "message": "Aufräumen pausiert"
+  },
+  "dc_resumed": {
+    "message": "Aufräumen läuft wieder"
+  },
+  "dc_ruleMissing": {
+    "message": "Regel nicht gefunden."
   },
   "dom_agoNever": {
     "message": "noch nie"
@@ -521,6 +618,9 @@
   "ft_area_organize": {
     "message": "Ordnen"
   },
+  "ft_area_pages": {
+    "message": "Seiten"
+  },
   "ft_area_search": {
     "message": "Suchen"
   },
@@ -568,6 +668,18 @@
   },
   "ft_copyUnlock_label": {
     "message": "Kopieren erlauben"
+  },
+  "ft_declutter_hint": {
+    "message": "Jev findet Werbung, Cookie-Banner und andere Störer. Tabwerk merkt sich das pro Seitentyp und blendet sie danach ohne weitere Anfrage aus. Braucht Zugriff auf alle Websites."
+  },
+  "ft_declutter_label": {
+    "message": "Seite aufräumen"
+  },
+  "ft_declutterAuto_hint": {
+    "message": "Neue Seitentypen analysiert Tabwerk von selbst, einmal pro Typ. Das kostet bei jedem neuen Typ eine Anfrage."
+  },
+  "ft_declutterAuto_label": {
+    "message": "Beim Seitenaufruf analysieren"
   },
   "ft_discard_hint": {
     "message": "Spart Speicher. Der Tab bleibt sichtbar und lädt beim Anklicken neu."
@@ -974,6 +1086,30 @@
   "opt_costsReportedLabel": {
     "message": "gemeldete Kosten"
   },
+  "opt_declutterCustomLabel": {
+    "message": "Eigene Regel, in deinen Worten"
+  },
+  "opt_declutterCustomPlaceholder": {
+    "message": "z. B. Schwebende Video-Player mit Autoplay"
+  },
+  "opt_declutterHiddenHelp": {
+    "message": "Das soll verschwinden. Umschalten wirkt sofort, ohne neue Analyse."
+  },
+  "opt_declutterKeywordsLabel": {
+    "message": "Stichwörter im Seitencode (optional)"
+  },
+  "opt_declutterNeverHelp": {
+    "message": "Eine Website pro Zeile. Subdomains zählen mit. Websites auf der Datenschutz-Liste werden ohnehin nie analysiert."
+  },
+  "opt_declutterNeverLabel": {
+    "message": "Nie aufräumen auf"
+  },
+  "opt_declutterOwnHelp": {
+    "message": "Die Stichwörter helfen, passende Elemente zu finden, etwa Teile von Klassennamen. Nach einer Änderung die Seite neu analysieren."
+  },
+  "opt_declutterSaveOwn": {
+    "message": "Eigene Regel speichern"
+  },
   "opt_delete": {
     "message": "Löschen"
   },
@@ -1121,6 +1257,9 @@
   },
   "opt_learnFeature_cleanup": {
     "message": "Aufräumen"
+  },
+  "opt_learnFeature_declutter": {
+    "message": "Seite aufräumen"
   },
   "opt_learnFeature_groups": {
     "message": "Gruppen"
@@ -1650,6 +1789,95 @@
   "popup_connect": {
     "message": "Verbinden"
   },
+  "popup_dcAllowHere": {
+    "message": "Auf $1 wieder aufräumen",
+    "description": "$1 is a host name"
+  },
+  "popup_dcAnalyze": {
+    "message": "Seite analysieren"
+  },
+  "popup_dcAnalyzedAt": {
+    "message": "Analysiert am $1 · Kosten $2",
+    "description": "$1 is a date, $2 a cost"
+  },
+  "popup_dcBusy": {
+    "message": "Analysiert"
+  },
+  "popup_dcCategoryOff": {
+    "message": "Kategorie aus"
+  },
+  "popup_dcExcluded": {
+    "message": "Diese Website steht auf der Datenschutz-Liste. Tabwerk schickt nichts von ihr an Jev."
+  },
+  "popup_dcForget": {
+    "message": "Diesen Seitentyp vergessen"
+  },
+  "popup_dcHiddenCount": {
+    "message": "ausgeblendet"
+  },
+  "popup_dcLastError": {
+    "message": "Letzte Analyse: $1",
+    "description": "$1 is an error message"
+  },
+  "popup_dcNever": {
+    "message": "Ausgeschlossen"
+  },
+  "popup_dcNeverHere": {
+    "message": "Auf $1 nie aufräumen",
+    "description": "$1 is a host name"
+  },
+  "popup_dcNew": {
+    "message": "Nicht analysiert"
+  },
+  "popup_dcNoCandidates": {
+    "message": "Keine Elemente gefunden, die sich sicher ansprechen lassen."
+  },
+  "popup_dcNothingSafe": {
+    "message": "Nichts gefunden, was sicher weg kann."
+  },
+  "popup_dcOutdated": {
+    "message": "Update verfügbar"
+  },
+  "popup_dcPause": {
+    "message": "Pause"
+  },
+  "popup_dcPaused": {
+    "message": "Pausiert"
+  },
+  "popup_dcPrivacy": {
+    "message": "Die Analyse schickt bis zu 60 kurze Beschreibungen von Elementen an Jev. Artikeltext, Adresse und Formularwerte bleiben draußen."
+  },
+  "popup_dcReanalyze": {
+    "message": "Neu analysieren"
+  },
+  "popup_dcResume": {
+    "message": "Fortsetzen"
+  },
+  "popup_dcRuleAria": {
+    "message": "$1 ausblenden",
+    "description": "$1 is a CSS selector"
+  },
+  "popup_dcRulesTitle_one": {
+    "message": "$1 Regel aktiv"
+  },
+  "popup_dcRulesTitle_other": {
+    "message": "$1 Regeln aktiv"
+  },
+  "popup_dcSaved": {
+    "message": "Gespeichert"
+  },
+  "popup_dcSettings": {
+    "message": "Kategorien und Listen"
+  },
+  "popup_dcUncheckHelp": {
+    "message": "Häkchen weg blendet das Element wieder ein. Tabwerk lernt daraus."
+  },
+  "popup_dcUnsupported": {
+    "message": "Hier geht das nicht"
+  },
+  "popup_dcUnsupportedHint": {
+    "message": "Seite aufräumen funktioniert nur auf normalen Websites."
+  },
   "popup_delete": {
     "message": "Löschen"
   },
@@ -2037,6 +2265,9 @@
   "popup_tabHistory": {
     "message": "Verlauf"
   },
+  "popup_tabPage": {
+    "message": "Seite"
+  },
   "popup_tabsCount_one": {
     "message": "$1 Tab"
   },
@@ -2103,6 +2334,48 @@
   },
   "popup_yesterday": {
     "message": "Gestern"
+  },
+  "ps_close": {
+    "message": "Schließen"
+  },
+  "ps_count": {
+    "message": "$1 von $2"
+  },
+  "ps_error": {
+    "message": "Fehler: $1"
+  },
+  "ps_featureOff": {
+    "message": "Die Seitensuche ist in den Einstellungen ausgeschaltet."
+  },
+  "ps_next": {
+    "message": "Nächster Treffer"
+  },
+  "ps_noKey": {
+    "message": "Ohne Schlüssel für Jev findet die Seitensuche nichts. Trag ihn in den Tabwerk-Einstellungen ein."
+  },
+  "ps_noMatch": {
+    "message": "Keine Stelle passt gut genug."
+  },
+  "ps_pageTitle": {
+    "message": "Seitensuche nach Bedeutung"
+  },
+  "ps_placeholder": {
+    "message": "Was suchst du auf dieser Seite?"
+  },
+  "ps_prev": {
+    "message": "Vorheriger Treffer"
+  },
+  "ps_privacyHint": {
+    "message": "Der sichtbare Text dieser Seite und deine Suche gehen an Jev."
+  },
+  "ps_searching": {
+    "message": "Suche läuft …"
+  },
+  "ps_unknownError": {
+    "message": "unbekannter Fehler"
+  },
+  "ps_unsupportedPage": {
+    "message": "Auf dieser Seite kann Tabwerk nichts einblenden. Das betrifft chrome://-Seiten, den Web Store und den PDF-Betrachter."
   },
   "set_categoryDevelopment": {
     "message": "Entwicklung"
@@ -2533,50 +2806,5 @@
   },
   "xfer_notATabwerkFile": {
     "message": "Das ist keine Tabwerk-Datei."
-  },
-  "cmdPageSearch": {
-    "message": "Seitensuche nach Bedeutung öffnen"
-  },
-  "ps_close": {
-    "message": "Schließen"
-  },
-  "ps_count": {
-    "message": "$1 von $2"
-  },
-  "ps_error": {
-    "message": "Fehler: $1"
-  },
-  "ps_featureOff": {
-    "message": "Die Seitensuche ist in den Einstellungen ausgeschaltet."
-  },
-  "ps_next": {
-    "message": "Nächster Treffer"
-  },
-  "ps_noKey": {
-    "message": "Ohne Schlüssel für Jev findet die Seitensuche nichts. Trag ihn in den Tabwerk-Einstellungen ein."
-  },
-  "ps_noMatch": {
-    "message": "Keine Stelle passt gut genug."
-  },
-  "ps_pageTitle": {
-    "message": "Seitensuche nach Bedeutung"
-  },
-  "ps_placeholder": {
-    "message": "Was suchst du auf dieser Seite?"
-  },
-  "ps_prev": {
-    "message": "Vorheriger Treffer"
-  },
-  "ps_privacyHint": {
-    "message": "Der sichtbare Text dieser Seite und deine Suche gehen an Jev."
-  },
-  "ps_searching": {
-    "message": "Suche läuft …"
-  },
-  "ps_unknownError": {
-    "message": "unbekannter Fehler"
-  },
-  "ps_unsupportedPage": {
-    "message": "Auf dieser Seite kann Tabwerk nichts einblenden. Das betrifft chrome://-Seiten, den Web Store und den PDF-Betrachter."
   }
 }

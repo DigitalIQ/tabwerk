@@ -73,6 +73,7 @@ function showPanel(name) {
   if (name === 'history') showHist();
   if (name === 'find') $('#find-q').focus();
   if (name === 'groups') showRuleHints();
+  if (name === 'page') showDeclutter();
 }
 document.querySelectorAll('[role=tab]').forEach((tab) => tab.addEventListener('click', () => showPanel(tab.dataset.panel)));
 
@@ -135,6 +136,65 @@ async function showRuleHints() {
       await send('dismissRule', { rule: r.rule });
       showRuleHints();
     } }, icon('x')))));
+}
+
+// ---------- Seite aufräumen ----------
+
+async function showDeclutter() {
+  const out = $('#page-out');
+  put(out, skeleton());
+  let s;
+  try {
+    s = await send('declutterStatus', { windowId: win.id });
+  } catch (error) {
+    put(out, failure(error));
+    return;
+  }
+  if (!s.supported) {
+    put(out, empty('warn', t('popup_dcUnsupported'), s.error || t('popup_dcUnsupportedHint')));
+    return;
+  }
+  const p = s.profile;
+  const act = (type, payload = {}) => run(out, async () => {
+    await send(type, { windowId: win.id, tabId: s.tabId, ...payload });
+    await showDeclutter();
+  });
+  const status = s.busy ? t('popup_dcBusy')
+    : s.never ? t('popup_dcNever')
+      : p?.enabled === false ? t('popup_dcPaused')
+        : p ? (s.outdated ? t('popup_dcOutdated') : t('popup_dcSaved')) : t('popup_dcNew');
+  const blocked = s.never || s.excluded;
+  const estimated = connection(settings).provider === 'typesafe';
+  const active = (r) => s.hidden.includes(r.category);
+  const card = h('div', { class: 'dc-card' },
+    h('div', { class: 'dc-head' },
+      h('b', { class: 'dc-host' }, s.host),
+      h('span', { class: `dc-badge${p && !blocked && p.enabled !== false ? ' on' : ''}` }, status)),
+    h('p', { class: 'help mono' }, s.context.label),
+    h('p', { class: 'dc-count' }, h('b', { class: 'mono' }, fmtNumber(s.hiddenCount)), ` ${t('popup_dcHiddenCount')}`),
+    p ? h('p', { class: 'help' }, t('popup_dcAnalyzedAt', fmtDate(new Date(p.analyzedAt), { day: 'numeric', month: 'short' }), `${estimated ? '≈ ' : ''}${cost(p.cost || 0)}`)) : null,
+    s.error && !s.busy ? h('p', { class: 'help dc-error' }, icon('warn'), ` ${t('popup_dcLastError', s.error)}`) : null,
+    s.excluded ? h('p', { class: 'help' }, t('popup_dcExcluded')) : null,
+    h('div', { class: 'bar' },
+      h('button', { class: 'primary', disabled: blocked || s.busy || !hasKey(settings), onclick: () => act('declutterAnalyze') }, p ? t('popup_dcReanalyze') : t('popup_dcAnalyze')),
+      p && !blocked ? h('button', { onclick: () => act('declutterToggle', { enabled: p.enabled === false }) }, p.enabled === false ? t('popup_dcResume') : t('popup_dcPause')) : null),
+    h('button', { class: 'ghost', onclick: () => act('declutterNever', { host: s.host, on: !s.never }) }, s.never ? t('popup_dcAllowHere', s.host) : t('popup_dcNeverHere', s.host)),
+    !p && !blocked ? h('p', { class: 'help' }, t('popup_dcPrivacy')) : null);
+  const rules = p?.rules || [];
+  const list = p ? [
+    h('p', { class: 'dc-sub' }, tp('popup_dcRulesTitle', rules.filter((r) => r.enabled && active(r)).length)),
+    rules.length
+      ? rules.map((r) => h('label', { class: `row dc-rule${active(r) ? '' : ' off'}` },
+        h('input', { type: 'checkbox', checked: r.enabled, disabled: s.busy, 'aria-label': t('popup_dcRuleAria', r.selector), onchange: (e) => act('declutterRule', { selector: r.selector, enabled: e.target.checked }) }),
+        h('span', { class: 'txt' },
+          h('span', { class: 'title' }, t(`dc_cat_${r.category}`), active(r) ? '' : ` · ${t('popup_dcCategoryOff')}`),
+          h('span', { class: 'site' }, r.selector))))
+      : h('p', { class: 'help' }, p.candidateCount ? t('popup_dcNothingSafe') : t('popup_dcNoCandidates')),
+    h('p', { class: 'help' }, t('popup_dcUncheckHelp')),
+    h('button', { class: 'ghost danger', onclick: () => act('declutterForget') }, t('popup_dcForget')),
+  ] : [];
+  put(out, card, ...list, h('button', { class: 'ghost', onclick: () => chrome.runtime.openOptionsPage() }, icon('gear'), ` ${t('popup_dcSettings')}`));
+  if (s.busy) setTimeout(() => showDeclutter(), 1000);
 }
 
 // ---------- Finden ----------

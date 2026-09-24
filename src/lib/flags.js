@@ -44,6 +44,9 @@ export const FEATURES = [
   { id: 'formsSensitive', parent: 'forms', get area() { return t('ft_area_bookmarksForms'); }, get label() { return t('ft_formsSensitive_label'); }, get hint() { return t('ft_formsSensitive_hint'); }, def: false, warn: true },
   { id: 'formsJev', parent: 'forms', get area() { return t('ft_area_bookmarksForms'); }, get label() { return t('ft_formsJev_label'); }, get hint() { return t('ft_formsJev_hint'); }, def: false, jev: true },
 
+  { id: 'declutter', get area() { return t('ft_area_pages'); }, get label() { return t('ft_declutter_label'); }, get hint() { return t('ft_declutter_hint'); }, def: false, jev: true, perm: { origins: ['https://*/*', 'http://*/*'] } },
+  { id: 'declutterAuto', parent: 'declutter', get area() { return t('ft_area_pages'); }, get label() { return t('ft_declutterAuto_label'); }, get hint() { return t('ft_declutterAuto_hint'); }, def: false, jev: true },
+
   { id: 'learn', get area() { return t('ft_area_learn'); }, get label() { return t('ft_learn_label'); }, get hint() { return t('ft_learn_hint'); }, def: true },
   { id: 'learnRules', parent: 'learn', get area() { return t('ft_area_learn'); }, get label() { return t('ft_learnRules_label'); }, get hint() { return t('ft_learnRules_hint'); }, def: true },
   { id: 'learnThreshold', parent: 'learn', get area() { return t('ft_area_learn'); }, get label() { return t('ft_learnThreshold_label'); }, get hint() { return t('ft_learnThreshold_hint'); }, def: true },

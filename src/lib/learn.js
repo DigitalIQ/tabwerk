@@ -7,7 +7,11 @@ import * as L from './learncore.js';
 
 const KEY = 'learnLog';
 const DISMISSED = 'learnDismissed';
-export const FEATURES = ['groups', 'cleanup', 'find', 'watch'];
+export const FEATURES = ['groups', 'cleanup', 'find', 'watch', 'declutter'];
+// Seite aufräumen startet bei 90 %. Das Lernen darf die Schwelle dort nur anheben,
+// weil Tabwerk Elemente unter 90 % nie ausblendet und darüber also nichts weiß.
+const FLOOR = { declutter: 0.9 };
+const fallbackFor = (feature, settings) => (feature === 'watch' ? settings.notifyAt : Math.max(settings.confidence, FLOOR[feature] || 0));
 
 export async function learnLog() {
   const { [KEY]: log = [] } = await chrome.storage.local.get(KEY);
@@ -37,11 +41,11 @@ export async function record({ events = [] }) {
 
 // Gelernte Schwelle einer Funktion oder die aus den Einstellungen.
 export async function threshold(feature, settings) {
-  const fallback = feature === 'watch' ? settings.notifyAt : settings.confidence;
+  const fallback = fallbackFor(feature, settings);
   if (!isOn(settings, 'learnThreshold')) return fallback;
   const events = (await learnLog()).filter((e) => e.f === feature);
   const learned = feature === 'watch' ? L.calibrateNoul(events) : L.calibrate(events);
-  return learned?.threshold ?? fallback;
+  return Math.max(learned?.threshold ?? fallback, FLOOR[feature] || 0);
 }
 
 export async function examples(hosts) {
@@ -81,7 +85,7 @@ export async function learnState() {
       n: events.length,
       agreed: events.filter((e) => e.ok === true).length,
       learned,
-      fallback: f === 'watch' ? settings.notifyAt : settings.confidence,
+      fallback: fallbackFor(f, settings),
     };
   }
   return { total: log.length, per, rules: await ruleSuggestions() };

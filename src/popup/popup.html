@@ -24,6 +24,7 @@
     <button role="tab" data-panel="dupes" data-flag="cleanup" aria-selected="false" data-i18n="lbl_cleanup">Aufräumen</button>
     <button role="tab" data-panel="watch" data-flag="watches" aria-selected="false" data-i18n="popup_tabWatch">Wächter</button>
     <button role="tab" data-panel="history" data-flag="history|sessions" aria-selected="false" data-i18n="popup_tabHistory">Verlauf</button>
+    <button role="tab" data-panel="page" data-flag="declutter" aria-selected="false" data-i18n="popup_tabPage">Seite</button>
   </nav>
 
   <div class="keybar" id="keybar" hidden>
@@ -122,6 +123,11 @@
         </form>
         <div id="sessions-out" class="out"></div>
       </div>
+    </section>
+
+    <!-- Seite aufräumen -->
+    <section class="panel" id="panel-page" role="tabpanel" hidden>
+      <div id="page-out" class="out"></div>
     </section>
   </main>
 

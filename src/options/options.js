@@ -2,6 +2,7 @@ import { h, icon, send, cost } from '../ui/dom.js';
 import { getSettings, saveSettings, getUsage, CHROME_COLORS, PROVIDERS, connection, DEFAULTS, hasKey } from '../lib/settings.js';
 import { FEATURES, FEATURE_DEFAULTS, isOn } from '../lib/flags.js';
 import { toBookmarkHtml } from '../lib/bookmarkfile.js';
+import { HIDEABLE, cleanHidden, parseKeywords } from '../lib/declutter.js';
 import { t, tp, fmtDate, fmtNumber, initI18n, localizeDom, LANGUAGES } from '../lib/i18n.js';
 
 await initI18n();
@@ -168,7 +169,7 @@ const EXTRAS = {
     const pct = (x) => fmtNumber(x, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
     const fill = async () => {
       const s = await send('learnState');
-      const rows = ['groups', 'cleanup', 'watch'].map((f) => {
+      const rows = ['groups', 'cleanup', 'watch', 'declutter'].map((f) => {
         const p = s.per[f];
         const learned = p.learned?.threshold;
         return h('div', { class: 'learn-row' },
@@ -221,6 +222,38 @@ const EXTRAS = {
       h('div', { class: 'inline' }, input, add),
     ];
   },
+  declutter: () => {
+    const hidden = cleanHidden(settings.declutterHidden);
+    const checks = HIDEABLE.map((c) => {
+      const box = h('input', { type: 'checkbox', checked: hidden.includes(c), disabled: c === 'custom' && !settings.declutterCustom });
+      box.addEventListener('change', async () => {
+        const now = cleanHidden(settings.declutterHidden);
+        await save({ declutterHidden: HIDEABLE.filter((x) => (x === c ? box.checked : now.includes(x))) });
+      });
+      return h('label', { class: 'check' }, box, ` ${t(`dc_cat_${c}`)}`);
+    });
+    const custom = h('input', { type: 'text', maxlength: 300, value: settings.declutterCustom, placeholder: t('opt_declutterCustomPlaceholder'), 'aria-label': t('opt_declutterCustomLabel') });
+    const keywords = h('input', { type: 'text', class: 'mono', maxlength: 400, value: parseKeywords(settings.declutterKeywords).join(', '), placeholder: 'video-player, sticky-video', 'aria-label': t('opt_declutterKeywordsLabel') });
+    const saveOwn = h('button', { class: 'ghost', onclick: async () => {
+      const text = custom.value.replace(/\s+/g, ' ').trim();
+      const now = cleanHidden(settings.declutterHidden);
+      // Eine neue eigene Regel ist sofort an, eine leere aus.
+      const next = text ? [...new Set([...now, 'custom'])] : now.filter((x) => x !== 'custom');
+      await save({ declutterCustom: text, declutterKeywords: parseKeywords(keywords.value), declutterHidden: cleanHidden(next) });
+      renderFeatures();
+    } }, t('opt_declutterSaveOwn'));
+    return [
+      h('p', { class: 'help' }, t('opt_declutterHiddenHelp')),
+      h('div', { class: 'dc-checks' }, ...checks),
+      h('label', { class: 'field' }, h('span', {}, t('opt_declutterCustomLabel')), custom),
+      h('label', { class: 'field' }, h('span', {}, t('opt_declutterKeywordsLabel')), keywords),
+      h('div', { class: 'inline' }, saveOwn),
+      h('p', { class: 'help' }, t('opt_declutterOwnHelp')),
+      h('label', { class: 'field' }, h('span', {}, t('opt_declutterNeverLabel')),
+        h('textarea', { class: 'mono', placeholder: 'spiegel.de', onchange: (e) => save({ declutterNever: lines(e.target.value).map((x) => x.replace(/^https?:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, '').toLowerCase()) }) }, (settings.declutterNever || []).join('\n'))),
+      h('p', { class: 'help' }, t('opt_declutterNeverHelp')),
+    ];
+  },
   focus: () => [
     h('label', { class: 'inline' }, t('opt_focusDurationPrefix'),
       h('input', { type: 'number', min: 5, max: 240, value: settings.focusMinutes, onchange: (e) => save({ focusMinutes: Math.max(5, Number(e.target.value) || 25) }) }), t('opt_focusDurationSuffix')),
@@ -246,6 +279,7 @@ function renderFeatures() {
           if (f.id === 'paletteHistoryJev') await save({ paletteHistory: true });
         }
         await save({ features: { ...flags, [f.id]: box.checked } });
+        if (!box.checked && f.id === 'declutter' && !isOn(settings, 'paletteFulltext')) await chrome.permissions.remove(f.perm).catch(() => {});
         renderFeatures();
       });
       const extra = EXTRAS[f.id] && flags[f.id] && !parentOff ? h('div', { class: 'feat-extra' }, ...EXTRAS[f.id]()) : null;

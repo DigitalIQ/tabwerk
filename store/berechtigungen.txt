@@ -23,7 +23,7 @@ Melden, wenn ein Wächter anschlägt oder ein geschlummerter Tab zurück ist.
 HTML einer beobachteten Seite in Text umwandeln. Der Service Worker hat keinen DOMParser.
 
 === scripting ===
-Schnellsuche über der Seite einblenden, Text beobachteter Seiten lesen, Formulare speichern und ausfüllen, Kopiersperren einer Seite aufheben. Nur nach einer Aktion des Nutzers oder für Websites, die der Nutzer ausdrücklich freigegeben hat.
+Schnellsuche über der Seite einblenden, Text beobachteter Seiten lesen, Formulare speichern und ausfüllen, Kopiersperren einer Seite aufheben, Werbung und Cookie-Banner ausblenden (Seite aufräumen). Nur nach einer Aktion des Nutzers oder für Websites, die der Nutzer ausdrücklich freigegeben hat.
 
 === identity ===
 Anmeldung bei OpenRouter per OAuth (PKCE), damit der Nutzer seinen Schlüssel nicht von Hand kopieren muss.
@@ -38,7 +38,7 @@ Schnellsuche, Formulare und „Kopieren erlauben“ im aktiven Tab nach Tastenk�
 Einträge im Rechtsklick-Menü für Wächter, Notizen, Schlummern, Formulare, Kopieren erlauben und Lesezeichen.
 
 === Hostberechtigung (host permissions) ===
-Fest: openrouter.ai und api.typesafe.ai für Anfragen an das Entscheidungsmodell Jev, nur mit dem Schlüssel des Nutzers. Optional (http und https, alle Websites): Tabwerk fragt erst, wenn der Nutzer einen Wächter für eine Website anlegt, dort Kopieren immer erlauben will oder die Volltext-Suche einschaltet. Chrome zeigt dann eine Rückfrage, und das Recht gilt nur für diese Website, außer bei der Volltext-Suche.
+Fest: openrouter.ai und api.typesafe.ai für Anfragen an das Entscheidungsmodell Jev, nur mit dem Schlüssel des Nutzers. Optional (http und https, alle Websites): Tabwerk fragt erst, wenn der Nutzer einen Wächter für eine Website anlegt, dort Kopieren immer erlauben will, die Volltext-Suche einschaltet oder „Seite aufräumen“ einschaltet. Chrome zeigt dann eine Rückfrage. Das Recht gilt nur für diese Website, außer bei der Volltext-Suche und bei „Seite aufräumen“: Dort gilt es für alle Websites, weil gespeicherte Regeln beim Laden jeder Seite greifen.
 
 === bookmarks (optional) ===
 Lesezeichen durchsuchen und mit Ordner-Vorschlag anlegen. Nur wenn der Nutzer das in den Einstellungen einschaltet.

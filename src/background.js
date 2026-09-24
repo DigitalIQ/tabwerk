@@ -11,6 +11,7 @@ import * as T from './lib/transfer.js';
 import * as U from './lib/unlock.js';
 import * as Learn from './lib/learn.js';
 import * as PS from './lib/pagesearchbg.js';
+import * as DC from './lib/declutterbg.js';
 import { decide } from './lib/jev.js';
 import { getUsage, getSettings } from './lib/settings.js';
 import { isOn } from './lib/flags.js';
@@ -84,6 +85,12 @@ const handlers = {
   watchFeedback: W.watchFeedback,
   pageSearch: PS.evaluate,
   openPageSearch: ({ windowId, query }) => PS.openPageSearch({ windowId, query }),
+  declutterStatus: DC.status,
+  declutterAnalyze: DC.analyzeTab,
+  declutterToggle: DC.toggle,
+  declutterRule: DC.setRule,
+  declutterForget: DC.forget,
+  declutterNever: DC.setNever,
   unlockTab: U.unlockTab,
   setAlwaysUnlock: U.setAlwaysUnlock,
   listUnlockHosts: U.listUnlockHosts,
@@ -263,13 +270,15 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'local' && changes.features) createMenus();
   if (area === 'local' && (changes.features || changes.unlockHosts)) U.syncUnlockScripts().catch(() => {});
+  if (area === 'local' && changes.features) DC.syncDeclutterScript().catch(() => {});
+  else if (area === 'local' && (changes.declutterHidden || changes.declutterNever || changes.excludedHosts)) DC.refreshAll().catch(() => {});
   if (area === 'local' && changes.uiLanguage) {
     // i18nProbe: aktive Sprache des Service Workers, für den Browser-Test.
     initI18n().then(() => { chrome.storage.session.set({ i18nProbe: language() }); return createMenus(); });
   }
 });
-chrome.permissions.onAdded.addListener(() => { createMenus(); U.syncUnlockScripts().catch(() => {}); });
-chrome.permissions.onRemoved.addListener(() => { createMenus(); U.syncUnlockScripts().catch(() => {}); });
+chrome.permissions.onAdded.addListener(() => { createMenus(); U.syncUnlockScripts().catch(() => {}); DC.syncDeclutterScript().catch(() => {}); });
+chrome.permissions.onRemoved.addListener(() => { createMenus(); U.syncUnlockScripts().catch(() => {}); DC.syncDeclutterScript().catch(() => {}); });
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   await createMenus();
@@ -278,6 +287,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   H.takeSnapshot(REASON.first);
   if (reason === 'update') H.compactHistory().catch(() => {});
   U.syncUnlockScripts().catch(() => {});
+  DC.syncDeclutterScript().catch(() => {});
   if (reason === 'install') chrome.runtime.openOptionsPage();
 });
 
