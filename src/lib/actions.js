@@ -6,6 +6,7 @@ import * as F from './features.js';
 import * as H from './history.js';
 import * as X from './extras.js';
 import * as FO from './formsbg.js';
+import * as U from './unlock.js';
 import { getSettings, hasKey } from './settings.js';
 import { isOn } from './flags.js';
 import { toLinkList } from './links.js';
@@ -85,6 +86,12 @@ const ACTIONS = [
     return { query: '/f ' };
   } },
   { id: 'forms.test', flag: 'formsTestData', title: 'Formular mit Testdaten füllen', words: 'form test fake dummy', run: ({ windowId }) => FO.fillTestData({ windowId }).then((r) => r.message) },
+  { id: 'unlock.tab', flag: 'copyUnlock', title: 'Kopieren und Rechtsklick erlauben', words: 'copy paste rechtsklick markieren entsperren unlock', run: ({ windowId }) => U.unlockTab({ windowId }).then((r) => r.message) },
+  // origin: die Schnellsuche fragt vorher nach dem Leserecht für die Website des aktiven Tabs.
+  { id: 'unlock.always', flag: 'copyUnlock', origin: true, title: 'Kopieren auf dieser Website immer erlauben', words: 'copy paste immer website unlock', run: async ({ windowId }) => {
+    const t = await activeTab(windowId);
+    return U.setAlwaysUnlock({ host: U.hostKey(t.url), on: true, windowId }).then((r) => r.message);
+  } },
   { id: 'options', title: 'Tabwerk-Einstellungen', words: 'settings options', run: () => chrome.runtime.openOptionsPage() },
   { id: 'shortcuts', title: 'Tastenkürzel ändern', words: 'shortcut hotkey', run: () => chrome.tabs.create({ url: 'chrome://extensions/shortcuts' }) },
 ];
@@ -97,7 +104,7 @@ export async function listActions() {
     .filter((a) => !a.flag || isOn(settings, a.flag))
     .filter((a) => !a.needs || perms.permissions?.includes(a.needs))
     .filter((a) => (a.id === 'focus.end' ? focus : a.id === 'focus.start' ? !focus : true))
-    .map(({ id, title, words, jev }) => ({ id, title, words, jev: Boolean(jev), disabled: Boolean(jev && !hasKey(settings)) }));
+    .map(({ id, title, words, jev, origin }) => ({ id, title, words, jev: Boolean(jev), origin: Boolean(origin), disabled: Boolean(jev && !hasKey(settings)) }));
 }
 
 export async function runAction({ id, windowId }) {

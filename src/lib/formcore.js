@@ -68,6 +68,24 @@ export function fakePerson(random = Math.random) {
   };
 }
 
+// Testwerte für geschützte Felder. Alles öffentliche Beispielwerte, die kein echtes Konto treffen:
+// die Beispiel-IBAN aus der Bundesbank-Doku und die Visa-Testkarte der Zahlungsanbieter.
+export function fakeSensitive(field) {
+  const hay = [field.label, field.name, field.id, field.placeholder, field.autocomplete].filter(Boolean).join(' ').toLowerCase();
+  const has = (re) => re.test(hay);
+  if (field.type === 'password' || has(/pass|pwd|kennwort/)) return 'Test-Passwort-2026!';
+  if (has(/iban/)) return 'DE89370400440532013000';
+  if (has(/bic|swift/)) return 'COBADEFFXXX';
+  if (has(/cvv|cvc|csc|security.?code|prüf/)) return '123';
+  if (has(/exp|ablauf|gültig|valid/)) return '12/30';
+  if (has(/card|karte|cc-number|kreditkarte/)) return '4111111111111111';
+  if (has(/\btan\b|otp|one-time|code/)) return '123456';
+  if (has(/pin\b/)) return '1234';
+  if (has(/konto|account/)) return '0532013000';
+  if (has(/steuer|tax/)) return '12345678901';
+  return 'test';
+}
+
 // Wählt pro Feld einen passenden erfundenen Wert anhand von Typ und Beschriftung.
 export function fakeValue(field, person, random = Math.random) {
   const hay = [field.label, field.name, field.id, field.placeholder, field.autocomplete].filter(Boolean).join(' ').toLowerCase();

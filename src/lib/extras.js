@@ -215,6 +215,15 @@ export async function setNote({ url, title, text }) {
   return notes[key] || null;
 }
 
+// Hängt Text an die Notiz des aktiven Tabs an. Eine vorhandene Notiz bleibt erhalten.
+export async function addNote({ windowId, text }) {
+  const [tab] = await chrome.tabs.query({ active: true, windowId });
+  if (!tab?.url || !/^(https?|file):/.test(tab.url)) throw new Error('Notizen gehen nur auf normalen Webseiten.');
+  const old = await getNote({ url: tab.url });
+  const note = await setNote({ url: tab.url, title: tab.title, text: old ? `${old.text}\n${text.trim()}` : text });
+  return { note, message: old ? 'Notiz ergänzt' : 'Notiz gespeichert' };
+}
+
 export async function openNoteEditor(tab) {
   if (!tab?.url) return;
   const params = new URLSearchParams({ url: tab.url, title: tab.title || '' });

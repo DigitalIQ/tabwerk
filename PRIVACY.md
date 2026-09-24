@@ -12,7 +12,8 @@ Alles, was Tabwerk speichert, liegt in `chrome.storage.local` in deinem Chrome-P
 - der Verlauf deiner Fenster, Tabs und Gruppen
 - benannte Sitzungen, Notizen, geschlummerte Tabs
 - Wächter und der zuletzt gelesene Text der beobachteten Seiten
-- gespeicherte Formulare. Passwort-, Karten-, Konto-, IBAN- und TAN-Felder speichert Tabwerk nie.
+- gespeicherte Formulare. Passwort-, Karten-, Konto-, IBAN- und TAN-Felder speichert Tabwerk nur, wenn du den Schalter „Auch geschützte Felder speichern“ einschaltest. Dann liegen sie unverschlüsselt in deinem Chrome-Profil und kommen mit in den Export.
+- die Liste der Websites, auf denen Tabwerk Kopieren immer erlaubt
 
 Diese Daten werden nicht synchronisiert. Du löschst sie, indem du Tabwerk entfernst oder in den Einstellungen den Verlauf leerst.
 
@@ -38,6 +39,7 @@ Tabwerk fragt Rechte erst an, wenn eine Funktion sie braucht:
 - Leserecht für eine Website erst beim Anlegen eines Wächters für genau diese Website
 - Lesezeichen und Verlauf erst, wenn du die Suche darin einschaltest
 - Leserecht für alle Websites nur für die Volltext-Suche. Der gelesene Text bleibt im Browser.
+- Leserecht für eine Website, wenn du dort Kopieren immer erlauben willst
 
 ## Kontakt
 

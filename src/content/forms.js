@@ -1,8 +1,9 @@
 // Diese Funktionen laufen per chrome.scripting.executeScript in der Seite.
 // Chrome überträgt nur den Funktionstext. Deshalb darf keine davon etwas von außen benutzen.
 
-// Liest alle Formularfelder der Seite. Sensible Felder bekommen keinen Wert.
-export function collectFields() {
+// Liest alle Formularfelder der Seite. Sensible Felder bekommen keinen Wert,
+// außer der Schalter „Auch geschützte Felder speichern“ ist an.
+export function collectFields(withSensitive = false) {
   const SENSITIVE = /pass|pwd|kennwort|passwort|card|karte|cc-|cvv|cvc|csc|iban|bic|swift|konto|account.?num|pin\b|\btan\b|otp|one-time|token|secret|geheim|ssn|social.?security|steuer.?id|tax.?id|security.?code/i;
   const text = (el) => (el?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
   const labelOf = (el) => {
@@ -51,8 +52,9 @@ export function collectFields() {
     if (type === 'select') f.options = [...el.options].map((o) => o.value);
     const sensitive = type === 'password' || /^(cc-|current-password|new-password|one-time-code)/.test(f.autocomplete)
       || SENSITIVE.test([f.name, f.id, f.label, f.autocomplete, f.placeholder].join(' '));
-    if (sensitive) {
-      f.sensitive = true;
+    if (sensitive) f.sensitive = true;
+    if (sensitive && !withSensitive) {
+      // kein Wert
     } else if (type === 'checkbox') f.value = el.checked;
     else if (type === 'radio') f.value = el.checked ? el.value : null;
     else f.value = el.value;
@@ -62,7 +64,7 @@ export function collectFields() {
 }
 
 // Trägt Werte ein. assignments: [{ selector, id, name, type, value }]
-export function fillFields(assignments) {
+export function fillFields(assignments, withSensitive = false) {
   const setNative = (el, value) => {
     const proto = el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : el.tagName === 'SELECT' ? HTMLSelectElement.prototype : HTMLInputElement.prototype;
     const setter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
@@ -86,7 +88,7 @@ export function fillFields(assignments) {
   for (const a of assignments) {
     if (a.value === null || a.value === undefined) continue;
     const el = find(a);
-    if (!el || el.type === 'password') { missing.push(a.label || a.name || a.id); continue; }
+    if (!el || (el.type === 'password' && !withSensitive)) { missing.push(a.label || a.name || a.id); continue; }
     if (el.type === 'checkbox') el.checked = Boolean(a.value);
     else if (el.type === 'radio') el.checked = true;
     else if (el.tagName === 'SELECT') {

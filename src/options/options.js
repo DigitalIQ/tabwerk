@@ -143,6 +143,30 @@ const EXTRAS = {
     h('input', { type: 'number', min: 5, max: 1440, value: settings.discardAfterMin, onchange: (e) => save({ discardAfterMin: Math.max(5, Number(e.target.value) || 60) }) }), 'Minuten ohne Nutzung')],
   cleanupSuggest: () => [h('label', { class: 'inline' }, 'Alt ab',
     h('input', { type: 'number', min: 1, max: 60, value: settings.cleanupDays, onchange: (e) => save({ cleanupDays: Math.max(1, Number(e.target.value) || 3) }) }), 'Tagen ohne Nutzung')],
+  copyUnlock: () => {
+    const input = h('input', { type: 'text', class: 'mono', placeholder: 'bank.example', 'aria-label': 'Website' });
+    const list = h('ul', { class: 'host-list' }, ...(settings.unlockHosts || []).map((host) => h('li', {},
+      h('span', { class: 'mono' }, host),
+      h('button', { class: 'ghost icon', title: 'Entfernen', 'aria-label': `${host} entfernen`, onclick: async () => {
+        await send('setAlwaysUnlock', { host, on: false });
+        settings = await getSettings();
+        renderFeatures();
+      } }, icon('x')))));
+    const add = h('button', { class: 'ghost', onclick: async () => {
+      const host = input.value.trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/^www\./, '');
+      if (!host) return;
+      // Chrome fragt hier einmal nach dem Leserecht für diese Website.
+      if (!(await chrome.permissions.request({ origins: [`*://${host}/*`, `*://*.${host}/*`] }).catch(() => false))) return;
+      await send('setAlwaysUnlock', { host, on: true });
+      settings = await getSettings();
+      renderFeatures();
+    } }, icon('plus'), 'Hinzufügen');
+    return [
+      h('p', { class: 'help' }, 'Für einen Tab: Rechtsklick, „Kopieren und Rechtsklick erlauben“. Auf diesen Websites passiert das bei jedem Laden:'),
+      list,
+      h('div', { class: 'inline' }, input, add),
+    ];
+  },
   focus: () => [
     h('label', { class: 'inline' }, 'Dauer',
       h('input', { type: 'number', min: 5, max: 240, value: settings.focusMinutes, onchange: (e) => save({ focusMinutes: Math.max(5, Number(e.target.value) || 25) }) }), 'Minuten'),
@@ -161,6 +185,7 @@ function renderFeatures() {
       const box = h('input', { type: 'checkbox', id: `f-${f.id}`, disabled: parentOff });
       box.checked = flags[f.id];
       box.addEventListener('change', async () => {
+        if (box.checked && f.warn && !confirm(`${f.label}\n\n${f.hint}\n\nTrotzdem einschalten?`)) { box.checked = false; return; }
         if (box.checked && f.perm) {
           const granted = await chrome.permissions.request(f.perm);
           if (!granted) { box.checked = false; return; }
@@ -190,7 +215,7 @@ async function renderProfiles() {
     return;
   }
   $('#profiles').replaceChildren(...list.map((p) => {
-    const table = h('table', { hidden: true }, ...p.fields.map((f) => h('tr', {}, h('td', {}, f.label || f.name || f.id || f.type), h('td', { class: 'mono' }, String(f.value)))));
+    const table = h('table', { hidden: true }, ...p.fields.map((f) => h('tr', {}, h('td', {}, f.label || f.name || f.id || f.type), h('td', { class: 'mono' }, f.sensitive ? '••••••' : String(f.value)))));
     return h('div', { class: 'profile' },
       h('div', { class: 'head' },
         h('span', { class: 'name', title: p.name }, p.name),

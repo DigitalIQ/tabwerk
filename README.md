@@ -26,7 +26,8 @@ Alles, was sich exakt berechnen lässt, erledigt Code. Für semantische Fragen n
 | Schlummern | Tab schließen und zur gewählten Zeit wieder öffnen | Code |
 | Linkliste | Tabs als Markdown oder Text kopieren | Code |
 | Statistik | Tabs pro Fenster und Website, älteste Tabs, Verlauf der Anzahl | Code |
-| Formulare | speichern, ausfüllen, mit Testdaten füllen | Code, unbekannte Felder optional Jev |
+| Formulare | speichern, ausfüllen, mit Testdaten füllen; geschützte Felder nur mit eigenem Schalter | Code, unbekannte Felder optional Jev |
+| Kopieren erlauben | hebt Sperren für Kopieren, Einfügen, Markieren und Rechtsklick auf, für einen Tab oder immer für eine Website | Code |
 | Export und Import | alles als Datei, Sitzungen auch als Lesezeichen-Datei | Code |
 
 Jede Funktion lässt sich in den Einstellungen einzeln ausschalten. Abhängige Funktionen hängen an der übergeordneten.
@@ -63,6 +64,7 @@ Gruppen, Sortieren, Doppelte, Rückgängig und der Verlauf arbeiten im Fenster, 
 
 - Tippen sucht per Code, unscharf: „gh tabw“ findet „GitHub … tabwerk“. Umlaute und ß sind egal.
 - Filter: `/t` Tabs, `/a` Aktionen, `/b` Lesezeichen, `/h` Verlauf, `/n` Notizen, `/s` Sitzungen, `/z` geschlummerte Tabs, `/f` Formulare.
+- Notiz zum aktiven Tab: `/N` öffnet das Notiz-Fenster. `/N Text` speichert den Text sofort. Eine vorhandene Notiz bekommt ihn als neue Zeile dazu.
 - Farbmodus: automatisch nach Website, wie das System, immer hell oder immer dunkel.
 - Volltext: auf Wunsch sucht die Schnellsuche auch im sichtbaren Text offener Tabs.
 - Mit `/h` und `⇧↵` findet Jev Seiten aus dem Verlauf per Beschreibung, etwa „der Artikel über Solarstrom von letzter Woche“.
@@ -91,6 +93,8 @@ Tabwerk hört auf jede Änderung an Tabs, Gruppen und Fenstern. Nach 1,5 Sekunde
 
 Aufbewahrung: die letzten 24 Stunden vollständig (höchstens 400), bis 7 Tage eine pro Stunde, bis 90 Tage eine pro Tag.
 
+Speicherformat: Jedes Fenster liegt als eigener Block, gepackt mit gzip. Der Name eines Blocks ist ein Fingerabdruck (SHA-256) seines Inhalts. Ein Fenster, das sich nicht ändert, liegt deshalb nur einmal im Speicher, egal wie viele Sicherungen darauf zeigen. Auf einem simulierten Tag mit 8 Fenstern, 320 Tabs und 600 Änderungen braucht das 2,2 MB statt 34 MB. Blöcke, auf die keine Sicherung mehr zeigt, löscht Tabwerk beim Aufräumen. Sicherungen im alten Format baut Tabwerk nach dem Update einmal um.
+
 Beim Wiederherstellen nutzt Tabwerk offene Tabs weiter. Fehlende Tabs öffnet es neu. Tabs, die im alten Stand nicht vorkamen, bleiben offen und rücken ans Ende. Vor jedem Wiederherstellen sichert Tabwerk den aktuellen Stand.
 
 Der Verlauf liegt nur lokal in `chrome.storage.local`. Er ersetzt kein Backup über eine Neuinstallation hinweg.
@@ -117,6 +121,8 @@ npm run icons     # rendert die Icons neu
 npm run pack      # baut dist/tabwerk-<version>.zip für den Chrome Web Store
 npm run store     # erzeugt Store-Bilder aus den Test-Screenshots
 ```
+
+`npm install` schaltet die Git-Hooks in `.githooks/` ein. Danach baut jeder Commit das Store-Paket in `dist/` neu. Ohne `npm install`: `git config core.hooksPath .githooks`.
 
 Texte und Angaben für den Chrome Web Store stehen in [store/listing.md](store/listing.md) und [store/review.md](store/review.md).
 

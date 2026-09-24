@@ -1,0 +1,3 @@
+#!/bin/sh
+# Baut nach jedem Commit das ZIP für den Chrome Web Store neu (dist/, nicht im Repo).
+node "$(git rev-parse --show-toplevel)/scripts/pack.mjs" || echo "Store-Paket konnte nicht gebaut werden." >&2

@@ -79,6 +79,7 @@ async function askJev(body) {
   return res.response;
 }
 
+const LOCKED_PAGE = `<!doctype html><title>Gesperrte Seite</title><style>body{user-select:none;-webkit-user-select:none}</style><body oncontextmenu="return false"><p id=t>Diesen Text darf man nicht kopieren.</p><script>window.__blocked=0;document.addEventListener('copy',(e)=>{e.preventDefault();window.__blocked++;});document.addEventListener('contextmenu',(e)=>e.preventDefault());</script></body>`;
 const server = createServer((req, res) => {
   if (req.url === '/decisions' && req.method === 'POST') {
     let data = '';
@@ -106,6 +107,11 @@ const server = createServer((req, res) => {
       <label for="ort">Ort</label><select id="ort" name="ort"><option value="">–</option><option>Berlin</option><option>Köln</option></select>
       <label><input type="checkbox" name="news"> Newsletter</label>
       <textarea name="nachricht" aria-label="Nachricht"></textarea></form></body>`);
+    return;
+  }
+  if (req.url.startsWith('/locked')) {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(LOCKED_PAGE);
     return;
   }
   if (req.url.startsWith('/shop')) {
@@ -158,7 +164,12 @@ const pages = [
   ['https://docs.google.com/document/d/quartalsbericht-q3/edit', 'Quartalsbericht Q3 – Google Docs'],
   ['https://www.amazon.de/dp/B0TEST1234', 'Bosch Akkuschrauber GSR 18V – Amazon.de'],
 ];
+const LOCKED = `<!doctype html><title>Gesperrte Seite</title><style>body{user-select:none;-webkit-user-select:none}</style><body oncontextmenu="return false"><p id=t>Diesen Text darf man nicht kopieren.</p><script>window.__blocked=0;document.addEventListener('copy',(e)=>{e.preventDefault();window.__blocked++;});document.addEventListener('contextmenu',(e)=>e.preventDefault());</script></body>`;
 await context.route(/^https:\/\/(?!openrouter)/, (route) => {
+  if (route.request().url().includes('locked-test')) {
+    route.fulfill({ contentType: 'text/html; charset=utf-8', body: LOCKED });
+    return;
+  }
   if (route.request().url().includes('dark-theme-test')) {
     route.fulfill({ contentType: 'text/html; charset=utf-8', body: '<!doctype html><meta name="color-scheme" content="dark"><title>Dunkle Seite</title><style>:root{color-scheme:dark}body{background:#0d1117;color:#e6edf3;font:16px sans-serif;margin:0;padding:40px}p{max-width:60ch}</style><h1>Dunkle Testseite</h1>' + '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>'.repeat(20) });
     return;
@@ -361,7 +372,8 @@ await palette.waitForTimeout(100);
 const palTop = await palette.textContent('#list .item .title');
 check('Schnellsuche findet per Code den Preisvergleich', /Preisvergleich/.test(palTop), palTop);
 await palette.fill('#q', 'gh tabw');
-await palette.waitForTimeout(100);
+// Die Quellen laden im Hintergrund nach. Kurz warten, bis der Treffer steht.
+await palette.waitForFunction(() => /tabwerk/i.test(document.querySelector('#list .item .title')?.textContent || ''), null, { timeout: 2000 }).catch(() => {});
 const palGh = await palette.textContent('#list .item .title');
 check('Schnellsuche: Abkürzung „gh tabw“ trifft GitHub', /tabwerk/.test(palGh), palGh);
 await palette.fill('#q', '/a sortier');
@@ -630,7 +642,92 @@ check('Formular: Passwortfeld bleibt leer', (await form.inputValue('#pw')) === '
 await form.reload();
 await call('fillTestData', { windowId: formWin });
 check('Testdaten: E-Mail-Feld bekommt eine Beispieladresse', /@example\.com$/.test(await form.inputValue('input[name=email]')));
+
+// Formulare: mit Schalter auch geschützte Felder
+await setFeatures({ formsSensitive: true });
+await form.reload();
+await form.fill('#vn', 'Max');
+await form.fill('#pw', 'geheim456');
+await form.fill('#iban', 'DE89370400440532013000');
+const savedAll = await call('saveForm', { windowId: formWin });
+const allNames = savedAll.profile.fields.map((f) => f.name || f.id);
+check('Formular mit Schalter: Passwort und IBAN gespeichert und markiert', allNames.includes('pw') && allNames.includes('iban') && savedAll.profile.fields.find((f) => f.name === 'pw').sensitive === true, allNames.join(','));
+await form.reload();
+await call('fillForm', { windowId: formWin, profileId: savedAll.profile.id });
+check('Formular mit Schalter: Passwort kommt zurück', (await form.inputValue('#pw')) === 'geheim456');
+await form.reload();
+await call('fillTestData', { windowId: formWin });
+check('Testdaten mit Schalter: Beispiel-IBAN im IBAN-Feld', (await form.inputValue('#iban')) === 'DE89370400440532013000');
+await setFeatures({ formsSensitive: false });
 await form.close();
+
+// Kopieren erlauben: für einen Tab
+const blockedState = (p) => p.evaluate(() => {
+  const menu = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
+  document.getElementById('t').dispatchEvent(menu);
+  const copy = new ClipboardEvent('copy', { bubbles: true, cancelable: true });
+  document.getElementById('t').dispatchEvent(copy);
+  return { menuBlocked: menu.defaultPrevented, copyBlocked: copy.defaultPrevented, select: getComputedStyle(document.body).userSelect };
+});
+const locked = await context.newPage();
+await locked.goto(`${local}/locked`);
+const lockedBefore = await blockedState(locked);
+check('Gesperrte Testseite sperrt wirklich', lockedBefore.menuBlocked && lockedBefore.copyBlocked && lockedBefore.select === 'none', JSON.stringify(lockedBefore));
+const lockedTab = await popup.evaluate(async () => (await chrome.tabs.query({})).find((t) => (t.url || '').includes('/locked')).id);
+await call('unlockTab', { tabId: lockedTab });
+const lockedAfter = await blockedState(locked);
+check('Kopieren erlauben: Rechtsklick, Kopieren und Markieren gehen', !lockedAfter.menuBlocked && !lockedAfter.copyBlocked && lockedAfter.select === 'text', JSON.stringify(lockedAfter));
+await locked.close();
+
+// Kopieren erlauben: immer auf einer Website
+await call('setAlwaysUnlock', { host: 'locked-test.example', on: true });
+const always = await context.newPage();
+await always.goto('https://www.locked-test.example/artikel');
+const alwaysState = await blockedState(always);
+check('Kopieren immer erlaubt: gilt direkt beim Laden', !alwaysState.menuBlocked && !alwaysState.copyBlocked, JSON.stringify(alwaysState));
+await call('setAlwaysUnlock', { host: 'locked-test.example', on: false });
+await always.reload();
+check('Kopieren immer erlaubt: wieder aus', (await blockedState(always)).menuBlocked);
+await always.close();
+
+// Schnellsuche: /N speichert eine Notiz zum aktiven Tab
+const noteTarget = await context.newPage();
+await noteTarget.goto('https://www.spiegel.de/notiz-test');
+const noteWinId = await popup.evaluate(async () => (await chrome.tabs.query({})).find((t) => (t.url || '').includes('notiz-test')).windowId);
+const pal3 = await context.newPage();
+await pal3.goto(`chrome-extension://${id}/src/palette/palette.html?standalone=1&win=${noteWinId}`);
+await noteTarget.bringToFront();
+await pal3.waitForSelector('#list .item');
+await pal3.fill('#q', '/N');
+check('/N ohne Text bietet das Notiz-Fenster an', /Notiz-Fenster/.test(await pal3.textContent('#list .item .title')));
+await pal3.fill('#q', '/N Angebot bis Freitag prüfen');
+check('/N mit Text zeigt die Notiz als Treffer', /Angebot bis Freitag/.test(await pal3.textContent('#list .item .title')));
+await pal3.press('#q', 'Enter');
+await pal3.waitForTimeout(500);
+const quick = await call('getNote', { url: 'https://www.spiegel.de/notiz-test' });
+check('/N speichert die Notiz ohne Fenster', quick?.text === 'Angebot bis Freitag prüfen', quick?.text);
+if (!pal3.isClosed()) await pal3.close();
+await noteTarget.close();
+
+// Verlauf: Fenster als gepackte Blöcke, unveränderte Fenster nur einmal
+const store = await popup.evaluate(async () => {
+  const all = await chrome.storage.local.get(null);
+  const snaps = Object.keys(all).filter((k) => k.startsWith('hist:'));
+  const blocks = Object.keys(all).filter((k) => k.startsWith('hwin:'));
+  const newest = all[snaps.sort().at(-1)];
+  return { snaps: snaps.length, blocks: blocks.length, refsOnly: newest.windows.every((w) => w.block && !w.tabs), windows: newest.windows.length };
+});
+check('Verlauf speichert Fenster als Blöcke', store.refsOnly && store.blocks > 0, JSON.stringify(store));
+check('Verlauf: weniger Blöcke als Fenster in allen Sicherungen', store.blocks < store.snaps * store.windows, `${store.blocks} Blöcke, ${store.snaps} Sicherungen`);
+// Altes Format wird umgebaut
+await popup.evaluate(async () => {
+  const idx = (await chrome.storage.local.get('histIndex')).histIndex;
+  const old = { id: '1000', t: Date.now() - 3600e3, reason: 'Altformat', sig: 'x', windows: [{ id: 1, focused: true, incognito: false, state: 'normal', tabs: [{ id: 1, url: 'https://example.com/alt', title: 'Alt', pinned: false, active: true, groupId: -1 }], groups: [] }] };
+  await chrome.storage.local.set({ 'hist:1000': old, histIndex: [...idx, { id: '1000', t: old.t, reason: 'Altformat', sig: 'x', windows: 1, tabs: 1, groups: 0 }].sort((a, b) => b.t - a.t) });
+});
+const compacted = await call('compactHistory');
+const oldBack = await call('getSnapshot', { id: '1000' });
+check('Altes Verlaufsformat wird umgebaut und bleibt lesbar', compacted.compacted >= 1 && oldBack.windows[0].tabs[0].url === 'https://example.com/alt', JSON.stringify(compacted));
 
 // Export und Import
 const exported = await call('exportAll', { withKeys: false });

@@ -96,6 +96,8 @@ export const DEFAULTS = {
   // Aufräum-Vorschlag: so lange unbenutzt gilt ein Tab als alt.
   cleanupDays: 3,
   focusMinutes: 25,
+  // Kopieren erlauben: Websites, auf denen Tabwerk Sperren immer aufhebt.
+  unlockHosts: [],
   focusBlock: ['youtube.com', 'x.com', 'twitter.com', 'reddit.com', 'instagram.com', 'facebook.com', 'tiktok.com'],
 };
 

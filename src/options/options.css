@@ -143,3 +143,7 @@ label.btn { display: inline-flex; align-items: center; min-height: 32px; padding
   .cat { grid-template-columns: 1fr auto; grid-template-areas: 'tab del' 'name name' 'hint hint'; }
   .usage { grid-template-columns: 1fr 1fr; }
 }
+
+.host-list { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 4px; }
+.host-list li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 4px 4px 10px; border-radius: var(--r); background: var(--bg); }
+.host-list:empty { display: none; }

@@ -1,7 +1,7 @@
 // Export und Import aller Tabwerk-Daten als eine JSON-Datei.
 
 import { getSettings, saveSettings, DEFAULTS } from './settings.js';
-import { listSnapshots } from './history.js';
+import { listSnapshots, getSnapshot, compactHistory } from './history.js';
 
 const KEYS = ['apiKey', 'typesafeKey'];
 
@@ -22,8 +22,12 @@ export async function exportAll({ withKeys = false, withHistory = true, withForm
   if (withForms) data.formProfiles = store.formProfiles || [];
   if (withHistory) {
     const index = await listSnapshots();
-    const snaps = await chrome.storage.local.get(index.map((e) => `hist:${e.id}`));
-    data.history = index.map((e) => snaps[`hist:${e.id}`]).filter(Boolean);
+    // Die Datei enthält jede Sicherung vollständig, damit sie auch ohne Tabwerk lesbar bleibt.
+    data.history = [];
+    for (const e of index) {
+      const snap = await getSnapshot(e.id).catch(() => null);
+      if (snap) data.history.push((({ blocks, ...rest }) => rest)(snap));
+    }
   }
   return data;
 }
@@ -58,6 +62,7 @@ export async function importAll({ data }) {
     const index = [...histIndex, ...add.map(({ windows, ...entry }) => entry)].sort((a, b) => b.t - a.t);
     await chrome.storage.local.set({ ...writes, histIndex: index });
     snapshots = add.length;
+    if (add.length) await compactHistory();
   }
   for (const s of next.snoozed) {
     if (s.when > Date.now()) await chrome.alarms.create(`snooze:${s.id}`, { when: s.when });

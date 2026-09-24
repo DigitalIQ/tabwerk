@@ -5,6 +5,7 @@ import { normalizeUrl } from './url.js';
 import { planRetention } from './retention.js';
 import { getSettings } from './settings.js';
 import { isOn } from './flags.js';
+import { BLOCK_PREFIX, splitWindow, joinWindow, gzip, orphanBlocks } from './histstore.js';
 
 const INDEX = 'histIndex';
 const QUIET_MS = 1500;
@@ -23,7 +24,34 @@ export async function listSnapshots() {
 export async function getSnapshot(id) {
   const key = `hist:${id}`;
   const { [key]: snap } = await chrome.storage.local.get(key);
-  return snap;
+  return snap ? inflate(snap) : null;
+}
+
+// Setzt eine Sicherung aus ihren Fenster-Blöcken zusammen. Alte Sicherungen haben die Tabs noch direkt drin.
+async function inflate(snap) {
+  const refs = snap.windows.filter((w) => w.block);
+  if (!refs.length) return snap;
+  const blocks = await chrome.storage.local.get([...new Set(refs.map((w) => BLOCK_PREFIX + w.block))]);
+  const windows = [];
+  for (const w of snap.windows) {
+    if (!w.block) windows.push(w);
+    else if (blocks[BLOCK_PREFIX + w.block]) windows.push(await joinWindow(w, blocks[BLOCK_PREFIX + w.block]));
+  }
+  if (!windows.length) throw new Error('Diese Sicherung ist beschädigt.');
+  return { ...snap, windows };
+}
+
+// Zerlegt Fenster in Blöcke und schreibt nur die, die es noch nicht gibt.
+async function packWindows(windows) {
+  const parts = await Promise.all(windows.map(splitWindow));
+  const keys = [...new Set(parts.map((p) => BLOCK_PREFIX + p.block))];
+  const have = await chrome.storage.local.get(keys);
+  const writes = {};
+  for (const p of parts) {
+    const key = BLOCK_PREFIX + p.block;
+    if (!have[key] && !writes[key]) writes[key] = await gzip(p.body);
+  }
+  return { refs: parts.map((p) => p.ref), blocks: [...new Set(parts.map((p) => p.block))], writes };
 }
 
 async function capture() {
@@ -96,11 +124,16 @@ export function takeSnapshot(reason, { force = false } = {}) {
       return index[0];
     }
     const t = Date.now();
-    const entry = { id: String(t), t, reason, sig, ...summarize(windows) };
+    const { refs, blocks, writes } = await packWindows(windows);
+    const entry = { id: String(t), t, reason, sig, ...summarize(windows), blocks };
     const next = [entry, ...index];
     const { keep, drop } = planRetention(next, t);
-    await chrome.storage.local.set({ [`hist:${entry.id}`]: { ...entry, windows }, [INDEX]: keep });
-    if (drop.length) await chrome.storage.local.remove(drop.map((e) => `hist:${e.id}`));
+    // Erst die Blöcke, dann Sicherung und Liste. So zeigt nie eine Sicherung auf einen fehlenden Block.
+    await chrome.storage.local.set(writes);
+    await chrome.storage.local.set({ [`hist:${entry.id}`]: { ...entry, windows: refs }, [INDEX]: keep });
+    if (drop.length) {
+      await chrome.storage.local.remove([...drop.map((e) => `hist:${e.id}`), ...orphanBlocks(keep, drop).map((b) => BLOCK_PREFIX + b)]);
+    }
     return entry;
   });
 }
@@ -116,8 +149,36 @@ export function scheduleSnapshot() {
 
 export async function clearHistory() {
   const index = await listSnapshots();
-  await chrome.storage.local.remove([INDEX, ...index.map((e) => `hist:${e.id}`)]);
+  await chrome.storage.local.remove([INDEX, ...index.map((e) => `hist:${e.id}`), ...orphanBlocks([], index).map((b) => BLOCK_PREFIX + b)]);
   return { removed: index.length };
+}
+
+// Bringt Sicherungen im alten Format (alle Tabs direkt drin) ins Block-Format.
+// Läuft nach einem Update einmal durch, in kleinen Portionen.
+export function compactHistory() {
+  return serial(async () => {
+    const index = await listSnapshots();
+    const todo = index.filter((e) => !e.blocks);
+    let done = 0;
+    for (let i = 0; i < todo.length; i += 20) {
+      const part = todo.slice(i, i + 20);
+      const snaps = await chrome.storage.local.get(part.map((e) => `hist:${e.id}`));
+      for (const e of part) {
+        const snap = snaps[`hist:${e.id}`];
+        if (!snap || snap.windows.some((w) => w.block)) continue;
+        const { refs, blocks, writes } = await packWindows(snap.windows);
+        await chrome.storage.local.set(writes);
+        await chrome.storage.local.set({ [`hist:${e.id}`]: { ...snap, windows: refs, blocks } });
+        e.blocks = blocks;
+        done += 1;
+      }
+    }
+    if (done) {
+      // serial hält neue Sicherungen so lange an. Die Liste ist also noch aktuell.
+      await chrome.storage.local.set({ [INDEX]: index });
+    }
+    return { compacted: done };
+  });
 }
 
 // ---------- Wiederherstellen ----------

@@ -13,9 +13,9 @@ Tabwerk hilft, viele offene Browser-Tabs zu verwalten: finden, ordnen, aufräume
 | alarms | Wächter im gewählten Takt prüfen, geschlummerte Tabs wecken, Fokus beenden, inaktive Tabs entladen. |
 | notifications | Melden, wenn ein Wächter anschlägt oder ein geschlummerter Tab zurück ist. |
 | offscreen | HTML einer beobachteten Seite in Text umwandeln. Der Service Worker hat keinen DOMParser. |
-| scripting | Schnellsuche über der Seite einblenden, Text beobachteter Seiten lesen, Formulare speichern und ausfüllen. Nur auf Nutzeraktion oder für Seiten, die der Nutzer freigegeben hat. |
+| scripting | Schnellsuche über der Seite einblenden, Text beobachteter Seiten lesen, Formulare speichern und ausfüllen, Kopiersperren einer Seite aufheben. Nur auf Nutzeraktion oder für Websites, die der Nutzer ausdrücklich freigegeben hat. |
 | activeTab | Schnellsuche und Formulare im aktiven Tab nach Tastenkürzel oder Rechtsklick. |
-| contextMenus | Einträge im Rechtsklick-Menü für Wächter, Notizen, Schlummern, Formulare und Lesezeichen. |
+| contextMenus | Einträge im Rechtsklick-Menü für Wächter, Notizen, Schlummern, Formulare, Kopieren erlauben und Lesezeichen. |
 | identity | Anmeldung bei OpenRouter per OAuth (PKCE), damit der Nutzer keinen Schlüssel kopieren muss. |
 | favicon | Website-Symbole in Listen anzeigen, ohne die Seiten erneut zu laden. |
 | Host: openrouter.ai, api.typesafe.ai | Anfragen an das Entscheidungsmodell Jev, nur mit dem Schlüssel des Nutzers. |

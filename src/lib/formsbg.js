@@ -5,7 +5,7 @@ import { decide } from './jev.js';
 import { getSettings, hasKey } from './settings.js';
 import { isOn } from './flags.js';
 import { hostOf } from './url.js';
-import { matchFields, describeField, fakePerson, fakeValue, isSensitive } from './formcore.js';
+import { matchFields, describeField, fakePerson, fakeValue, fakeSensitive, isSensitive } from './formcore.js';
 import { collectFields, fillFields } from '../content/forms.js';
 
 async function activeTab(windowId) {
@@ -28,6 +28,9 @@ export async function listProfiles() {
   return formProfiles;
 }
 
+// Geschützt: Passwort, Karte, Konto, IBAN, TAN. Standard: bleiben draußen.
+const guarded = (f) => f.sensitive || isSensitive(f);
+
 async function saveProfiles(list) {
   await chrome.storage.local.set({ formProfiles: list });
 }
@@ -36,9 +39,12 @@ export async function saveForm({ windowId, name }) {
   const settings = await getSettings();
   if (!isOn(settings, 'forms')) throw new Error('Formulare sind in den Einstellungen ausgeschaltet.');
   const tab = await activeTab(windowId);
-  const { fields } = await inPage(tab.id, collectFields);
-  // Sensible Felder bleiben ganz draußen, auch ohne Wert.
-  const kept = fields.filter((f) => !f.sensitive && !isSensitive(f) && f.value !== null && f.value !== '' && f.value !== false);
+  const all = isOn(settings, 'formsSensitive');
+  const { fields } = await inPage(tab.id, collectFields, [all]);
+  // Sensible Felder bleiben ganz draußen, auch ohne Wert. Mit dem Schalter kommen sie markiert mit.
+  const kept = fields
+    .filter((f) => (all || !guarded(f)) && f.value !== null && f.value !== undefined && f.value !== '' && f.value !== false)
+    .map((f) => (guarded(f) ? { ...f, sensitive: true } : f));
   if (!kept.length) throw new Error('Auf dieser Seite gibt es kein ausgefülltes Formularfeld.');
   const host = hostOf(tab.url);
   const profile = {
@@ -50,7 +56,7 @@ export async function saveForm({ windowId, name }) {
     fields: kept,
   };
   await saveProfiles([profile, ...(await listProfiles())]);
-  const skipped = fields.filter((f) => f.sensitive).length;
+  const skipped = all ? 0 : fields.filter(guarded).length;
   return { profile, message: `${kept.length} Felder gespeichert${skipped ? `, ${skipped} geschützte ausgelassen` : ''}` };
 }
 
@@ -75,8 +81,9 @@ export async function fillForm({ windowId, profileId }) {
   const host = hostOf(tab.url);
   const profile = profileId ? profiles.find((p) => p.id === profileId) : profiles.find((p) => p.host === host);
   if (!profile) throw new Error('Für diese Website ist noch kein Formular gespeichert.');
-  const { fields } = await inPage(tab.id, collectFields);
-  const targets = fields.filter((f) => !f.sensitive && !isSensitive(f));
+  const all = isOn(settings, 'formsSensitive');
+  const { fields } = await inPage(tab.id, collectFields, [false]);
+  const targets = fields.filter((f) => all || !guarded(f));
   const match = matchFields(targets, profile.fields);
   let cost;
   let viaJev = 0;
@@ -105,7 +112,7 @@ export async function fillForm({ windowId, profileId }) {
     }
   }
   const assignments = targets.map((t, i) => (match[i] === -1 ? null : { ...t, value: profile.fields[match[i]].value })).filter(Boolean);
-  const res = await inPage(tab.id, fillFields, [assignments]);
+  const res = await inPage(tab.id, fillFields, [assignments, all]);
   return {
     ...res,
     cost,
@@ -117,16 +124,17 @@ export async function fillTestData({ windowId }) {
   const settings = await getSettings();
   if (!isOn(settings, 'formsTestData')) throw new Error('Testdaten sind in den Einstellungen ausgeschaltet.');
   const tab = await activeTab(windowId);
-  const { fields } = await inPage(tab.id, collectFields);
+  const all = isOn(settings, 'formsSensitive');
+  const { fields } = await inPage(tab.id, collectFields, [false]);
   const person = fakePerson();
   const radios = new Set();
-  const assignments = fields.filter((f) => !f.sensitive && !isSensitive(f)).map((f) => {
+  const assignments = fields.filter((f) => all || !guarded(f)).map((f) => {
     if (f.type === 'radio') {
       if (radios.has(f.name)) return null;
       radios.add(f.name);
     }
-    return { ...f, value: fakeValue(f, person) };
+    return { ...f, value: guarded(f) ? fakeSensitive(f) : fakeValue(f, person) };
   }).filter(Boolean);
-  const res = await inPage(tab.id, fillFields, [assignments]);
+  const res = await inPage(tab.id, fillFields, [assignments, all]);
   return { ...res, message: `${res.filled} Felder mit Testdaten gefüllt` };
 }

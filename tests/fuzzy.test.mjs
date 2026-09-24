@@ -35,3 +35,9 @@ test('verstreute Buchstaben sind kein Treffer', () => {
   assert.equal(fuzzyScore('bericht', 'chrome.tabGroups | Chrome for Developers'), null);
   assert.equal(scoreItem('bericht', [['Tab duplizieren', 1], ['duplicate kopie', 0.6]]), null);
 });
+
+test('/N legt eine Notiz an, /n sucht in Notizen', () => {
+  assert.deepEqual(parseQuery('/N'), { only: null, create: 'note', text: '' });
+  assert.deepEqual(parseQuery('/N Das ist neu'), { only: null, create: 'note', text: 'Das ist neu' });
+  assert.deepEqual(parseQuery('/n rechnung'), { only: 'note', text: 'rechnung' });
+});

@@ -34,9 +34,11 @@ export const FEATURES = [
   { id: 'watchDiff', parent: 'watches', area: 'Beobachten', label: 'Änderungen anzeigen', hint: 'Zeigt neue und entfernte Zeilen jeder Prüfung.', def: true },
   { id: 'watchNumbers', parent: 'watches', area: 'Beobachten', label: 'Zahlen und Preise vergleichen', hint: 'Code vergleicht exakt, Jev wählt die richtige Zahl auf der Seite.', def: true, jev: true },
 
+  { id: 'copyUnlock', area: 'Lesezeichen und Formulare', label: 'Kopieren erlauben', hint: 'Hebt Sperren für Kopieren, Einfügen, Markieren und Rechtsklick auf. Für einen Tab oder immer für eine Website.', def: true },
   { id: 'bookmarkFolder', area: 'Lesezeichen und Formulare', label: 'Lesezeichen-Ordner vorschlagen', hint: 'Jev wählt beim Speichern den passenden Ordner.', def: false, jev: true, perm: { permissions: ['bookmarks'] } },
   { id: 'forms', area: 'Lesezeichen und Formulare', label: 'Formulare speichern und ausfüllen', hint: 'Passwort-, Karten- und Kontofelder speichert Tabwerk nie.', def: true },
   { id: 'formsTestData', parent: 'forms', area: 'Lesezeichen und Formulare', label: 'Mit Testdaten füllen', hint: 'Erfundene Namen, Adressen und Zahlen, für Entwickler.', def: true },
+  { id: 'formsSensitive', parent: 'forms', area: 'Lesezeichen und Formulare', label: 'Auch geschützte Felder speichern', hint: 'Speichert auch Passwort-, Karten-, Konto-, IBAN- und TAN-Felder. Tabwerk legt sie unverschlüsselt in Chrome ab und nimmt sie in den Export auf. Jev sieht nie Werte.', def: false, warn: true },
   { id: 'formsJev', parent: 'forms', area: 'Lesezeichen und Formulare', label: 'Unbekannte Felder mit Jev zuordnen', hint: 'Jev sieht nur Feldnamen und Beschriftungen, keine Werte.', def: false, jev: true },
 ];
 

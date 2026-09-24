@@ -101,8 +101,10 @@ const PREFIXES = {
   n: 'note', notes: 'note', s: 'session', sessions: 'session', z: 'snooze', snooze: 'snooze', f: 'form', forms: 'form',
 };
 
+// "/N" mit großem N legt eine Notiz zum aktiven Tab an. "/n" sucht in Notizen.
 export function parseQuery(raw) {
   const m = /^\/(\w+)\s*(.*)$/.exec(raw || '');
+  if (m && m[1] === 'N') return { only: null, create: 'note', text: m[2] };
   if (m && PREFIXES[m[1].toLowerCase()]) return { only: PREFIXES[m[1].toLowerCase()], text: m[2] };
   return { only: null, text: raw || '' };
 }

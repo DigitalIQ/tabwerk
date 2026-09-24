@@ -117,7 +117,7 @@ async function loadHistory() {
 // ---------- Rangfolge ----------
 
 const WEIGHT = { tab: 1, action: 0.95, form: 0.9, session: 0.85, note: 0.8, bookmark: 0.8, snooze: 0.75, history: 0.65 };
-const KIND_LABEL = { tab: 'Tab', action: 'Aktion', bookmark: 'Lesezeichen', history: 'Verlauf', note: 'Notiz', session: 'Sitzung', snooze: 'Schlummert', form: 'Formular' };
+const KIND_LABEL = { newnote: 'Notiz', tab: 'Tab', action: 'Aktion', bookmark: 'Lesezeichen', history: 'Verlauf', note: 'Notiz', session: 'Sitzung', snooze: 'Schlummert', form: 'Formular' };
 const SCOPE_LABEL = { tab: 'nur Tabs', action: 'nur Aktionen', bookmark: 'nur Lesezeichen', history: 'nur Verlauf', note: 'nur Notizen', session: 'nur Sitzungen', snooze: 'nur Schlummernde', form: 'nur Formulare' };
 const ALL = () => [...sources.tabs, ...sources.actions, ...sources.forms, ...sources.sessions, ...sources.notes, ...sources.snoozed, ...sources.bookmarks, ...sources.history];
 
@@ -133,8 +133,20 @@ function textHit(tabId, query) {
   return `„…${text.slice(Math.max(0, at - 30), at + 60).replace(/\s+/g, ' ').trim()}…“`;
 }
 
+let activeTab = null;
+
 function rank(raw) {
-  const { only, text } = parseQuery(raw);
+  const { only, text, create } = parseQuery(raw);
+  if (create === 'note' && on('notes')) {
+    $('#scope').hidden = false;
+    $('#scope').textContent = 'neue Notiz';
+    const old = activeTab && notes[normalizeUrl(activeTab.url || '')]?.text;
+    return [{
+      kind: 'newnote', id: 'newnote', text: text.trim(),
+      title: text.trim() ? `Als Notiz speichern: „${text.trim()}“` : 'Notiz-Fenster für diesen Tab öffnen',
+      sub: [activeTab?.title, old ? 'wird an die vorhandene Notiz angehängt' : null].filter(Boolean).join(' · '),
+    }];
+  }
   $('#scope').hidden = !only;
   $('#scope').textContent = only ? SCOPE_LABEL[only] : '';
   const pool = ALL().filter((i) => (only ? i.kind === only || (only === 'note' && i.kind === 'tab' && i.note) : true));
@@ -180,6 +192,7 @@ function lead(item) {
   if (item.kind === 'action') inner = icon(item.action.jev ? 'bolt' : 'play');
   else if (item.kind === 'session') inner = icon('window');
   else if (item.kind === 'form') inner = icon('edit');
+  else if (item.kind === 'newnote') inner = icon('note');
   else if (item.kind === 'snooze') inner = icon('moon');
   else if (item.url) inner = favicon(item.url);
   else inner = icon('window');
@@ -242,6 +255,21 @@ async function choose() {
     close();
     return;
   }
+  if (item.kind === 'newnote') {
+    try {
+      if (item.text) {
+        const r = await send('addNote', { windowId, text: item.text });
+        status(r.message);
+        setTimeout(close, 700);
+      } else {
+        await send('runAction', { id: 'note.edit', windowId });
+        close();
+      }
+    } catch (error) {
+      status(error.message, true);
+    }
+    return;
+  }
   if (item.kind === 'bookmark' || item.kind === 'history' || item.kind === 'note') {
     chrome.tabs.create({ url: item.url, windowId });
     close();
@@ -271,6 +299,15 @@ async function choose() {
   if (item.action.disabled) {
     status('Für diese Aktion braucht Tabwerk einen Schlüssel für Jev. Trag ihn in den Einstellungen ein.', true);
     return;
+  }
+  if (item.action.origin) {
+    // Chrome fragt nach dem Leserecht nur direkt nach einem Klick oder Tastendruck in einer Tabwerk-Seite.
+    const host = hostOf(activeTab?.url || '');
+    const granted = host && await chrome.permissions.request({ origins: [`*://${host}/*`, `*://*.${host}/*`] }).catch(() => false);
+    if (!granted) {
+      status('Ohne Erlaubnis für diese Website geht das nicht.', true);
+      return;
+    }
   }
   status(item.action.jev ? 'Jev entscheidet …' : 'Läuft …');
   try {
@@ -345,6 +382,7 @@ if (standalone) window.addEventListener('blur', () => setTimeout(close, 150));
 
 const currentHost = await (async () => {
   const [t] = await chrome.tabs.query({ active: true, windowId });
+  activeTab = t || null;
   return t?.url ? hostOf(t.url) : '';
 })();
 if (on('notes')) notes = await send('listNotes');

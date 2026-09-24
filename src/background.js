@@ -8,6 +8,7 @@ import * as A from './lib/actions.js';
 import * as X from './lib/extras.js';
 import * as FO from './lib/formsbg.js';
 import * as T from './lib/transfer.js';
+import * as U from './lib/unlock.js';
 import { decide } from './lib/jev.js';
 import { getUsage, getSettings } from './lib/settings.js';
 import { isOn } from './lib/flags.js';
@@ -32,6 +33,7 @@ const handlers = {
   restoreSnapshot: H.restoreFromHistory,
   saveSnapshot: () => H.takeSnapshot('Von Hand gesichert', { force: true }),
   clearHistory: H.clearHistory,
+  compactHistory: H.compactHistory,
   listWatches: W.listWatches,
   createWatch: W.createWatch,
   removeWatch: W.removeWatch,
@@ -42,6 +44,7 @@ const handlers = {
   listNotes: X.listNotes,
   getNote: X.getNote,
   setNote: X.setNote,
+  addNote: X.addNote,
   listSessions: X.listSessions,
   saveSession: X.saveSession,
   renameSession: X.renameSession,
@@ -64,6 +67,9 @@ const handlers = {
   fillTestData: FO.fillTestData,
   renameProfile: FO.renameProfile,
   deleteProfile: FO.deleteProfile,
+  unlockTab: U.unlockTab,
+  setAlwaysUnlock: U.setAlwaysUnlock,
+  listUnlockHosts: U.listUnlockHosts,
   exportAll: T.exportAll,
   importAll: T.importAll,
   usage: getUsage,
@@ -167,6 +173,7 @@ async function createMenus() {
     add({ id: 'snooze', title: 'Tab schlummern lassen', contexts: ['page'] });
     for (const p of SNOOZE_PRESETS) add({ id: `snooze:${p.id}`, parentId: 'snooze', title: p.label, contexts: ['page'] });
   }
+  if (on('copyUnlock')) add({ id: 'unlock', title: 'Kopieren und Rechtsklick erlauben', contexts: ['page', 'editable', 'selection', 'image', 'link'] });
   if (on('forms')) {
     add({ id: 'form-save', title: 'Formular speichern', contexts: ['page', 'editable'] });
     add({ id: 'form-fill', title: 'Formular ausfüllen …', contexts: ['page', 'editable'] });
@@ -226,6 +233,8 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     const mine = (await FO.listProfiles()).filter((p) => p.host === hostOfTab(tab));
     if (mine.length === 1) say(FO.fillForm({ windowId: tab.windowId, profileId: mine[0].id }));
     else openPalette(tab, '/f ');
+  } else if (id === 'unlock') {
+    say(U.unlockTab({ tabId: tab.id }));
   } else if (id === 'bookmark') {
     say(X.bookmarkWithFolder({ windowId: tab.windowId }));
   }
@@ -234,15 +243,18 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 // Menü neu bauen, wenn sich Schalter oder Rechte ändern.
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'local' && changes.features) createMenus();
+  if (area === 'local' && (changes.features || changes.unlockHosts)) U.syncUnlockScripts().catch(() => {});
 });
-chrome.permissions.onAdded.addListener(() => createMenus());
-chrome.permissions.onRemoved.addListener(() => createMenus());
+chrome.permissions.onAdded.addListener(() => { createMenus(); U.syncUnlockScripts().catch(() => {}); });
+chrome.permissions.onRemoved.addListener(() => { createMenus(); U.syncUnlockScripts().catch(() => {}); });
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   await createMenus();
   await W.rescheduleAll();
   await ensureAlarms();
   H.takeSnapshot('Erste Sicherung');
+  if (reason === 'update') H.compactHistory().catch(() => {});
+  U.syncUnlockScripts().catch(() => {});
   if (reason === 'install') chrome.runtime.openOptionsPage();
 });
 
@@ -251,6 +263,7 @@ chrome.runtime.onStartup.addListener(async () => {
   await W.rescheduleAll();
   await ensureAlarms();
   if (isOn(await getSettings(), 'history')) H.takeSnapshot('Browserstart');
+  H.compactHistory().catch(() => {});
   if (await X.focusState()) chrome.action.setBadgeText({ text: 'F' });
 });
 
