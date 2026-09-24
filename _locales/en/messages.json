@@ -509,6 +509,9 @@
   "ft_area_cleanup": {
     "message": "Clean up"
   },
+  "ft_area_learn": {
+    "message": "Learning"
+  },
   "ft_area_organize": {
     "message": "Organize"
   },
@@ -625,6 +628,36 @@
   },
   "ft_history_label": {
     "message": "History"
+  },
+  "ft_learn_hint": {
+    "message": "Remembers on this computer where you follow Jev and where you correct it. Nothing goes to a server."
+  },
+  "ft_learn_label": {
+    "message": "Learn from your decisions"
+  },
+  "ft_learnExamples_hint": {
+    "message": "Up to 8 earlier choices with title and website go to Jev with the group question."
+  },
+  "ft_learnExamples_label": {
+    "message": "Send earlier choices to Jev as examples"
+  },
+  "ft_learnFeedback_hint": {
+    "message": "Below each watcher rating, Tabwerk asks whether it was right. The alert threshold learns from that."
+  },
+  "ft_learnFeedback_label": {
+    "message": "Thumbs for watchers"
+  },
+  "ft_learnRules_hint": {
+    "message": "If you put tabs from one website into the same group three times, Tabwerk suggests a fixed rule."
+  },
+  "ft_learnRules_label": {
+    "message": "Suggest rules"
+  },
+  "ft_learnThreshold_hint": {
+    "message": "After 10 decisions, Tabwerk picks the threshold at which Jev was right 90 % of the time for you."
+  },
+  "ft_learnThreshold_label": {
+    "message": "Adjust the confidence threshold per feature"
   },
   "ft_notes_hint": {
     "message": "Via right-click, keyboard shortcut, or quick search."
@@ -1058,6 +1091,51 @@
   },
   "opt_languageTitle": {
     "message": "Language"
+  },
+  "opt_learnClear": {
+    "message": "Clear what was learned"
+  },
+  "opt_learnClearConfirm": {
+    "message": "Delete all learned decisions? Thresholds and rule suggestions start over."
+  },
+  "opt_learnDecisions_one": {
+    "message": "$1 decision, $2 like Jev"
+  },
+  "opt_learnDecisions_other": {
+    "message": "$1 decisions, $2 like Jev"
+  },
+  "opt_learnExport": {
+    "message": "Download as JSONL"
+  },
+  "opt_learnFeature_cleanup": {
+    "message": "Cleanup"
+  },
+  "opt_learnFeature_groups": {
+    "message": "Groups"
+  },
+  "opt_learnFeature_watch": {
+    "message": "Watchers"
+  },
+  "opt_learnLoading": {
+    "message": "Loading …"
+  },
+  "opt_learnRuleAccept": {
+    "message": "Add"
+  },
+  "opt_learnRuleDismiss": {
+    "message": "Don’t suggest"
+  },
+  "opt_learnRulesTitle": {
+    "message": "Suggested rules:"
+  },
+  "opt_learnThresholdDefault": {
+    "message": "Threshold $1, from settings"
+  },
+  "opt_learnThresholdHelp": {
+    "message": "After 10 decisions per feature, the learned threshold applies. Until then, your setting applies."
+  },
+  "opt_learnThresholdLearned": {
+    "message": "Threshold $1, learned"
   },
   "opt_levelHigh": {
     "message": "high"
@@ -1566,6 +1644,21 @@
   "popup_dupesTab": {
     "message": "Duplicates"
   },
+  "popup_feedbackAskMatch": {
+    "message": "Jev sent an alert. Was it right?"
+  },
+  "popup_feedbackAskNoise": {
+    "message": "Jev did not alert. Was it right?"
+  },
+  "popup_feedbackNo": {
+    "message": "Wrong"
+  },
+  "popup_feedbackThanks": {
+    "message": "Thanks, noted."
+  },
+  "popup_feedbackYes": {
+    "message": "Right"
+  },
   "popup_filedCount_one": {
     "message": "$1 tab filed."
   },
@@ -1795,6 +1888,24 @@
   },
   "popup_reviewCount": {
     "message": "$1 to review"
+  },
+  "popup_ruleAccept": {
+    "message": "Save rule"
+  },
+  "popup_ruleAdded": {
+    "message": "Rule “$1” saved. New tabs now go there automatically."
+  },
+  "popup_ruleAddedOff": {
+    "message": "Rule “$1” saved. It takes effect once you turn on “Sort new tabs automatically”."
+  },
+  "popup_ruleDismiss": {
+    "message": "Don’t suggest"
+  },
+  "popup_ruleHint_one": {
+    "message": "You put $2 into “$3” $1 time. Save as a rule?"
+  },
+  "popup_ruleHint_other": {
+    "message": "You put $2 into “$3” $1 times. Save as a rule?"
   },
   "popup_sameAddress": {
     "message": "same address"
@@ -2143,6 +2254,9 @@
   },
   "unlock_onlyNormalPages": {
     "message": "This only works on regular web pages."
+  },
+  "watch_feedbackGone": {
+    "message": "This check no longer exists."
   },
   "watch_noNumberOnPage": {
     "message": "The page has no number with a currency or percent sign."

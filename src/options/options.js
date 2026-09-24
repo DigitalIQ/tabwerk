@@ -162,6 +162,41 @@ const EXTRAS = {
     h('input', { type: 'number', min: 5, max: 1440, value: settings.discardAfterMin, onchange: (e) => save({ discardAfterMin: Math.max(5, Number(e.target.value) || 60) }) }), t('opt_discardAfterSuffix'))],
   cleanupSuggest: () => [h('label', { class: 'inline' }, t('opt_cleanupDaysPrefix'),
     h('input', { type: 'number', min: 1, max: 60, value: settings.cleanupDays, onchange: (e) => save({ cleanupDays: Math.max(1, Number(e.target.value) || 3) }) }), t('opt_cleanupDaysSuffix'))],
+  learn: () => {
+    // Überblick füllt sich nach, weil der Service Worker rechnet.
+    const box = h('div', { class: 'learn-box' }, h('p', { class: 'help' }, t('opt_learnLoading')));
+    const pct = (x) => fmtNumber(x, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+    const fill = async () => {
+      const s = await send('learnState');
+      const rows = ['groups', 'cleanup', 'watch'].map((f) => {
+        const p = s.per[f];
+        const learned = p.learned?.threshold;
+        return h('div', { class: 'learn-row' },
+          h('b', {}, t(`opt_learnFeature_${f}`)),
+          h('span', { class: 'mono' }, tp('opt_learnDecisions', p.n, fmtNumber(p.agreed))),
+          h('span', { class: 'mono' }, learned !== undefined && isOn(settings, 'learnThreshold')
+            ? t('opt_learnThresholdLearned', pct(learned))
+            : t('opt_learnThresholdDefault', pct(p.fallback))));
+      });
+      const rules = s.rules.map((r) => h('li', {},
+        h('span', { class: 'mono' }, r.rule),
+        h('button', { class: 'ghost', onclick: async () => { await send('acceptRule', { rule: r.rule }); settings = await getSettings(); renderFeatures(); } }, t('opt_learnRuleAccept')),
+        h('button', { class: 'ghost icon', title: t('opt_learnRuleDismiss'), 'aria-label': t('opt_learnRuleDismiss'), onclick: async () => { await send('dismissRule', { rule: r.rule }); fill(); } }, icon('x'))));
+      box.replaceChildren(
+        h('div', { class: 'learn-rows' }, ...rows),
+        h('p', { class: 'help' }, t('opt_learnThresholdHelp')),
+        ...(rules.length ? [h('p', { class: 'help' }, t('opt_learnRulesTitle')), h('ul', { class: 'host-list' }, ...rules)] : []),
+        h('div', { class: 'learn-actions' },
+          h('button', { class: 'ghost', disabled: !s.total, onclick: async () => download(`tabwerk-lernen-${stamp()}.jsonl`, await send('learnJsonl'), 'application/x-ndjson') }, t('opt_learnExport')),
+          h('button', { class: 'ghost', disabled: !s.total, onclick: async () => {
+            if (!confirm(t('opt_learnClearConfirm'))) return;
+            await send('clearLearn');
+            fill();
+          } }, t('opt_learnClear'))));
+    };
+    fill().catch((e) => box.replaceChildren(h('p', { class: 'error-text' }, e.message)));
+    return [box];
+  },
   copyUnlock: () => {
     const input = h('input', { type: 'text', class: 'mono', placeholder: 'bank.example', 'aria-label': t('opt_websiteAriaLabel') });
     const list = h('ul', { class: 'host-list' }, ...(settings.unlockHosts || []).map((host) => h('li', {},

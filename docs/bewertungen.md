@@ -37,4 +37,6 @@ Frage: Soll Tabwerk Browsing- und Nutzungsdaten speichern und auswerten, damit F
 | Entscheidungsbeispiele freiwillig an den Entwickler spenden | ja | 0,1 | 95 % |
 | Korrekturen an den Modellanbieter zum Training | ja | 0,0 | 100 % |
 
-Ergebnis: Lernen ja, aber nur auf dem Rechner. Alles, was einen eigenen Server braucht oder mehr persönliche Daten verschickt, fällt durch. Noch nicht gebaut.
+Ergebnis: Lernen ja, aber nur auf dem Rechner. Alles, was einen eigenen Server braucht oder mehr persönliche Daten verschickt, fällt durch.
+
+Gebaut in 0.7.0: die fünf Optionen mit „nein“ in der zweiten Spalte. Die Schwelle gilt ab 10 Entscheidungen je Funktion: die niedrigste Stufe, ab der Jev bei dir zu mindestens 90 % richtig lag. Regeln schlägt Tabwerk vor, wenn du Tabs einer Website mindestens dreimal und in drei von vier Fällen in dieselbe Gruppe legst.

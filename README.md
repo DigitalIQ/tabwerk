@@ -27,6 +27,7 @@ Alles, was sich exakt berechnen lässt, erledigt Code. Für semantische Fragen n
 | Linkliste | Tabs als Markdown oder Text kopieren | Code |
 | Statistik | Tabs pro Fenster und Website, älteste Tabs, Verlauf der Anzahl | Code |
 | Formulare | speichern, ausfüllen, mit Testdaten füllen; geschützte Felder nur mit eigenem Schalter | Code, unbekannte Felder optional Jev |
+| Lernen | merkt sich lokal, wo du Jev folgst oder korrigierst: schlägt Regeln vor, passt die Sicherheitsschwelle je Funktion an, gibt frühere Zuordnungen als Beispiele an Jev, Daumen bei Wächtern | Code, Beispiele optional an Jev |
 | Kopieren erlauben | hebt Sperren für Kopieren, Einfügen, Markieren und Rechtsklick auf, für einen Tab oder immer für eine Website | Code |
 | Export und Import | alles als Datei, Sitzungen auch als Lesezeichen-Datei | Code |
 

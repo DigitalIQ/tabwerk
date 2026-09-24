@@ -9,6 +9,7 @@ import * as X from './lib/extras.js';
 import * as FO from './lib/formsbg.js';
 import * as T from './lib/transfer.js';
 import * as U from './lib/unlock.js';
+import * as Learn from './lib/learn.js';
 import { decide } from './lib/jev.js';
 import { getUsage, getSettings } from './lib/settings.js';
 import { isOn } from './lib/flags.js';
@@ -72,6 +73,14 @@ const handlers = {
   fillTestData: FO.fillTestData,
   renameProfile: FO.renameProfile,
   deleteProfile: FO.deleteProfile,
+  learnRecord: Learn.record,
+  learnState: Learn.learnState,
+  learnRules: Learn.ruleSuggestions,
+  acceptRule: Learn.acceptRule,
+  dismissRule: Learn.dismissRule,
+  clearLearn: Learn.clearLearn,
+  learnJsonl: Learn.learnJsonl,
+  watchFeedback: W.watchFeedback,
   unlockTab: U.unlockTab,
   setAlwaysUnlock: U.setAlwaysUnlock,
   listUnlockHosts: U.listUnlockHosts,

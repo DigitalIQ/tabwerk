@@ -9,7 +9,7 @@ const KEYS = ['apiKey', 'typesafeKey'];
 export async function exportAll({ withKeys = false, withHistory = true, withForms = true } = {}) {
   const settings = await getSettings();
   if (!withKeys) for (const k of KEYS) delete settings[k];
-  const store = await chrome.storage.local.get(['sessions', 'watches', 'notes', 'snoozed', 'formProfiles']);
+  const store = await chrome.storage.local.get(['sessions', 'watches', 'notes', 'snoozed', 'formProfiles', 'learnLog']);
   const data = {
     format: 'tabwerk',
     version: 1,
@@ -19,6 +19,7 @@ export async function exportAll({ withKeys = false, withHistory = true, withForm
     watches: (store.watches || []).map(({ history, ...w }) => w),
     notes: store.notes || {},
     snoozed: store.snoozed || [],
+    learnLog: store.learnLog || [],
   };
   if (withForms) data.formProfiles = store.formProfiles || [];
   if (withHistory) {
@@ -41,13 +42,17 @@ const mergeById = (a = [], b = []) => {
 // Führt zusammen, statt zu ersetzen. Vorhandenes bleibt.
 export async function importAll({ data }) {
   if (data?.format !== 'tabwerk') throw new Error(t('xfer_notATabwerkFile'));
-  const store = await chrome.storage.local.get(['sessions', 'watches', 'notes', 'snoozed', 'formProfiles']);
+  const store = await chrome.storage.local.get(['sessions', 'watches', 'notes', 'snoozed', 'formProfiles', 'learnLog']);
+  // Lern-Ereignisse haben keine ID. Gleich sind sie bei gleicher Zeit, Funktion und gleichem Titel.
+  const eventKey = (e) => `${e.t}|${e.f}|${e.title || ''}`;
+  const knownEvents = new Set((store.learnLog || []).map(eventKey));
   const next = {
     sessions: mergeById(store.sessions, data.sessions),
     watches: mergeById(store.watches, (data.watches || []).map((w) => ({ ...w, history: [] }))),
     notes: { ...(data.notes || {}), ...(store.notes || {}) },
     snoozed: mergeById(store.snoozed, data.snoozed),
     formProfiles: mergeById(store.formProfiles, data.formProfiles),
+    learnLog: [...(store.learnLog || []), ...(data.learnLog || []).filter((e) => !knownEvents.has(eventKey(e)))].sort((a, b) => b.t - a.t).slice(0, 1000),
   };
   await chrome.storage.local.set(next);
   if (data.settings) {

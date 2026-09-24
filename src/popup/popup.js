@@ -72,6 +72,7 @@ function showPanel(name) {
   if (name === 'watch') loadWatches();
   if (name === 'history') showHist();
   if (name === 'find') $('#find-q').focus();
+  if (name === 'groups') showRuleHints();
 }
 document.querySelectorAll('[role=tab]').forEach((tab) => tab.addEventListener('click', () => showPanel(tab.dataset.panel)));
 
@@ -113,6 +114,29 @@ async function run(out, task) {
   refreshHeader();
 }
 
+// ---------- Lernen ----------
+
+// Merkt sich lokal, wo du Jev gefolgt bist und wo nicht. Fehler hier stören die Aktion nie.
+const learn = (events) => (isOn(settings, 'learn') && events.length ? send('learnRecord', { events }).catch(() => {}) : null);
+
+async function showRuleHints() {
+  const box = $('#rule-hints');
+  if (!isOn(settings, 'learnRules')) { box.hidden = true; return; }
+  const rules = await send('learnRules').catch(() => []);
+  box.hidden = !rules.length;
+  put(box, ...rules.slice(0, 2).map((r) => h('div', { class: 'rule-hint' },
+    icon('bolt'),
+    h('span', { class: 'txt' }, tp('popup_ruleHint', r.n, r.host, r.group)),
+    h('button', { class: 'ghost', onclick: async () => {
+      const res = await send('acceptRule', { rule: r.rule });
+      put(box, h('p', { class: 'help' }, res.autoGroup ? t('popup_ruleAdded', r.rule) : t('popup_ruleAddedOff', r.rule)));
+    } }, t('popup_ruleAccept')),
+    h('button', { class: 'ghost icon', title: t('popup_ruleDismiss'), 'aria-label': t('popup_ruleDismiss'), onclick: async () => {
+      await send('dismissRule', { rule: r.rule });
+      showRuleHints();
+    } }, icon('x')))));
+}
+
 // ---------- Finden ----------
 
 $('#find-form').addEventListener('submit', (event) => {
@@ -131,7 +155,11 @@ $('#find-form').addEventListener('submit', (event) => {
       ? h('p', { class: 'help' }, t('popup_noMatchingTab', fmtNumber(hit.p, { style: 'percent', maximumFractionDigits: 0 })))
       : h('button', {
         class: 'row',
-        onclick: async () => { await send('focusTab', { tabId: hit.id, windowId: hit.windowId }); window.close(); },
+        onclick: async () => {
+          await learn([{ f: 'find', host: hostOf(top.url), title: top.title, jev: top.title, user: hit.title, conf: top.p, ok: hit.id === top.id }]);
+          await send('focusTab', { tabId: hit.id, windowId: hit.windowId });
+          window.close();
+        },
       },
       favicon(hit.url),
       h('span', { class: 'txt' }, h('span', { class: 'title' }, hit.title), h('span', { class: 'site' }, hostOf(hit.url))),
@@ -212,9 +240,22 @@ function renderGroupPlan(out, res) {
 
   async function applyPlan() {
     const chosen = [...plan].filter(([, p]) => p.on && p.target !== 'none').map(([tabId, p]) => ({ tabId, target: p.target }));
+    // Lernen: gefolgt, geändert oder abgewählt. Unsichere Vorschläge, die du nicht angefasst hast, sagen nichts.
+    learn(res.items.flatMap((item) => {
+      const p = plan.get(item.id);
+      const taken = p.on && p.target !== 'none';
+      const changed = p.target !== item.target;
+      if (!item.sure && !taken && !changed) return [];
+      return [{
+        f: 'groups', host: hostOf(item.url), title: item.title, conf: item.confidence,
+        jev: res.options[item.target]?.name, user: taken ? res.options[p.target]?.name : 'none',
+        ok: taken && !changed,
+      }];
+    }));
     await run(out, async () => {
       const { moved } = await send('applyGroups', { windowId: win.id, plan: chosen, options: res.options });
       put(out, empty('check', tp('popup_filedCount', moved), t('popup_undoRestoreHint')));
+      showRuleHints();
     });
   }
 
@@ -367,6 +408,10 @@ $('#suggest-go').addEventListener('click', () => {
         h('div', { class: 'summary sticky' },
           h('span', { class: 'mono' }, res.jev ? cost(res.cost) : t('popup_withoutJev')),
           h('button', { class: 'primary', disabled: !marked.size, onclick: async () => {
+            learn(res.items.filter((i) => typeof i.confidence === 'number').map((i) => ({
+              f: 'cleanup', host: hostOf(i.url), title: i.title, conf: i.confidence,
+              jev: i.jevClose ? 'close' : 'keep', user: marked.has(i.id) ? 'close' : 'keep', ok: i.jevClose === marked.has(i.id),
+            })));
             await send('closeTabs', { tabIds: [...marked], windowId: win.id, label: 'lbl_cleanup' });
             refreshHeader();
             put(out, empty('check', tp('popup_closedTabs', marked.size), t('popup_undoBringBackHint')));
@@ -432,7 +477,23 @@ function watchCard(w) {
     status,
     w.number ? h('div', { class: 'state' }, `${t('wf_limit')}: ${t(OPS[w.number.op])} ${fmtNumber(w.number.limit)}${typeof lastValue(w) === 'number' ? ` · ${t('popup_lastValue', fmtNumber(lastValue(w)))}` : ''}`) : null,
     hit ? h('div', { class: 'evidence' }, hit.evidence || t('popup_matchingChange'), h('span', { class: 'faint mono' }, ` · ${ago(hit.t)}`)) : null,
+    feedbackRow(w),
     diffView(w));
+}
+
+// Daumen zur letzten Bewertung durch Jev. Einmal beantwortet, verschwindet die Frage.
+function feedbackRow(w) {
+  if (!isOn(settings, 'learnFeedback')) return null;
+  const e = w.history?.find((x) => typeof x.p === 'number');
+  if (!e || e.feedback) return null;
+  const answer = (ok) => async (ev) => {
+    ev.currentTarget.closest('.feedback').replaceChildren(h('span', { class: 'faint' }, t('popup_feedbackThanks')));
+    await send('watchFeedback', { id: w.id, t: e.t, ok }).catch(() => {});
+  };
+  return h('div', { class: 'feedback' },
+    h('span', { class: 'faint' }, e.status === 'match' ? t('popup_feedbackAskMatch') : t('popup_feedbackAskNoise')),
+    h('button', { class: 'ghost', onclick: answer(true) }, icon('check'), t('popup_feedbackYes')),
+    h('button', { class: 'ghost', onclick: answer(false) }, icon('x'), t('popup_feedbackNo')));
 }
 
 const lastValue = (w) => w.history?.find((x) => typeof x.value === 'number')?.value;

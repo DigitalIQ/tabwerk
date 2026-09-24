@@ -14,6 +14,7 @@ Alles, was Tabwerk speichert, liegt in `chrome.storage.local` in deinem Chrome-P
 - Wächter und der zuletzt gelesene Text der beobachteten Seiten
 - gespeicherte Formulare. Passwort-, Karten-, Konto-, IBAN- und TAN-Felder speichert Tabwerk nur, wenn du den Schalter „Auch geschützte Felder speichern“ einschaltest. Dann liegen sie unverschlüsselt in deinem Chrome-Profil und kommen mit in den Export.
 - die Liste der Websites, auf denen Tabwerk Kopieren immer erlaubt
+- beim Lernen: bis zu 1000 deiner Entscheidungen zu Jev-Vorschlägen, mit Titel und Website des Tabs, Jevs Vorschlag, deiner Wahl und Jevs Sicherheit. Websites auf der Ausschlussliste fehlen. Du löschst das in den Einstellungen unter „Lernen“.
 
 Diese Daten werden nicht synchronisiert. Du löschst sie, indem du Tabwerk entfernst oder in den Einstellungen den Verlauf leerst.
 
@@ -29,6 +30,7 @@ Nur wenn du einen Schlüssel einträgst und eine Funktion nutzt, die Jev braucht
 | Verlauf in Alltagssprache | deine Suche und Titel, Website und Pfad von bis zu 200 besuchten Seiten aus dem gewählten Zeitraum |
 | Lesezeichen-Ordner | Titel, Website und Pfad der Seite und die Namen deiner Lesezeichen-Ordner |
 | Formularfelder zuordnen | Beschriftungen und Namen der Felder. Keine Werte |
+| Gruppen, wenn „Frühere Zuordnungen als Beispiele“ an ist | zusätzlich bis zu 8 frühere Zuordnungen: Titel, Website und Gruppenname |
 
 Websites auf deiner Ausschlussliste gehen nie an Jev. Für die Verarbeitung bei OpenRouter und TypeSafe gelten deren Datenschutzbestimmungen.
 

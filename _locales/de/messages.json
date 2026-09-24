@@ -509,6 +509,9 @@
   "ft_area_cleanup": {
     "message": "Aufräumen"
   },
+  "ft_area_learn": {
+    "message": "Lernen"
+  },
   "ft_area_organize": {
     "message": "Ordnen"
   },
@@ -625,6 +628,36 @@
   },
   "ft_history_label": {
     "message": "Verlauf"
+  },
+  "ft_learn_hint": {
+    "message": "Merkt sich auf diesem Rechner, wo du Jev folgst und wo du korrigierst. Nichts geht an einen Server."
+  },
+  "ft_learn_label": {
+    "message": "Aus deinen Entscheidungen lernen"
+  },
+  "ft_learnExamples_hint": {
+    "message": "Bis zu 8 frühere Zuordnungen mit Titel und Website gehen mit der Gruppenfrage an Jev."
+  },
+  "ft_learnExamples_label": {
+    "message": "Frühere Zuordnungen als Beispiele an Jev"
+  },
+  "ft_learnFeedback_hint": {
+    "message": "Unter jeder Bewertung eines Wächters fragt Tabwerk, ob sie stimmt. Daraus lernt die Meldeschwelle."
+  },
+  "ft_learnFeedback_label": {
+    "message": "Daumen bei Wächtern"
+  },
+  "ft_learnRules_hint": {
+    "message": "Legst du Tabs einer Website dreimal in dieselbe Gruppe, schlägt Tabwerk eine feste Regel vor."
+  },
+  "ft_learnRules_label": {
+    "message": "Regeln vorschlagen"
+  },
+  "ft_learnThreshold_hint": {
+    "message": "Ab 10 Entscheidungen wählt Tabwerk die Schwelle, ab der Jev bei dir zu 90 % richtig lag."
+  },
+  "ft_learnThreshold_label": {
+    "message": "Sicherheitsschwelle je Funktion anpassen"
   },
   "ft_notes_hint": {
     "message": "Per Rechtsklick, Tastenkürzel oder Schnellsuche."
@@ -1058,6 +1091,51 @@
   },
   "opt_languageTitle": {
     "message": "Sprache"
+  },
+  "opt_learnClear": {
+    "message": "Gelerntes löschen"
+  },
+  "opt_learnClearConfirm": {
+    "message": "Alle gelernten Entscheidungen löschen? Schwellen und Regelvorschläge fangen dann von vorn an."
+  },
+  "opt_learnDecisions_one": {
+    "message": "$1 Entscheidung, $2 wie Jev"
+  },
+  "opt_learnDecisions_other": {
+    "message": "$1 Entscheidungen, $2 wie Jev"
+  },
+  "opt_learnExport": {
+    "message": "Als JSONL herunterladen"
+  },
+  "opt_learnFeature_cleanup": {
+    "message": "Aufräumen"
+  },
+  "opt_learnFeature_groups": {
+    "message": "Gruppen"
+  },
+  "opt_learnFeature_watch": {
+    "message": "Wächter"
+  },
+  "opt_learnLoading": {
+    "message": "Lädt …"
+  },
+  "opt_learnRuleAccept": {
+    "message": "Übernehmen"
+  },
+  "opt_learnRuleDismiss": {
+    "message": "Nicht vorschlagen"
+  },
+  "opt_learnRulesTitle": {
+    "message": "Vorgeschlagene Regeln:"
+  },
+  "opt_learnThresholdDefault": {
+    "message": "Schwelle $1, aus den Einstellungen"
+  },
+  "opt_learnThresholdHelp": {
+    "message": "Ab 10 Entscheidungen je Funktion gilt die gelernte Schwelle. Vorher gilt deine Einstellung."
+  },
+  "opt_learnThresholdLearned": {
+    "message": "Schwelle $1, gelernt"
   },
   "opt_levelHigh": {
     "message": "hoch"
@@ -1566,6 +1644,21 @@
   "popup_dupesTab": {
     "message": "Doppelte"
   },
+  "popup_feedbackAskMatch": {
+    "message": "Jev hat gemeldet. Zu Recht?"
+  },
+  "popup_feedbackAskNoise": {
+    "message": "Jev hat nicht gemeldet. Zu Recht?"
+  },
+  "popup_feedbackNo": {
+    "message": "Passt nicht"
+  },
+  "popup_feedbackThanks": {
+    "message": "Danke, gemerkt."
+  },
+  "popup_feedbackYes": {
+    "message": "Passt"
+  },
   "popup_filedCount_one": {
     "message": "$1 Tab einsortiert."
   },
@@ -1795,6 +1888,24 @@
   },
   "popup_reviewCount": {
     "message": "$1 prüfen"
+  },
+  "popup_ruleAccept": {
+    "message": "Merken"
+  },
+  "popup_ruleAdded": {
+    "message": "Regel „$1“ gespeichert. Neue Tabs landen jetzt automatisch dort."
+  },
+  "popup_ruleAddedOff": {
+    "message": "Regel „$1“ gespeichert. Sie wirkt, sobald du „Neue Tabs automatisch einsortieren“ einschaltest."
+  },
+  "popup_ruleDismiss": {
+    "message": "Nicht vorschlagen"
+  },
+  "popup_ruleHint_one": {
+    "message": "$1 Mal hast du $2 in „$3“ gelegt. Als Regel merken?"
+  },
+  "popup_ruleHint_other": {
+    "message": "$1 Mal hast du $2 in „$3“ gelegt. Als Regel merken?"
   },
   "popup_sameAddress": {
     "message": "gleiche Adresse"
@@ -2143,6 +2254,9 @@
   },
   "unlock_onlyNormalPages": {
     "message": "Das geht nur auf normalen Webseiten."
+  },
+  "watch_feedbackGone": {
+    "message": "Diese Prüfung gibt es nicht mehr."
   },
   "watch_noNumberOnPage": {
     "message": "Auf der Seite steht keine Zahl mit Währung oder Prozent."

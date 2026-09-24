@@ -36,6 +36,7 @@ let stock = 'Derzeit nicht verfügbar';
 let price = '349,00 €';
 let jevCalls = 0;
 let jevCost = 0;
+let lastJevBody = null;
 const tmp = mkdtempSync(join(tmpdir(), 'tabwerk-e2e-'));
 chmodSync(tmp, 0o700);
 
@@ -87,7 +88,8 @@ const server = createServer((req, res) => {
     req.on('end', async () => {
       jevCalls += 1;
       try {
-        const answer = await askJev(JSON.parse(data));
+        lastJevBody = JSON.parse(data);
+        const answer = await askJev(lastJevBody);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(answer));
       } catch (error) {
@@ -255,6 +257,8 @@ await popup.click('#groups-out .sticky button.primary');
 await popup.waitForSelector('#groups-out .empty');
 const groups = await popup.evaluate(async () => (await chrome.tabGroups.query({})).map((g) => g.title));
 checkJev('Gruppen angelegt', groups.length >= 3, groups.join(', '));
+const learnedGroups = await popup.evaluate(async () => ((await chrome.storage.local.get('learnLog')).learnLog || []).filter((e) => e.f === 'groups'));
+check('Lernen: Gruppen-Entscheidungen lokal gemerkt', learnedGroups.length > 0 && learnedGroups.every((e) => typeof e.ok === 'boolean' && e.title), `${learnedGroups.length} Einträge`);
 
 // Zweites Fenster: darf von allem in Fenster 1 unberührt bleiben.
 const win1 = await popup.evaluate(async () => (await chrome.windows.getCurrent()).id);
@@ -647,7 +651,13 @@ check('Wächter zeigt die Änderungen', diffShown > 0);
 const numWatch = await call('createWatch', { url: `${local}/shop?preis`, condition: 'der Preis des Kopfhörers', intervalMin: 60, number: { op: 'below', limit: 300 } });
 await popup.waitForTimeout(1200);
 price = '279,99 €';
-const numAfter = await call('checkWatch', { id: numWatch.id });
+// Die erste Prüfung nach dem Anlegen kann mit echtem Jev noch laufen. Dann kurz warten.
+let numAfter;
+for (let i = 0; i < 30; i++) {
+  numAfter = await call('checkWatch', { id: numWatch.id });
+  if (!numAfter.busy) break;
+  await popup.waitForTimeout(500);
+}
 checkJev('Zahlen-Wächter: 279,99 € liegt unter 300', numAfter.history[0].status === 'match' && numAfter.history[0].value === 279.99, `${numAfter.history[0].status} ${numAfter.history[0].value}`);
 
 // Formulare: speichern ohne Passwort und IBAN, dann ausfüllen und Testdaten
@@ -757,6 +767,37 @@ await popup.evaluate(async () => {
 const compacted = await call('compactHistory');
 const oldBack = await call('getSnapshot', { id: '1000' });
 check('Altes Verlaufsformat wird umgebaut und bleibt lesbar', compacted.compacted >= 1 && oldBack.windows[0].tabs[0].url === 'https://example.com/alt', JSON.stringify(compacted));
+
+// Lernen: Regelvorschlag, gelernte Schwelle, Beispiele an Jev, Daumen beim Wächter
+{
+  await call('clearLearn');
+  const same = Array.from({ length: 3 }, (_, i) => ({ f: 'groups', host: 'lerntest.example', title: `Lerntest ${i}`, jev: 'Arbeit', user: 'Recherche', conf: 0.6, ok: false }));
+  const sure = Array.from({ length: 12 }, (_, i) => ({ f: 'groups', host: 'sicher.example', title: `Sicher ${i}`, jev: 'Arbeit', user: 'Arbeit', conf: 0.62, ok: true }));
+  await call('learnRecord', { events: [...same, ...sure] });
+  const rules = await call('learnRules');
+  check('Lernen: Regel nach drei gleichen Korrekturen', rules.some((r) => r.rule === 'lerntest.example = Recherche'), rules.map((r) => r.rule).join(', '));
+  await call('acceptRule', { rule: 'lerntest.example = Recherche' });
+  const afterRule = await popup.evaluate(async () => (await chrome.storage.local.get('groupRules')).groupRules || []);
+  check('Lernen: übernommene Regel steht in den Regeln', afterRule.includes('lerntest.example = Recherche'));
+  check('Lernen: Regel wird danach nicht mehr vorgeschlagen', !(await call('learnRules')).some((r) => r.host === 'lerntest.example'));
+  const state = await call('learnState');
+  check('Lernen: Schwelle für Gruppen gelernt', state.per.groups.learned?.threshold === 0.65, JSON.stringify(state.per.groups.learned));
+  await call('proposeGroups', { windowId: win1, onlyUngrouped: false }).catch(() => null);
+  const past = lastJevBody?.state?.past_choices || [];
+  check('Lernen: frühere Zuordnungen gehen als Beispiele an Jev', past.length > 0 && past.length <= 8 && /past_choices/.test(JSON.stringify(lastJevBody.questions)), `${past.length} Beispiele`);
+  await setFeatures({ learnExamples: false });
+  await call('proposeGroups', { windowId: win1, onlyUngrouped: false }).catch(() => null);
+  check('Lernen: ohne Schalter keine Beispiele an Jev', !lastJevBody?.state?.past_choices);
+  await setFeatures({ learnExamples: true });
+  const judged = (await call('listWatches')).map((w) => ({ w, e: w.history?.find((x) => typeof x.p === 'number') })).find((x) => x.e);
+  if (judged) {
+    await call('watchFeedback', { id: judged.w.id, t: judged.e.t, ok: false });
+    const log = await popup.evaluate(async () => ((await chrome.storage.local.get('learnLog')).learnLog || []).filter((e) => e.f === 'watch'));
+    check('Lernen: Daumen beim Wächter gemerkt', log.length === 1 && log[0].ok === false && typeof log[0].truth === 'boolean');
+  } else check('Lernen: Daumen beim Wächter gemerkt', false, 'kein bewerteter Wächter');
+  const jsonl = await call('learnJsonl');
+  check('Lernen: Export als JSONL', jsonl.trim().split('\n').length === 16, `${jsonl.trim().split('\n').length} Zeilen`);
+}
 
 // Export und Import
 const exported = await call('exportAll', { withKeys: false });

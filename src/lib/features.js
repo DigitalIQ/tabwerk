@@ -7,6 +7,7 @@ import { planSort, SORTERS } from './order.js';
 import * as P from './prompts.js';
 import { beforeAction } from './history.js';
 import { LABEL } from './reasons.js';
+import * as Learn from './learn.js';
 import { t } from './i18n.js';
 
 async function openedTimes() {
@@ -112,10 +113,13 @@ export async function proposeGroups({ windowId, onlyUngrouped }) {
   if (!candidates.length) return { items: [], options: meta };
 
   const byKey = new Map(candidates.map((tab) => [P.tabKey(tab), tab]));
+  // Lernen: frühere Zuordnungen als Beispiele, Schwelle aus deinen Entscheidungen.
+  const past = await Learn.examples([...new Set(candidates.map((tab) => hostOf(tab.url)))]);
+  const threshold = await Learn.threshold('groups', settings);
   const { answers, cost } = await decideChunked(
     [...byKey.keys()],
-    (keys) => P.tabState(keys.map((k) => byKey.get(k))),
-    (key) => P.groupQuestion(key, criteria),
+    (keys) => ({ ...P.tabState(keys.map((k) => byKey.get(k))), ...(past.length ? { past_choices: past } : {}) }),
+    (key) => P.groupQuestion(key, criteria, past.length > 0),
   );
   const items = [...byKey].map(([key, tab]) => {
     const a = answers[key];
@@ -123,11 +127,11 @@ export async function proposeGroups({ windowId, onlyUngrouped }) {
       ...brief(tab),
       target: a.choice,
       confidence: a.confidence,
-      sure: a.confidence >= settings.confidence,
+      sure: a.confidence >= threshold,
       current: tab.groupId === -1 ? null : `g${tab.groupId}`,
     };
   });
-  return { items, options: meta, cost, threshold: settings.confidence };
+  return { items, options: meta, cost, threshold, examples: past.length };
 }
 
 // plan: [{tabId, target}] mit target = gX, cY oder none.

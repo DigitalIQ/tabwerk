@@ -42,6 +42,12 @@ export const FEATURES = [
   { id: 'formsTestData', parent: 'forms', get area() { return t('ft_area_bookmarksForms'); }, get label() { return t('ft_formsTestData_label'); }, get hint() { return t('ft_formsTestData_hint'); }, def: true },
   { id: 'formsSensitive', parent: 'forms', get area() { return t('ft_area_bookmarksForms'); }, get label() { return t('ft_formsSensitive_label'); }, get hint() { return t('ft_formsSensitive_hint'); }, def: false, warn: true },
   { id: 'formsJev', parent: 'forms', get area() { return t('ft_area_bookmarksForms'); }, get label() { return t('ft_formsJev_label'); }, get hint() { return t('ft_formsJev_hint'); }, def: false, jev: true },
+
+  { id: 'learn', get area() { return t('ft_area_learn'); }, get label() { return t('ft_learn_label'); }, get hint() { return t('ft_learn_hint'); }, def: true },
+  { id: 'learnRules', parent: 'learn', get area() { return t('ft_area_learn'); }, get label() { return t('ft_learnRules_label'); }, get hint() { return t('ft_learnRules_hint'); }, def: true },
+  { id: 'learnThreshold', parent: 'learn', get area() { return t('ft_area_learn'); }, get label() { return t('ft_learnThreshold_label'); }, get hint() { return t('ft_learnThreshold_hint'); }, def: true },
+  { id: 'learnExamples', parent: 'learn', get area() { return t('ft_area_learn'); }, get label() { return t('ft_learnExamples_label'); }, get hint() { return t('ft_learnExamples_hint'); }, def: true, jev: true },
+  { id: 'learnFeedback', parent: 'learn', get area() { return t('ft_area_learn'); }, get label() { return t('ft_learnFeedback_label'); }, get hint() { return t('ft_learnFeedback_hint'); }, def: true },
 ];
 
 export const FEATURE_DEFAULTS = Object.fromEntries(FEATURES.map((f) => [f.id, f.def]));

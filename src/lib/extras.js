@@ -12,6 +12,7 @@ import { timeWindow } from './timewindow.js';
 import { wakeTime, SNOOZE_PRESETS } from './snoozetime.js';
 import { beforeAction, captureWindow, listSnapshots } from './history.js';
 import { LABEL } from './reasons.js';
+import * as Learn from './learn.js';
 import { t, tp, fmtDate } from './i18n.js';
 import * as P from './prompts.js';
 
@@ -47,18 +48,19 @@ export async function suggestCleanup({ windowId, useJev = true }) {
     scores = Object.fromEntries(Object.entries(result.answers).map(([k, a]) => [P.idFromKey(k), a]));
   }
   const oldMs = settings.cleanupDays * 864e5;
+  const threshold = jev ? await Learn.threshold('cleanup', settings) : settings.confidence;
   const items = tabs.map((tab) => {
     const age = now - (tab.lastAccessed || now);
     const s = scores[tab.id];
     const reasons = [];
     if (age >= oldMs) reasons.push(tp('x_notUsedDays', Math.floor(age / 864e5)));
     if (s && s.score < 0.75) reasons.push(t('x_jevCanGo'));
-    const sure = s ? s.confidence >= settings.confidence : false;
+    const sure = s ? s.confidence >= threshold : false;
     const preselect = (s && s.score < 0.75 && sure) || (age >= oldMs && (!s || s.score < 1.5));
-    return { id: tab.id, title: tab.title, url: tab.url, lastAccessed: tab.lastAccessed, score: s?.score, confidence: s?.confidence, reasons, preselect };
+    return { id: tab.id, title: tab.title, url: tab.url, lastAccessed: tab.lastAccessed, score: s?.score, confidence: s?.confidence, jevClose: Boolean(s && s.score < 0.75), reasons, preselect };
   }).filter((i) => i.reasons.length)
     .sort((a, b) => Number(b.preselect) - Number(a.preselect) || (a.lastAccessed || 0) - (b.lastAccessed || 0));
-  return { items, cost, jev, threshold: settings.confidence };
+  return { items, cost, jev, threshold };
 }
 
 // ---------- Neue Tabs einsortieren ----------

@@ -10,6 +10,7 @@ import { isOn } from './flags.js';
 import { hasKey } from './settings.js';
 import { numberCandidates, compare } from './numbers.js';
 import { t } from './i18n.js';
+import * as Learn from './learn.js';
 
 const HISTORY = 12;
 
@@ -169,7 +170,7 @@ async function runCheck(id) {
         entry.cost = result.cost;
         const pick = result.answers.evidence?.choice;
         entry.evidence = pick && pick !== 'none' ? req.evidence[Number(pick.slice(1))] : req.evidence[0];
-        entry.status = entry.p >= settings.notifyAt ? 'match' : 'noise';
+        entry.status = entry.p >= await Learn.threshold('watch', settings) ? 'match' : 'noise';
         if (entry.status === 'match') notify(watch, entry);
       }
     }
@@ -224,4 +225,16 @@ export async function openFromNotification(notificationId) {
   const watch = (await listWatches()).find((w) => w.id === id);
   if (watch) await chrome.tabs.create({ url: watch.url });
   chrome.notifications.clear(notificationId);
+}
+
+// Daumen zu einer Prüfung: stimmt Jevs Urteil „melden“ oder „nicht melden“? Fließt ins Lernen.
+export async function watchFeedback({ id, t: at, ok }) {
+  const watch = (await listWatches()).find((w) => w.id === id);
+  const entry = watch?.history?.find((x) => x.t === at);
+  if (!entry || typeof entry.p !== 'number') throw new Error(t('watch_feedbackGone'));
+  const history = watch.history.map((x) => (x.t === at ? { ...x, feedback: ok ? 'ok' : 'wrong' } : x));
+  await updateWatch(id, { history });
+  const match = entry.status === 'match';
+  await Learn.record({ events: [{ f: 'watch', host: watch.site, title: watch.condition, jev: entry.status, conf: entry.p, ok, truth: ok ? match : !match }] });
+  return { ok: true };
 }

@@ -41,10 +41,12 @@ export function groupOptions(groups, categories, membersByGroup = {}) {
   return { criteria, meta };
 }
 
-export function groupQuestion(key, criteria) {
+// withExamples: im Zustand steht past_choices mit früheren Zuordnungen des Nutzers.
+export function groupQuestion(key, criteria, withExamples = false) {
+  const hint = withExamples ? ' `past_choices` shows where I put similar tabs before; follow that habit when a tab is clearly alike.' : '';
   return {
     type: 'choice',
-    instructions: `Which tab group should the browser tab \`tabs.${key}\` be placed in? Judge by its title, site and path.`,
+    instructions: `Which tab group should the browser tab \`tabs.${key}\` be placed in? Judge by its title, site and path.${hint}`,
     criteria,
   };
 }

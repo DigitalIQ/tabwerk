@@ -259,3 +259,7 @@ button.row:hover { background: var(--sunken); border-color: var(--line); }
   min-height: 40px;
 }
 .foot button { min-height: 28px; font-size: 12px; }
+
+.rule-hints { display: grid; gap: 6px; margin: 0 0 10px; }
+.rule-hint { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 8px; padding: 8px 10px; border-radius: var(--r); background: var(--accent-soft, var(--bg)); font-size: 12.5px; }
+.watch .feedback { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12px; margin-top: 4px; }

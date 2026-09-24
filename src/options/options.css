@@ -147,3 +147,9 @@ label.btn { display: inline-flex; align-items: center; min-height: 32px; padding
 .host-list { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 4px; }
 .host-list li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 4px 4px 10px; border-radius: var(--r); background: var(--bg); }
 .host-list:empty { display: none; }
+
+.learn-rows { display: grid; gap: 4px; margin-bottom: 6px; font-size: 12.5px; }
+.learn-row { display: flex; flex-wrap: wrap; gap: 4px 12px; min-width: 0; }
+.learn-row b { font-weight: 500; min-width: 7em; }
+.learn-row span { color: var(--ink-2); overflow-wrap: anywhere; }
+.learn-actions { display: flex; flex-wrap: wrap; gap: 8px; }
