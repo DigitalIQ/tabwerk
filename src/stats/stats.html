@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tabwerk Statistik</title>
+  <link rel="stylesheet" href="../ui/base.css">
+  <link rel="stylesheet" href="stats.css">
+</head>
+<body>
+  <div class="page">
+    <header class="masthead">
+      <img src="/icons/icon128.png" alt="" width="36" height="36">
+      <h1>Statistik</h1>
+      <span class="mono faint" id="stamp"></span>
+    </header>
+    <section class="tiles" id="tiles" aria-label="Überblick"></section>
+    <div class="cols">
+      <section class="card">
+        <h2>Websites mit den meisten Tabs</h2>
+        <ol class="bars" id="hosts"></ol>
+      </section>
+      <section class="card">
+        <h2>Höchste Tab-Zahl pro Tag</h2>
+        <p class="help">Aus dem Verlauf, letzte 14 Tage.</p>
+        <div class="columns" id="daily" role="img"></div>
+        <table class="visually-hidden" id="daily-table"><caption>Höchste Tab-Zahl pro Tag</caption><thead><tr><th>Tag</th><th>Tabs</th></tr></thead><tbody></tbody></table>
+      </section>
+    </div>
+    <section class="card">
+      <h2>Am längsten nicht benutzt</h2>
+      <ul class="oldest" id="oldest"></ul>
+    </section>
+  </div>
+  <script type="module" src="stats.js"></script>
+</body>
+</html>

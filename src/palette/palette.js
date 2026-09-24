@@ -4,6 +4,9 @@
 
 import { h, icon, send, favicon } from '../ui/dom.js';
 import { getSettings, hasKey } from '../lib/settings.js';
+import { isOn } from '../lib/flags.js';
+import { normalize } from '../lib/fuzzy.js';
+import { normalizeUrl } from '../lib/url.js';
 import { scoreItem, parseQuery } from '../lib/fuzzy.js';
 import { hostOf } from '../lib/url.js';
 
@@ -13,9 +16,19 @@ const standalone = params.has('standalone');
 document.body.classList.toggle('standalone', standalone);
 
 const settings = await getSettings();
+
+// Farbmodus: fest hell, fest dunkel, wie das System oder wie die Seite dahinter.
+// Im iFrame meldet prefers-color-scheme nicht zuverlässig das System, deshalb misst content.js beides.
+function resolveTheme() {
+  const system = params.get('sys') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  if (settings.paletteTheme === 'light' || settings.paletteTheme === 'dark') return settings.paletteTheme;
+  if (settings.paletteTheme === 'system') return system;
+  return params.get('site') || system;
+}
+document.documentElement.dataset.theme = resolveTheme();
 const windowId = standalone ? Number(params.get('win')) : (await chrome.windows.getCurrent()).id;
 const jevOn = settings.paletteJev && hasKey(settings);
-$('#jev-key').hidden = !jevOn;
+$('#jev-key').hidden = !(jevOn || (isOn(settings, 'paletteHistoryJev') && hasKey(settings)));
 
 function close() {
   if (standalone) window.close();
@@ -24,7 +37,10 @@ function close() {
 
 // ---------- Quellen laden ----------
 
-const sources = { tabs: [], actions: [], bookmarks: [], history: [] };
+const sources = { tabs: [], actions: [], bookmarks: [], history: [], notes: [], sessions: [], snoozed: [], forms: [] };
+const on = (id) => isOn(settings, id);
+let notes = {};
+let texts = new Map();
 const windowNumbers = new Map();
 
 async function loadTabs() {
@@ -33,17 +49,45 @@ async function loadTabs() {
   const groups = new Map((await chrome.tabGroups.query({})).map((g) => [g.id, g]));
   // Tabwerks eigene Hilfsfenster tauchen nicht als Treffer auf.
   const own = [chrome.runtime.getURL('src/palette/'), chrome.runtime.getURL('src/watch/')];
-  sources.tabs = windows.flatMap((w) => w.tabs.filter((t) => !own.some((p) => (t.url || '').startsWith(p))).map((t) => ({
-    kind: 'tab',
-    id: `tab:${t.id}`,
-    tab: t,
-    title: t.title || t.url,
-    sub: [groups.get(t.groupId)?.title, hostOf(t.url) || t.url].filter(Boolean).join(' · '),
-    url: t.url,
-    here: t.windowId === windowId,
-    recent: t.lastAccessed || 0,
-    fields: [[t.title || '', 1], [t.url || '', 0.75], [groups.get(t.groupId)?.title || '', 0.6]],
-  })));
+  sources.tabs = windows.flatMap((w) => w.tabs.filter((t) => !own.some((p) => (t.url || '').startsWith(p))).map((t) => {
+    const note = notes[normalizeUrl(t.url || '')]?.text || '';
+    return {
+      kind: 'tab',
+      id: `tab:${t.id}`,
+      tab: t,
+      title: t.title || t.url,
+      sub: [note ? `✎ ${note}` : null, groups.get(t.groupId)?.title, hostOf(t.url) || t.url].filter(Boolean).join(' · '),
+      url: t.url,
+      note,
+      here: t.windowId === windowId,
+      recent: t.lastAccessed || 0,
+      fields: [[t.title || '', 1], [t.url || '', 0.75], [groups.get(t.groupId)?.title || '', 0.6], [note, 0.9]],
+    };
+  }));
+  // Notizen zu Seiten, die gerade nicht offen sind, bleiben auffindbar.
+  const open = new Set(sources.tabs.map((t) => normalizeUrl(t.url || '')));
+  sources.notes = Object.entries(notes).filter(([k]) => !open.has(k)).map(([k, n]) => ({
+    kind: 'note', id: `note:${k}`, title: n.title || n.url, sub: `✎ ${n.text}`, url: n.url, recent: n.t,
+    fields: [[n.title || '', 1], [n.text, 0.9], [n.url, 0.6]],
+  }));
+}
+
+async function loadExtras() {
+  const jobs = [];
+  if (on('sessions')) jobs.push(send('listSessions').then((list) => {
+    sources.sessions = list.map((s) => ({ kind: 'session', id: `session:${s.id}`, session: s, title: s.name,
+      sub: `${s.windows.reduce((n, w) => n + w.tabs.length, 0)} Tabs · ${new Date(s.t).toLocaleDateString('de-DE')}`, fields: [[s.name, 1]] }));
+  }));
+  if (on('snooze')) jobs.push(send('listSnoozed').then((list) => {
+    sources.snoozed = list.map((z) => ({ kind: 'snooze', id: `snooze:${z.id}`, snooze: z, title: z.title || z.url, url: z.url,
+      sub: `kommt ${new Date(z.when).toLocaleString('de-DE', { weekday: 'short', day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' })}`,
+      fields: [[z.title || '', 1], [z.url, 0.7]] }));
+  }));
+  if (on('forms')) jobs.push(send('listProfiles').then((list) => {
+    sources.forms = list.map((f) => ({ kind: 'form', id: `form:${f.id}`, form: f, title: f.name, sub: `${f.fields.length} Felder · ${f.host}`,
+      here: f.host === currentHost, fields: [[f.name, 1], [f.host, 0.8]] }));
+  }));
+  await Promise.all(jobs);
 }
 
 async function loadActions() {
@@ -72,30 +116,50 @@ async function loadHistory() {
 
 // ---------- Rangfolge ----------
 
-const WEIGHT = { tab: 1, action: 0.95, bookmark: 0.8, history: 0.65 };
-const KIND_LABEL = { tab: 'Tab', action: 'Aktion', bookmark: 'Lesezeichen', history: 'Verlauf' };
-const SCOPE_LABEL = { tab: 'nur Tabs', action: 'nur Aktionen', bookmark: 'nur Lesezeichen', history: 'nur Verlauf' };
+const WEIGHT = { tab: 1, action: 0.95, form: 0.9, session: 0.85, note: 0.8, bookmark: 0.8, snooze: 0.75, history: 0.65 };
+const KIND_LABEL = { tab: 'Tab', action: 'Aktion', bookmark: 'Lesezeichen', history: 'Verlauf', note: 'Notiz', session: 'Sitzung', snooze: 'Schlummert', form: 'Formular' };
+const SCOPE_LABEL = { tab: 'nur Tabs', action: 'nur Aktionen', bookmark: 'nur Lesezeichen', history: 'nur Verlauf', note: 'nur Notizen', session: 'nur Sitzungen', snooze: 'nur Schlummernde', form: 'nur Formulare' };
+const ALL = () => [...sources.tabs, ...sources.actions, ...sources.forms, ...sources.sessions, ...sources.notes, ...sources.snoozed, ...sources.bookmarks, ...sources.history];
+
+// Volltext: jedes Wort muss im Seitentext stehen. Liefert einen Ausschnitt um den ersten Treffer.
+function textHit(tabId, query) {
+  const text = texts.get(tabId);
+  if (!text) return null;
+  const words = normalize(query).split(/\s+/).filter((w) => w.length > 2);
+  if (!words.length) return null;
+  const hay = normalize(text);
+  if (!words.every((w) => hay.includes(w))) return null;
+  const at = hay.indexOf(words[0]);
+  return `„…${text.slice(Math.max(0, at - 30), at + 60).replace(/\s+/g, ' ').trim()}…“`;
+}
 
 function rank(raw) {
   const { only, text } = parseQuery(raw);
   $('#scope').hidden = !only;
   $('#scope').textContent = only ? SCOPE_LABEL[only] : '';
-  const pool = [...sources.tabs, ...sources.actions, ...sources.bookmarks, ...sources.history].filter((i) => !only || i.kind === only);
+  const pool = ALL().filter((i) => (only ? i.kind === only || (only === 'note' && i.kind === 'tab' && i.note) : true));
   const now = Date.now();
 
   if (!text.trim()) {
     // Ohne Eingabe: zuletzt benutzte Tabs dieses Fensters, dann Aktionen.
     const tabs = pool.filter((i) => i.kind === 'tab' && (only || i.here) && !i.tab.active).sort((a, b) => b.recent - a.recent).slice(0, 8);
-    const rest = pool.filter((i) => i.kind !== 'tab').slice(0, only ? 40 : 6);
-    return [...tabs, ...rest];
+    const forms = only ? [] : pool.filter((i) => i.kind === 'form' && i.here);
+    const rest = pool.filter((i) => i.kind !== 'tab' && !forms.includes(i)).sort((a, b) => Number(b.here || 0) - Number(a.here || 0)).slice(0, only ? 60 : 6);
+    return [...forms, ...tabs, ...rest];
   }
 
   const openUrls = new Set(sources.tabs.map((t) => t.url));
   return pool
     .filter((i) => i.kind === 'tab' || i.kind === 'action' || !openUrls.has(i.url))
     .map((i) => {
-      const s = scoreItem(text, i.fields);
+      let s = scoreItem(text, i.fields);
+      let snippet = null;
+      if (s === null && i.kind === 'tab' && texts.size) {
+        snippet = textHit(i.tab.id, text);
+        if (snippet) s = 8;
+      }
       if (s === null) return null;
+      if (snippet) return { ...i, sub: snippet, score: s };
       let score = s * WEIGHT[i.kind];
       if (i.here) score += 4;
       if (i.recent) score += Math.max(0, 3 - (now - i.recent) / 36e5 / 8);
@@ -114,6 +178,9 @@ let selected = 0;
 function lead(item) {
   let inner;
   if (item.kind === 'action') inner = icon(item.action.jev ? 'bolt' : 'play');
+  else if (item.kind === 'session') inner = icon('window');
+  else if (item.kind === 'form') inner = icon('edit');
+  else if (item.kind === 'snooze') inner = icon('moon');
   else if (item.url) inner = favicon(item.url);
   else inner = icon('window');
   return h('span', { class: 'lead', 'aria-hidden': 'true' }, inner);
@@ -175,9 +242,30 @@ async function choose() {
     close();
     return;
   }
-  if (item.kind === 'bookmark' || item.kind === 'history') {
+  if (item.kind === 'bookmark' || item.kind === 'history' || item.kind === 'note') {
     chrome.tabs.create({ url: item.url, windowId });
     close();
+    return;
+  }
+  if (item.kind === 'session') {
+    chrome.runtime.sendMessage({ type: 'openSession', payload: { id: item.session.id } });
+    close();
+    return;
+  }
+  if (item.kind === 'snooze') {
+    chrome.runtime.sendMessage({ type: 'wakeSnoozed', payload: { id: item.snooze.id } });
+    close();
+    return;
+  }
+  if (item.kind === 'form') {
+    status('Füllt aus …');
+    try {
+      const r = await send('fillForm', { windowId, profileId: item.form.id });
+      status(r.message);
+      setTimeout(close, 1100);
+    } catch (error) {
+      status(error.message, true);
+    }
     return;
   }
   if (item.action.disabled) {
@@ -186,7 +274,14 @@ async function choose() {
   }
   status(item.action.jev ? 'Jev entscheidet …' : 'Läuft …');
   try {
-    const { message } = await send('runAction', { id: item.action.id, windowId });
+    const { message, copy, query } = await send('runAction', { id: item.action.id, windowId });
+    if (query !== undefined) {
+      $('#q').value = query;
+      status('');
+      update();
+      return;
+    }
+    if (copy !== undefined) await navigator.clipboard.writeText(copy);
     if (message) {
       status(message);
       setTimeout(close, 900);
@@ -208,7 +303,20 @@ async function closeSelectedTab() {
 }
 
 async function askJev() {
-  const { text } = parseQuery($('#q').value);
+  const { only, text } = parseQuery($('#q').value);
+  if (only === 'history' && on('paletteHistoryJev') && hasKey(settings) && text.trim()) {
+    status('Jev sucht im Verlauf …');
+    try {
+      const { hits, period } = await send('findHistory', { query: text });
+      results = hits.map((x) => ({ kind: 'history', id: `jh:${x.id}`, title: x.title || x.url, sub: `${hostOf(x.url)} · ${period}`, url: x.url, jevP: x.p }));
+      selected = 0;
+      status(results.length ? '' : `Jev findet nichts im Zeitraum „${period}“.`);
+      render();
+    } catch (error) {
+      status(error.message, true);
+    }
+    return;
+  }
   if (!jevOn || !text.trim()) return;
   status('Jev sucht in allen offenen Tabs …');
   try {
@@ -235,6 +343,19 @@ $('#q').addEventListener('keydown', (e) => {
 $('#scrim').addEventListener('click', close);
 if (standalone) window.addEventListener('blur', () => setTimeout(close, 150));
 
-await Promise.all([loadTabs(), loadActions(), loadBookmarks(), loadHistory()]);
+const currentHost = await (async () => {
+  const [t] = await chrome.tabs.query({ active: true, windowId });
+  return t?.url ? hostOf(t.url) : '';
+})();
+if (on('notes')) notes = await send('listNotes');
+await Promise.all([loadTabs(), loadActions(), loadBookmarks(), loadHistory(), loadExtras()]);
+if (params.get('q')) $('#q').value = params.get('q');
 update();
 $('#q').focus();
+// Volltext kommt im Hintergrund nach, die Suche ist sofort benutzbar.
+if (on('paletteFulltext')) {
+  send('tabTexts').then((list) => {
+    texts = new Map(list.map((x) => [x.tabId, x.text]));
+    if ($('#q').value.trim()) update();
+  }).catch(() => {});
+}

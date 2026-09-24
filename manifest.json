@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Tabwerk",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Tabs finden, gruppieren, sortieren und entdoppeln. Webseiten beobachten. Jeden Stand sichern. Entscheidungen trifft Jev über OpenRouter oder TypeSafe.",
   "minimum_chrome_version": "116",
   "icons": {
@@ -59,6 +59,23 @@
         "mac": "Command+Shift+Space"
       },
       "description": "Schnellsuche öffnen"
+    },
+    "tab-note": {
+      "suggested_key": {
+        "default": "Alt+Shift+N",
+        "mac": "Alt+Shift+N"
+      },
+      "description": "Notiz zum aktuellen Tab"
+    },
+    "undo": {
+      "suggested_key": {
+        "default": "Alt+Shift+Z",
+        "mac": "Alt+Shift+Z"
+      },
+      "description": "Letzte Tabwerk-Aktion rückgängig machen"
+    },
+    "fill-form": {
+      "description": "Formular ausfüllen"
     }
   },
   "optional_permissions": [

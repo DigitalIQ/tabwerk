@@ -3,12 +3,18 @@ import { getSettings, getUsage, CHROME_COLORS, modelShort, connection, hasKey } 
 import { watchForm } from '../ui/watchform.js';
 import { describeInterval } from '../lib/duration.js';
 import { hostOf } from '../lib/url.js';
+import { isOn } from '../lib/flags.js';
 
 const $ = (sel) => document.querySelector(sel);
 // replaceChildren schreibt null als Text. put filtert leere Einträge heraus.
 const put = (el, ...nodes) => el.replaceChildren(...nodes.flat().filter(Boolean));
 const win = await chrome.windows.getCurrent();
 const settings = await getSettings();
+
+// Ausgeschaltete Funktionen verschwinden. data-flag darf mehrere Schalter mit | nennen.
+for (const el of document.querySelectorAll('[data-flag]')) {
+  el.hidden = !el.dataset.flag.split('|').some((id) => isOn(settings, id));
+}
 
 // ---------- Rahmen ----------
 
@@ -20,7 +26,7 @@ async function refreshHeader() {
   const month = new Date().toLocaleDateString('de-DE', { month: 'long' });
   $('#usage').textContent = `${modelShort(connection(settings).model)} · ${usage.requests} Anfragen · ${usage.estimated ? '≈ ' : ''}${cost(usage.cost)}`;
   $('#usage').title = `Jev-Anfragen und gemeldete Kosten im ${month}`;
-  const lastAction = await send('lastAction', { windowId: win.id });
+  const lastAction = isOn(settings, 'undo') ? await send('lastAction', { windowId: win.id }) : null;
   $('#undo').hidden = !lastAction;
   if (lastAction) {
     $('#undo').title = `Stand vor „${lastAction.label}“ wiederherstellen`;
@@ -41,8 +47,8 @@ $('#undo').addEventListener('click', async () => {
   }
   await refreshHeader();
   const active = document.querySelector('[role=tab][aria-selected=true]').dataset.panel;
-  if (active === 'dupes') loadDupes();
-  if (active === 'history') loadHistory();
+  if (active === 'dupes') showClean();
+  if (active === 'history') showHist();
 });
 
 function showPanel(name) {
@@ -52,9 +58,9 @@ function showPanel(name) {
     $(`#panel-${tab.dataset.panel}`).hidden = !on;
   }
   try { localStorage.setItem('panel', name); } catch {}
-  if (name === 'dupes') loadDupes();
+  if (name === 'dupes') showClean();
   if (name === 'watch') loadWatches();
-  if (name === 'history') loadHistory();
+  if (name === 'history') showHist();
   if (name === 'find') $('#find-q').focus();
 }
 document.querySelectorAll('[role=tab]').forEach((tab) => tab.addEventListener('click', () => showPanel(tab.dataset.panel)));
@@ -131,6 +137,22 @@ $('#propose').addEventListener('click', () => {
       return;
     }
     renderGroupPlan(out, res);
+  });
+});
+
+$('#name-groups').addEventListener('click', () => {
+  const out = $('#groups-out');
+  run(out, async () => {
+    const res = await send('suggestGroupNames', { windowId: win.id });
+    if (!res.groups.length) {
+      put(out, empty('check', res.message));
+      return;
+    }
+    put(out, h('p', { class: 'help' }, 'Benannt:'),
+      ...res.groups.map((g) => h('div', { class: 'row', style: { gridTemplateColumns: '1fr auto' } },
+        reiter({ type: 'existing', name: g.name, color: g.color }),
+        g.confidence !== null ? meter(g.confidence, settings.confidence) : h('span', { class: 'faint mono' }, 'Code'))),
+      res.cost ? h('p', { class: 'help mono' }, cost(res.cost)) : null);
   });
 });
 
@@ -294,6 +316,48 @@ async function loadDupes() {
 }
 $('#dupes-all').addEventListener('change', loadDupes);
 
+function showClean() {
+  const mode = document.querySelector('input[name=clean]:checked').value;
+  $('#dupes-bar').hidden = mode !== 'dupes';
+  $('#suggest-bar').hidden = mode !== 'suggest';
+  $('#suggest-jev').closest('label').hidden = !hasKey(settings);
+  if (mode === 'dupes') loadDupes();
+  else put($('#dupes-out'), empty('bolt', 'Alte und unwichtige Tabs finden.', `Alt heißt: länger als ${settings.cleanupDays} Tage nicht benutzt. Mit Jev zählt auch, ob der Tab zu deinem Fokus passt.`));
+}
+document.querySelectorAll('input[name=clean]').forEach((r) => r.addEventListener('change', showClean));
+
+$('#suggest-go').addEventListener('click', () => {
+  const out = $('#dupes-out');
+  run(out, async () => {
+    const res = await send('suggestCleanup', { windowId: win.id, useJev: $('#suggest-jev').checked });
+    if (!res.items.length) {
+      put(out, empty('check', 'Nichts zum Aufräumen.', 'Kein Tab ist alt oder laut Jev überflüssig.'));
+      return;
+    }
+    const marked = new Set(res.items.filter((i) => i.preselect).map((i) => i.id));
+    const draw = () => {
+      put(out,
+        h('p', { class: 'help' }, 'Markiert ist, was zugeht. Alles bleibt im Verlauf.'),
+        ...res.items.map((item) => {
+          const box = h('input', { type: 'checkbox', 'aria-label': `${item.title} schließen`, onchange: (e) => { if (e.target.checked) marked.add(item.id); else marked.delete(item.id); draw(); } });
+          box.checked = marked.has(item.id);
+          return h('label', { class: `row check-row dupe-row${marked.has(item.id) ? ' gone' : ''}` },
+            box, favicon(item.url),
+            h('span', { class: 'txt' }, h('span', { class: 'title' }, item.title), h('span', { class: 'reason-list' }, item.reasons.join(' · '))),
+            typeof item.confidence === 'number' ? meter(item.confidence, res.threshold) : h('span', {}));
+        }),
+        h('div', { class: 'summary sticky' },
+          h('span', { class: 'mono' }, res.jev ? cost(res.cost) : 'ohne Jev'),
+          h('button', { class: 'primary', disabled: !marked.size, onclick: async () => {
+            await send('closeTabs', { tabIds: [...marked], windowId: win.id, label: 'Aufräumen' });
+            refreshHeader();
+            put(out, empty('check', `${marked.size} Tabs geschlossen.`, 'Mit Rückgängig holst du sie zurück.'));
+          } }, icon('x'), `${marked.size} schließen`)));
+    };
+    draw();
+  });
+});
+
 $('#similar').addEventListener('click', () => {
   const out = $('#dupes-out');
   run(out, async () => {
@@ -348,14 +412,31 @@ function watchCard(w) {
     h('div', { class: 'cond' }, w.condition),
     h('div', { class: 'state' }, `prüft alle ${describeInterval(w.intervalMin)}`),
     status,
-    hit ? h('div', { class: 'evidence' }, hit.evidence || 'Passende Änderung', h('span', { class: 'faint mono' }, ` · ${ago(hit.t)}`)) : null);
+    w.number ? h('div', { class: 'state' }, `Grenze: ${OPS[w.number.op]} ${w.number.limit.toLocaleString('de-DE')}${typeof lastValue(w) === 'number' ? ` · zuletzt ${lastValue(w).toLocaleString('de-DE')}` : ''}`) : null,
+    hit ? h('div', { class: 'evidence' }, hit.evidence || 'Passende Änderung', h('span', { class: 'faint mono' }, ` · ${ago(hit.t)}`)) : null,
+    diffView(w));
+}
+
+const OPS = { below: 'unter', atmost: 'höchstens', above: 'über', atleast: 'mindestens' };
+const lastValue = (w) => w.history?.find((x) => typeof x.value === 'number')?.value;
+
+// Änderungen der letzten Prüfung mit Unterschied, wenn eingeschaltet.
+function diffView(w) {
+  if (!isOn(settings, 'watchDiff')) return null;
+  const e = w.history?.find((x) => x.addedLines?.length || x.removedLines?.length);
+  if (!e) return null;
+  return h('details', {},
+    h('summary', {}, `Änderungen ${ago(e.t)}: +${e.added ?? e.addedLines.length} −${e.removed ?? e.removedLines.length} Zeilen`),
+    h('div', { class: 'diff' },
+      ...e.removedLines.map((l) => h('span', { class: 'del' }, `− ${l}`)),
+      ...e.addedLines.map((l) => h('span', { class: 'add' }, `+ ${l}`))));
 }
 
 let formSlotReady = false;
 function mountWatchForm(url) {
   if (formSlotReady) return;
   formSlotReady = true;
-  put($('#watch-form-slot'), watchForm({ url, onDone: () => { $('#newwatch').open = false; loadWatches(); } }));
+  put($('#watch-form-slot'), watchForm({ url, numbers: isOn(settings, 'watchNumbers'), onDone: () => { $('#newwatch').open = false; loadWatches(); } }));
 }
 
 // ---------- Verlauf ----------
@@ -483,6 +564,48 @@ async function fillSnapshot(entry, body) {
 
 $('#history-all').addEventListener('change', loadHistory);
 
+function showHist() {
+  const choice = document.querySelector('input[name=hist]:checked');
+  const firstVisible = [...document.querySelectorAll('input[name=hist]')].find((r) => !r.closest('label').hidden);
+  if (choice.closest('label').hidden && firstVisible) firstVisible.checked = true;
+  const mode = document.querySelector('input[name=hist]:checked').value;
+  $('#snaps-view').hidden = mode !== 'snaps';
+  $('#sessions-view').hidden = mode !== 'sessions';
+  if (mode === 'snaps') loadHistory(); else loadSessions();
+}
+document.querySelectorAll('input[name=hist]').forEach((r) => r.addEventListener('change', showHist));
+
+async function loadSessions() {
+  const out = $('#sessions-out');
+  const sessions = await send('listSessions');
+  if (!sessions.length) {
+    put(out, empty('window', 'Noch keine Sitzung.', 'Speicher dieses Fenster unter einem Namen. Später öffnest du es wieder, mit allen Gruppen.'));
+    return;
+  }
+  put(out, ...sessions.map((s) => {
+    const tabs = s.windows.reduce((n, w) => n + w.tabs.length, 0);
+    const groups = s.windows.flatMap((w) => w.groups).filter((g) => g.title);
+    return h('div', { class: 'session' },
+      h('div', { class: 'head' },
+        h('span', { class: 'name', title: s.name }, s.name),
+        h('span', { class: 'acts' },
+          h('button', { class: 'ghost', onclick: async () => { await send('openSession', { id: s.id }); } }, icon('open'), 'Öffnen'),
+          h('button', { class: 'ghost icon', title: 'Umbenennen', 'aria-label': 'Umbenennen', onclick: async () => {
+            const name = prompt('Neuer Name', s.name);
+            if (name) { await send('renameSession', { id: s.id, name }); loadSessions(); }
+          } }, icon('edit')),
+          h('button', { class: 'ghost icon', title: 'Löschen', 'aria-label': 'Löschen', onclick: async () => { await send('deleteSession', { id: s.id }); loadSessions(); } }, icon('trash')))),
+      h('div', { class: 'state' }, `${new Date(s.t).toLocaleDateString('de-DE')} · ${tabs} Tabs${groups.length ? ` · ${groups.slice(0, 3).map((g) => g.title).join(', ')}` : ''}`));
+  }));
+}
+
+$('#session-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  await send('saveSession', { windowId: win.id, name: $('#session-name').value });
+  $('#session-name').value = '';
+  loadSessions();
+});
+
 $('#snap-now').addEventListener('click', async () => {
   await send('saveSnapshot');
   loadHistory();
@@ -495,5 +618,6 @@ mountWatchForm(current?.url?.startsWith('http') ? current.url : '');
 
 let start = 'find';
 try { start = localStorage.getItem('panel') || 'find'; } catch {}
-showPanel(document.querySelector(`[data-panel="${start}"]`) ? start : 'find');
+const visible = [...document.querySelectorAll('[role=tab]')].filter((t) => !t.hidden).map((t) => t.dataset.panel);
+if (visible.length) showPanel(visible.includes(start) ? start : visible[0]);
 refreshHeader();

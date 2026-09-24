@@ -68,6 +68,15 @@
       </div>
     </section>
 
+    <section class="block" id="sec-features">
+      <div class="lede">
+        <h2>Funktionen</h2>
+        <p>Schalte ein, was du brauchst. Eingerückte Funktionen hängen an der darüber und wirken nur, wenn diese an ist.</p>
+        <p class="faint">„Jev“ heißt: braucht einen Schlüssel. „Erlaubnis“ heißt: Chrome fragt beim Einschalten einmal nach.</p>
+      </div>
+      <div class="controls" id="features"></div>
+    </section>
+
     <section class="block" id="sec-palette">
       <div class="lede">
         <h2>Schnellsuche</h2>
@@ -80,6 +89,15 @@
         <label class="check-line"><input type="checkbox" id="p-bookmarks"><span><b>Lesezeichen durchsuchen</b><small>Chrome fragt einmal nach der Erlaubnis.</small></span></label>
         <label class="check-line"><input type="checkbox" id="p-history"><span><b>Verlauf durchsuchen</b><small>Die letzten 90 Tage. Chrome fragt einmal nach der Erlaubnis.</small></span></label>
         <label class="check-line"><input type="checkbox" id="p-jev"><span><b>Jev mit Umschalt+Enter fragen</b><small>Nur auf Tastendruck, nie beim Tippen. Jev sucht dann in allen offenen Tabs.</small></span></label>
+        <label class="field"><span>Farbmodus</span>
+          <select id="p-theme">
+            <option value="site">Automatisch nach Website</option>
+            <option value="system">Wie das System</option>
+            <option value="light">Immer hell</option>
+            <option value="dark">Immer dunkel</option>
+          </select>
+        </label>
+        <p class="help">„Automatisch nach Website“ misst die Hintergrundfarbe der Seite hinter der Suche.</p>
         <p class="error-text" id="palette-err" hidden></p>
       </div>
     </section>
@@ -151,8 +169,40 @@
         <div class="usage" id="history-stats"></div>
         <div class="row-actions">
           <button class="ghost danger" id="clear-history"><span class="ico i-trash"></span>Verlauf leeren</button>
+          <button class="ghost" id="open-stats"><span class="ico i-sort"></span>Statistik öffnen</button>
         </div>
         <p class="help" id="history-note" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="block" id="sec-forms">
+      <div class="lede">
+        <h2>Formulare</h2>
+        <p>Gespeicherte Formulare füllst du per Schnellsuche mit /f, per Rechtsklick oder per Tastenkürzel wieder aus.</p>
+        <p class="faint">Passwort-, Karten-, Konto- und TAN-Felder speichert Tabwerk nie.</p>
+      </div>
+      <div class="controls">
+        <div id="profiles" class="profiles"></div>
+      </div>
+    </section>
+
+    <section class="block" id="sec-transfer">
+      <div class="lede">
+        <h2>Export und Import</h2>
+        <p>Sichert Einstellungen, Sitzungen, Wächter, Notizen, geschlummerte Tabs, Formulare und den Verlauf in einer Datei.</p>
+        <p class="faint">Import führt zusammen. Vorhandenes bleibt erhalten.</p>
+      </div>
+      <div class="controls">
+        <label class="check-line"><input type="checkbox" id="x-history" checked><span><b>Verlauf mitnehmen</b><small>Macht die Datei größer.</small></span></label>
+        <label class="check-line"><input type="checkbox" id="x-forms" checked><span><b>Formulare mitnehmen</b><small>Die Datei enthält dann deine Formulardaten im Klartext.</small></span></label>
+        <label class="check-line"><input type="checkbox" id="x-keys"><span><b>Schlüssel mitnehmen</b><small>Nur für den eigenen Umzug. Gib die Datei dann nicht weiter.</small></span></label>
+        <div class="row-actions">
+          <button class="primary" id="x-export">Alles exportieren</button>
+          <button id="x-bookmarks">Sitzungen als Lesezeichen-Datei</button>
+          <label class="btn" for="x-import">Datei importieren</label>
+          <input type="file" id="x-import" accept="application/json,.json" class="visually-hidden">
+        </div>
+        <p class="help" id="x-note" aria-live="polite"></p>
       </div>
     </section>
 

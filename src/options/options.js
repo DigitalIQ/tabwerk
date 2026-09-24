@@ -1,5 +1,7 @@
 import { h, icon, send, cost } from '../ui/dom.js';
-import { getSettings, saveSettings, getUsage, CHROME_COLORS, PROVIDERS, connection, DEFAULTS } from '../lib/settings.js';
+import { getSettings, saveSettings, getUsage, CHROME_COLORS, PROVIDERS, connection, DEFAULTS, hasKey } from '../lib/settings.js';
+import { FEATURES, FEATURE_DEFAULTS, isOn } from '../lib/flags.js';
+import { toBookmarkHtml } from '../lib/bookmarkfile.js';
 
 const $ = (sel) => document.querySelector(sel);
 let settings = await getSettings();
@@ -116,6 +118,137 @@ $('#test').addEventListener('click', async (event) => {
   }
 });
 
+// ---------- Funktionen ----------
+
+const lines = (text) => text.split('\n').map((s) => s.trim()).filter(Boolean);
+
+// Zusatzfelder, die unter einer eingeschalteten Funktion erscheinen.
+const EXTRAS = {
+  autoGroup: () => [
+    h('label', { class: 'field' }, h('span', {}, 'Regeln, eine pro Zeile: domain = Gruppe'),
+      h('textarea', { class: 'mono', placeholder: 'github.com = Entwicklung\nyoutube.com = Medien', onchange: (e) => save({ groupRules: lines(e.target.value) }) }, settings.groupRules.join('\n'))),
+  ],
+  dupeGuard: () => {
+    const mode = h('select', { onchange: (e) => save({ dupeGuardMode: e.target.value }) },
+      h('option', { value: 'switch' }, 'Zum offenen Tab springen'), h('option', { value: 'ask' }, 'Per Meldung fragen'));
+    mode.value = settings.dupeGuardMode;
+    return [
+      h('label', { class: 'field' }, h('span', {}, 'Wenn eine Seite schon offen ist'), mode),
+      h('p', { class: 'help' }, 'Zweimal öffnen innerhalb von 20 Sekunden behält beide Tabs. Die Schnellsuche kann den Schutz 10 Minuten pausieren.'),
+      h('label', { class: 'field' }, h('span', {}, 'Diese Websites immer doppelt erlauben'),
+        h('textarea', { class: 'mono', placeholder: 'mail.google.com', onchange: (e) => save({ dupeGuardAllow: lines(e.target.value) }) }, settings.dupeGuardAllow.join('\n'))),
+    ];
+  },
+  discard: () => [h('label', { class: 'inline' }, 'Entladen nach',
+    h('input', { type: 'number', min: 5, max: 1440, value: settings.discardAfterMin, onchange: (e) => save({ discardAfterMin: Math.max(5, Number(e.target.value) || 60) }) }), 'Minuten ohne Nutzung')],
+  cleanupSuggest: () => [h('label', { class: 'inline' }, 'Alt ab',
+    h('input', { type: 'number', min: 1, max: 60, value: settings.cleanupDays, onchange: (e) => save({ cleanupDays: Math.max(1, Number(e.target.value) || 3) }) }), 'Tagen ohne Nutzung')],
+  focus: () => [
+    h('label', { class: 'inline' }, 'Dauer',
+      h('input', { type: 'number', min: 5, max: 240, value: settings.focusMinutes, onchange: (e) => save({ focusMinutes: Math.max(5, Number(e.target.value) || 25) }) }), 'Minuten'),
+    h('label', { class: 'field' }, h('span', {}, 'Während des Fokus gesperrt'),
+      h('textarea', { class: 'mono', onchange: (e) => save({ focusBlock: lines(e.target.value) }) }, settings.focusBlock.join('\n'))),
+  ],
+};
+
+function renderFeatures() {
+  const flags = { ...FEATURE_DEFAULTS, ...(settings.features || {}) };
+  const areas = [...new Set(FEATURES.map((f) => f.area))];
+  $('#features').replaceChildren(...areas.map((area) => h('div', { class: 'feat-area' },
+    h('h3', {}, area),
+    ...FEATURES.filter((f) => f.area === area).map((f) => {
+      const parentOff = f.parent && !isOn(settings, f.parent);
+      const box = h('input', { type: 'checkbox', id: `f-${f.id}`, disabled: parentOff });
+      box.checked = flags[f.id];
+      box.addEventListener('change', async () => {
+        if (box.checked && f.perm) {
+          const granted = await chrome.permissions.request(f.perm);
+          if (!granted) { box.checked = false; return; }
+          if (f.id === 'paletteHistoryJev') await save({ paletteHistory: true });
+        }
+        await save({ features: { ...flags, [f.id]: box.checked } });
+        renderFeatures();
+      });
+      const extra = EXTRAS[f.id] && flags[f.id] && !parentOff ? h('div', { class: 'feat-extra' }, ...EXTRAS[f.id]()) : null;
+      return h('div', { class: `feat${f.parent ? ' child' : ''}${parentOff ? ' dim' : ''}` },
+        box,
+        h('label', { for: `f-${f.id}` },
+          h('b', {}, f.label),
+          f.jev ? h('span', { class: 'tag jev', title: hasKey(settings) ? 'Nutzt Jev' : 'Braucht einen Schlüssel für Jev' }, 'Jev') : null,
+          f.perm ? h('span', { class: 'tag' }, 'Erlaubnis') : null,
+          h('small', {}, f.hint)),
+        extra);
+    }))));
+}
+
+// ---------- Formulare ----------
+
+async function renderProfiles() {
+  const list = await send('listProfiles');
+  if (!list.length) {
+    $('#profiles').replaceChildren(h('p', { class: 'help' }, 'Noch nichts gespeichert. Auf einer Seite mit ausgefülltem Formular: Rechtsklick, „Formular speichern“.'));
+    return;
+  }
+  $('#profiles').replaceChildren(...list.map((p) => {
+    const table = h('table', { hidden: true }, ...p.fields.map((f) => h('tr', {}, h('td', {}, f.label || f.name || f.id || f.type), h('td', { class: 'mono' }, String(f.value)))));
+    return h('div', { class: 'profile' },
+      h('div', { class: 'head' },
+        h('span', { class: 'name', title: p.name }, p.name),
+        h('span', { class: 'mono faint' }, `${p.fields.length} Felder`),
+        h('button', { class: 'ghost', onclick: (e) => { table.hidden = !table.hidden; e.currentTarget.textContent = table.hidden ? 'Werte zeigen' : 'Werte verbergen'; } }, 'Werte zeigen'),
+        h('button', { class: 'ghost icon', title: 'Umbenennen', 'aria-label': 'Umbenennen', onclick: async () => {
+          const name = prompt('Neuer Name', p.name);
+          if (name) { await send('renameProfile', { id: p.id, name }); renderProfiles(); }
+        } }, icon('edit')),
+        h('button', { class: 'ghost icon danger', title: 'Löschen', 'aria-label': 'Löschen', onclick: async () => { await send('deleteProfile', { id: p.id }); renderProfiles(); } }, icon('trash'))),
+      table);
+  }));
+}
+
+// ---------- Export und Import ----------
+
+function download(name, text, type) {
+  const url = URL.createObjectURL(new Blob([text], { type }));
+  const a = h('a', { href: url, download: name });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+const stamp = () => new Date().toISOString().slice(0, 10);
+
+$('#x-export').addEventListener('click', async () => {
+  const data = await send('exportAll', { withKeys: $('#x-keys').checked, withHistory: $('#x-history').checked, withForms: $('#x-forms').checked });
+  download(`tabwerk-${stamp()}.json`, JSON.stringify(data, null, 2), 'application/json');
+  $('#x-note').textContent = 'Exportiert.';
+});
+
+$('#x-bookmarks').addEventListener('click', async () => {
+  const sessions = await send('listSessions');
+  if (!sessions.length) { $('#x-note').textContent = 'Es gibt noch keine Sitzung.'; return; }
+  download(`tabwerk-sitzungen-${stamp()}.html`, toBookmarkHtml(sessions), 'text/html');
+  $('#x-note').textContent = `${sessions.length} Sitzungen als Lesezeichen-Datei gespeichert.`;
+});
+
+$('#x-import').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    const r = await send('importAll', { data });
+    // Wächter brauchen ihre Leseerlaubnis zurück.
+    if (r.origins.length) await chrome.permissions.request({ origins: r.origins }).catch(() => {});
+    $('#x-note').textContent = `Importiert: ${r.sessions} Sitzungen, ${r.watches} Wächter, ${r.snapshots} Sicherungen. Lade die Seite neu, um alles zu sehen.`;
+    settings = await getSettings();
+  } catch (error) {
+    $('#x-note').textContent = `Import fehlgeschlagen: ${error.message}`;
+  }
+  e.target.value = '';
+});
+
+$('#open-stats').addEventListener('click', () => chrome.tabs.create({ url: chrome.runtime.getURL('src/stats/stats.html') }));
+
 // ---------- Schnellsuche ----------
 
 async function renderShortcut() {
@@ -152,6 +285,8 @@ function bindPermissionToggle(id, key, permission) {
 bindPermissionToggle('#p-bookmarks', 'paletteBookmarks', 'bookmarks');
 bindPermissionToggle('#p-history', 'paletteHistory', 'history');
 $('#p-jev').checked = settings.paletteJev;
+$('#p-theme').value = settings.paletteTheme;
+$('#p-theme').addEventListener('change', (e) => save({ paletteTheme: e.target.value }));
 $('#p-jev').addEventListener('change', (e) => save({ paletteJev: e.target.checked }));
 
 // ---------- Kategorien ----------
@@ -270,6 +405,8 @@ $('#clear-history').addEventListener('click', async () => {
 });
 
 renderConnection();
+renderFeatures();
+renderProfiles();
 renderShortcut();
 renderHistory();
 renderCats();

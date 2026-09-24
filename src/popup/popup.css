@@ -206,6 +206,27 @@ button.row:hover { background: var(--sunken); border-color: var(--line); }
 .mini span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .snap-actions { display: flex; justify-content: flex-end; }
 
+/* ---------- Unterbereiche ---------- */
+.subtabs { display: inline-flex; gap: 3px; padding: 3px; border-radius: var(--r); background: var(--sunken); border: 1px solid var(--line); justify-self: start; }
+.subtabs label { cursor: pointer; }
+.subtabs input { position: absolute; opacity: 0; pointer-events: none; }
+.subtabs span { display: block; padding: 5px 12px; border-radius: 6px; font-size: 12.5px; font-weight: 500; color: var(--ink-2); }
+.subtabs input:checked + span { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.subtabs input:focus-visible + span { outline: 2px solid var(--accent); }
+#snaps-view, #sessions-view { display: grid; gap: 10px; }
+#snaps-view[hidden], #sessions-view[hidden] { display: none; }
+
+.reason-list { font: 400 11px/1.3 var(--mono); color: var(--ink-3); }
+.session { border: 1px solid var(--line); border-radius: var(--r); padding: 8px 10px; display: grid; gap: 4px; }
+.session .head { display: flex; align-items: center; gap: 8px; }
+.session .name { font-weight: 550; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.session .acts { display: flex; gap: 2px; }
+.session .acts button { min-height: 28px; font-size: 12px; }
+.diff { display: grid; gap: 2px; font: 400 11.5px/1.4 var(--mono); max-height: 160px; overflow: auto; padding: 6px 8px; background: var(--sunken); border-radius: 6px; }
+.diff .add { color: var(--ok); }
+.diff .del { color: var(--danger); text-decoration: line-through; }
+.watch details summary { cursor: pointer; font-size: 12px; color: var(--ink-2); }
+
 /* ---------- Zustände ---------- */
 .empty { padding: 18px 8px; text-align: center; color: var(--ink-2); display: grid; gap: 4px; justify-items: center; }
 .empty .ico { width: 22px; height: 22px; color: var(--ink-3); margin-bottom: 4px; }

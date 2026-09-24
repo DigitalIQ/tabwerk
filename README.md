@@ -15,8 +15,23 @@ Alles, was sich exakt berechnen lässt, erledigt Code. Für semantische Fragen n
 | Doppelte | gleiche Adressen finden, pro Eintrag wählen, was zugeht; gleichen Inhalt unter anderer Adresse finden | Adressen: Code, Inhalt: Jev (`noul`) |
 | Wächter | Seite beobachten und melden, wenn eine Bedingung in Alltagssprache eintritt | Vergleich: Code, Bewertung: Jev (`noul`) |
 | Verlauf | sichert nach jeder Änderung, stellt jeden Stand wieder her | Code |
+| Aufräum-Vorschlag | markiert alte und unwichtige Tabs zum Schließen | Alter: Code, Wichtigkeit: Jev (`score`) |
+| Einsortieren | neue Tabs landen automatisch in der passenden Gruppe | Regeln: Code, sonst optional Jev |
+| Doppel-Schutz | eine schon offene Seite öffnet sich nicht noch einmal, außer du willst es | Code |
+| Entladen | inaktive Tabs geben Speicher frei | Code |
+| Notizen | Notiz an einen Tab heften, per Rechtsklick, `Alt+Umschalt+N` oder Schnellsuche | Code |
+| Gruppennamen | Gruppen ohne Titel bekommen einen kurzen Namen | Kandidaten: Code, Auswahl: Jev |
+| Sitzungen | Fenster unter einem Namen speichern und wieder öffnen | Code |
+| Fokus | andere Gruppen einklappen, ablenkende Seiten auf Zeit sperren | Code |
+| Schlummern | Tab schließen und zur gewählten Zeit wieder öffnen | Code |
+| Linkliste | Tabs als Markdown oder Text kopieren | Code |
+| Statistik | Tabs pro Fenster und Website, älteste Tabs, Verlauf der Anzahl | Code |
+| Formulare | speichern, ausfüllen, mit Testdaten füllen | Code, unbekannte Felder optional Jev |
+| Export und Import | alles als Datei, Sitzungen auch als Lesezeichen-Datei | Code |
 
-Jede Aktion sichert vorher den Stand. „Rückgängig“ im Popup springt genau dorthin zurück.
+Jede Funktion lässt sich in den Einstellungen einzeln ausschalten. Abhängige Funktionen hängen an der übergeordneten.
+
+Jede Aktion sichert vorher den Stand. „Rückgängig“ im Popup oder `Alt+Umschalt+Z` springt genau dorthin zurück.
 
 Was Jev gut kann und wo es schwach ist, steht in [docs/jev-im-browser.md](docs/jev-im-browser.md).
 
@@ -34,6 +49,9 @@ Tastenkürzel:
 |---|---|
 | `⌘⇧Leertaste` (Mac), `Strg+Umschalt+Leertaste` | Schnellsuche |
 | `Alt+Umschalt+T` | Popup |
+| `Alt+Umschalt+N` | Notiz zum aktuellen Tab |
+| `Alt+Umschalt+Z` | Letzte Tabwerk-Aktion rückgängig |
+| frei wählbar | Formular ausfüllen |
 
 Ändern unter `chrome://extensions/shortcuts`.
 
@@ -44,7 +62,10 @@ Gruppen, Sortieren, Doppelte, Rückgängig und der Verlauf arbeiten im Fenster, 
 ## Schnellsuche
 
 - Tippen sucht per Code, unscharf: „gh tabw“ findet „GitHub … tabwerk“. Umlaute und ß sind egal.
-- Filter: `/t` Tabs, `/a` Aktionen, `/b` Lesezeichen, `/h` Verlauf.
+- Filter: `/t` Tabs, `/a` Aktionen, `/b` Lesezeichen, `/h` Verlauf, `/n` Notizen, `/s` Sitzungen, `/z` geschlummerte Tabs, `/f` Formulare.
+- Farbmodus: automatisch nach Website, wie das System, immer hell oder immer dunkel.
+- Volltext: auf Wunsch sucht die Schnellsuche auch im sichtbaren Text offener Tabs.
+- Mit `/h` und `⇧↵` findet Jev Seiten aus dem Verlauf per Beschreibung, etwa „der Artikel über Solarstrom von letzter Woche“.
 - `↵` öffnet, `⌘⌫` schließt den gewählten Tab, `Esc` schließt die Suche.
 - Aktionen: Tab schließen, anpinnen, stumm, duplizieren, in neues Fenster, Doppelte schließen, sortieren, Gruppen ein- und ausklappen, Rückgängig, Jetzt sichern und mehr. Aktionen mit Jev sind markiert.
 - Lesezeichen und Verlauf schaltest du in den Einstellungen ein. Chrome fragt dann einmal nach der Erlaubnis.
@@ -84,6 +105,8 @@ Der Verlauf liegt nur lokal in `chrome.storage.local`. Er ersetzt kein Backup ü
 - Lesezeichen und Verlauf sind optionale Rechte. Tabwerk fragt erst, wenn du die Suche darin einschaltest.
 - Das Repository enthält keine Schlüssel. Tests laufen ohne Schlüssel mit festen Testantworten.
 
+Die ausführliche Datenschutzerklärung steht in [PRIVACY.md](PRIVACY.md).
+
 ## Entwickeln
 
 ```bash
@@ -91,7 +114,11 @@ npm install
 npm test          # Unit-Tests ohne Browser
 npm run e2e       # lädt die Extension in Chrome for Testing und klickt alles durch
 npm run icons     # rendert die Icons neu
+npm run pack      # baut dist/tabwerk-<version>.zip für den Chrome Web Store
+npm run store     # erzeugt Store-Bilder aus den Test-Screenshots
 ```
+
+Texte und Angaben für den Chrome Web Store stehen in [store/listing.md](store/listing.md) und [store/review.md](store/review.md).
 
 `npm run e2e` braucht ein Chrome for Testing aus dem Playwright-Cache oder `CHROME_PATH`. Jev-Anfragen gehen im Test an einen lokalen Proxy:
 
@@ -116,10 +143,18 @@ src/lib/fuzzy.js       unscharfe Suche
 src/lib/actions.js     Aktionen der Schnellsuche
 src/lib/watch.js       Wächter
 src/lib/duration.js    Intervalle
+src/lib/flags.js       Schalter für jede Funktion
+src/lib/extras.js      Aufräumen, Einsortieren, Doppel-Schutz, Notizen, Sitzungen, Fokus, Schlummern, Statistik
+src/lib/formsbg.js     Formulare speichern und ausfüllen
+src/lib/transfer.js    Export und Import
+src/content/forms.js   Funktionen, die in der Seite laufen
 src/palette/           Schnellsuche
 src/popup/             Popup
 src/options/           Einstellungen
 src/watch/             Fenster für neue Wächter aus dem Kontextmenü
+src/note/              Notiz-Fenster
+src/focus/             Seite für gesperrte Websites im Fokus
+src/stats/             Statistik
 src/offscreen/         HTML zu Text für Wächter
 tests/                 node --test
 scripts/e2e.mjs        Ende-zu-Ende-Test

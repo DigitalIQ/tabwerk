@@ -3,6 +3,8 @@
 
 import { normalizeUrl } from './url.js';
 import { planRetention } from './retention.js';
+import { getSettings } from './settings.js';
+import { isOn } from './flags.js';
 
 const INDEX = 'histIndex';
 const QUIET_MS = 1500;
@@ -27,7 +29,17 @@ export async function getSnapshot(id) {
 async function capture() {
   const windows = await chrome.windows.getAll({ populate: true, windowTypes: ['normal'] });
   const groups = await chrome.tabGroups.query({});
-  return windows.map((w) => ({
+  return windows.map((w) => shapeWindow(w, groups));
+}
+
+// Ein einzelnes Fenster im selben Format, etwa für benannte Sitzungen.
+export async function captureWindow(windowId) {
+  const w = await chrome.windows.get(windowId, { populate: true });
+  return shapeWindow(w, await chrome.tabGroups.query({ windowId }));
+}
+
+function shapeWindow(w, groups) {
+  return ({
     id: w.id,
     focused: w.focused,
     incognito: w.incognito,
@@ -41,7 +53,7 @@ async function capture() {
       groupId: t.groupId,
     })),
     groups: groups.filter((g) => g.windowId === w.id).map((g) => ({ id: g.id, title: g.title || '', color: g.color, collapsed: g.collapsed })),
-  }));
+  });
 }
 
 // Kurzer Fingerabdruck. Gleicher Aufbau heißt: keine neue Sicherung nötig.
@@ -97,7 +109,9 @@ export function takeSnapshot(reason, { force = false } = {}) {
 export function scheduleSnapshot() {
   if (suppress) return;
   clearTimeout(timer);
-  timer = setTimeout(() => takeSnapshot('Tabs geändert').catch(() => {}), QUIET_MS);
+  timer = setTimeout(async () => {
+    if (isOn(await getSettings(), 'history')) takeSnapshot('Tabs geändert').catch(() => {});
+  }, QUIET_MS);
 }
 
 export async function clearHistory() {
@@ -118,6 +132,8 @@ export async function restoreSnapshot({ id, windowId = null }) {
     snap = { ...snap, windows: [win], only: windowId };
   }
   const before = await takeSnapshot('Vor Wiederherstellen');
+  // Der Doppel-Schutz soll wiederhergestellte Tabs nicht gleich wieder schließen.
+  await chrome.storage.session.set({ dupeQuietUntil: Date.now() + 60e3 });
   suppress += 1;
   clearTimeout(timer);
   const report = { reused: 0, opened: 0, failed: 0 };
@@ -212,6 +228,7 @@ async function restore(snap, report) {
 
 // Jede Tabwerk-Aktion sichert vorher den Stand. Rückgängig springt genau dorthin zurück.
 export async function beforeAction(label, windowId = null) {
+  if (!isOn(await getSettings(), 'undo')) return null;
   const entry = await takeSnapshot(`Vor ${label}`);
   if (entry) await setLastAction(windowId, { id: entry.id, label, windowId });
   return entry;

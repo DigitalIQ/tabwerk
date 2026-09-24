@@ -6,7 +6,9 @@
   "scripts": {
     "test": "node --test tests/",
     "icons": "node scripts/icons.mjs",
-    "e2e": "node scripts/e2e.mjs"
+    "e2e": "node scripts/e2e.mjs",
+    "pack": "node scripts/pack.mjs",
+    "store": "node scripts/store.mjs"
   },
   "devDependencies": {
     "playwright": "1.63.0"

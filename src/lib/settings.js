@@ -83,6 +83,20 @@ export const DEFAULTS = {
   paletteJev: false,
   paletteBookmarks: false,
   paletteHistory: false,
+  // site: hell oder dunkel wie die Seite dahinter. system, light, dark.
+  paletteTheme: 'site',
+  // Schalter pro Funktion, siehe flags.js.
+  features: {},
+  // Neue Tabs einsortieren: eine Regel pro Zeile, „domain = Gruppe“.
+  groupRules: [],
+  // Doppelte beim Öffnen: switch springt zum offenen Tab, ask fragt per Meldung.
+  dupeGuardMode: 'switch',
+  dupeGuardAllow: [],
+  discardAfterMin: 60,
+  // Aufräum-Vorschlag: so lange unbenutzt gilt ein Tab als alt.
+  cleanupDays: 3,
+  focusMinutes: 25,
+  focusBlock: ['youtube.com', 'x.com', 'twitter.com', 'reddit.com', 'instagram.com', 'facebook.com', 'tiktok.com'],
 };
 
 export async function getSettings() {

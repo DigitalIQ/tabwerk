@@ -3,8 +3,9 @@
 import { h, icon, send } from './dom.js';
 import { hasNumericCondition } from '../lib/diff.js';
 import { PRESETS, MIN_SECONDS, parseDuration, formatDuration } from '../lib/duration.js';
+import { parseNumber } from '../lib/numbers.js';
 
-export function watchForm({ url = '', condition = '', selection = '', onDone } = {}) {
+export function watchForm({ url = '', condition = '', selection = '', numbers = false, onDone } = {}) {
   const urlInput = h('input', { type: 'url', required: true, value: url, 'aria-label': 'Seite' });
   const cond = h('textarea', { required: true, placeholder: 'der Kopfhörer wieder lieferbar ist' });
   cond.value = condition;
@@ -19,6 +20,17 @@ export function watchForm({ url = '', condition = '', selection = '', onDone } =
   const customRow = h('label', { class: 'field', hidden: true }, h('span', {}, 'Eigenes Intervall (hh:mm:ss, mindestens 00:00:30)'), custom);
   select.addEventListener('change', () => { customRow.hidden = select.value !== 'custom'; if (!customRow.hidden) custom.focus(); });
 
+  // Zahlen-Wächter: Code vergleicht exakt, Jev sucht nur die gemeinte Zahl auf der Seite.
+  const numOn = h('input', { type: 'checkbox' });
+  const op = h('select', { 'aria-label': 'Vergleich' },
+    h('option', { value: 'below' }, 'unter'), h('option', { value: 'atmost' }, 'höchstens'),
+    h('option', { value: 'above' }, 'über'), h('option', { value: 'atleast' }, 'mindestens'));
+  const limit = h('input', { type: 'text', inputmode: 'decimal', class: 'mono', placeholder: '199,99', 'aria-label': 'Grenze' });
+  const numRow = h('div', { class: 'num-row', hidden: true }, op, limit);
+  numOn.addEventListener('change', () => { numRow.hidden = !numOn.checked; numHint.hidden = numOn.checked || !hasNumericCondition(cond.value); });
+  const numBlock = numbers ? h('div', { class: 'num-block' },
+    h('label', { class: 'check' }, numOn, 'Zahl oder Preis exakt vergleichen'), numRow) : null;
+
   const error = h('p', { class: 'error-text', hidden: true });
   const submit = h('button', { class: 'primary', type: 'submit' }, 'Wächter anlegen');
 
@@ -32,6 +44,7 @@ export function watchForm({ url = '', condition = '', selection = '', onDone } =
     selection ? h('blockquote', { class: 'quote' }, h('span', { class: 'faint' }, 'Markiert: '), `„${selection}“`) : null,
     h('label', { class: 'field' }, h('span', {}, 'Sag mir Bescheid, wenn …'), cond),
     numHint,
+    numBlock,
     h('label', { class: 'field' }, h('span', {}, 'Prüfen alle'), select),
     customRow,
     error,
@@ -68,6 +81,15 @@ export function watchForm({ url = '', condition = '', selection = '', onDone } =
     } else {
       intervalMin = Number(select.value);
     }
+    let number = null;
+    if (numbers && numOn.checked) {
+      const value = parseNumber(limit.value);
+      if (value === null) {
+        fail('Trag die Grenze als Zahl ein, zum Beispiel 199,99.');
+        return;
+      }
+      number = { op: op.value, limit: value };
+    }
     // Die Leseerlaubnis gilt nur für diese eine Website.
     const granted = await chrome.permissions.request({ origins: [`${origin}/*`] });
     if (!granted) {
@@ -76,7 +98,7 @@ export function watchForm({ url = '', condition = '', selection = '', onDone } =
     }
     submit.disabled = true;
     try {
-      const watch = await send('createWatch', { url: urlInput.value.trim(), condition: cond.value, intervalMin });
+      const watch = await send('createWatch', { url: urlInput.value.trim(), condition: cond.value, intervalMin, number });
       cond.value = '';
       onDone?.(watch);
     } catch (e) {

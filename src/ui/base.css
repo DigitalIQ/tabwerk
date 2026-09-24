@@ -40,8 +40,9 @@
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Dunkel: folgt dem System, außer eine Seite setzt data-theme ausdrücklich. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme=light]) {
     --bg: #0e1013;
     --surface: #171a1f;
     --sunken: #12151a;
@@ -59,6 +60,24 @@
     --ok: #6fd08f;
     --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.25);
   }
+}
+:root[data-theme=dark] {
+  --bg: #0e1013;
+  --surface: #171a1f;
+  --sunken: #12151a;
+  --ink: #e7eaee;
+  --ink-2: #a3acb7;
+  --ink-3: #8a939e;
+  --line: #2a3038;
+  --line-strong: #3a424c;
+  --accent: #86a2ff;
+  --accent-ink: #0b1233;
+  --accent-soft: #1b2544;
+  --warn: #f2a65a;
+  --warn-soft: #33250f;
+  --danger: #ff8a80;
+  --ok: #6fd08f;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.25);
 }
 
 * { box-sizing: border-box; }
@@ -111,6 +130,9 @@ html, body {
 .i-bookmark { --i: url('/assets/icons/bookmark-simple.svg'); }
 .i-history { --i: url('/assets/icons/clock-counter-clockwise.svg'); }
 .i-window { --i: url('/assets/icons/browsers.svg'); }
+.i-edit { --i: url('/assets/icons/pencil-simple.svg'); }
+.i-note { --i: url('/assets/icons/note-pencil.svg'); }
+.i-moon { --i: url('/assets/icons/moon.svg'); }
 
 /* ---------- Buttons ---------- */
 button, .btn {
@@ -209,6 +231,10 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--accent); ou
 /* ---------- Wächter-Formular (Popup und Kontextmenü) ---------- */
 .watch-form { display: grid; gap: 10px; }
 .watch-form .help .ico { width: 12px; height: 12px; vertical-align: -2px; }
+.watch-form .check { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-2); cursor: pointer; }
+.num-block { display: grid; gap: 8px; }
+.num-row { display: grid; grid-template-columns: auto 1fr; gap: 8px; }
+.num-row[hidden] { display: none; }
 .quote { margin: 0; padding: 8px 10px; border-left: 2px solid var(--accent); background: var(--sunken); border-radius: 0 6px 6px 0; font-size: 12.5px; max-height: 5.5em; overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {

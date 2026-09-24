@@ -6,6 +6,9 @@ import { getSettings } from './settings.js';
 import { diffLines, MAX_SNAPSHOT } from './diff.js';
 import { watchRequest } from './prompts.js';
 import { hostOf, normalizeUrl } from './url.js';
+import { isOn } from './flags.js';
+import { hasKey } from './settings.js';
+import { numberCandidates, compare } from './numbers.js';
 
 const HISTORY = 12;
 
@@ -27,7 +30,7 @@ async function updateWatch(id, patch) {
   return watches[i];
 }
 
-export async function createWatch({ url, condition, intervalMin }) {
+export async function createWatch({ url, condition, intervalMin, number = null }) {
   const watch = {
     id: crypto.randomUUID(),
     url,
@@ -36,6 +39,8 @@ export async function createWatch({ url, condition, intervalMin }) {
     // Chrome weckt Erweiterungen frühestens alle 30 Sekunden.
     intervalMin: Math.max(0.5, Number(intervalMin) || 60),
     enabled: true,
+    // Zahlen-Wächter: { op: below|atmost|above|atleast, limit }
+    number: number && Number.isFinite(Number(number.limit)) ? { op: number.op, limit: Number(number.limit) } : null,
     createdAt: Date.now(),
     history: [],
   };
@@ -128,6 +133,7 @@ async function runCheck(id) {
   const watch = (await listWatches()).find((w) => w.id === id);
   if (!watch) return { missing: true };
   const settings = await getSettings();
+  if (!isOn(settings, 'watches')) return { off: true };
   const entry = { t: Date.now() };
   try {
     const allowed = await chrome.permissions.contains({ origins: [new URL(watch.url).origin + '/*'] });
@@ -138,12 +144,21 @@ async function runCheck(id) {
     const text = (page.text || '').slice(0, MAX_SNAPSHOT);
     await chrome.storage.local.set({ [key]: text });
     entry.via = page.via;
-    if (before === undefined) {
+    if (watch.number && isOn(settings, 'watchNumbers')) {
+      await checkNumber(watch, page, text, entry, settings);
+      if (before !== undefined) {
+        const diff = diffLines(before, text);
+        Object.assign(entry, { added: diff.addedTotal, removed: diff.removedTotal, addedLines: diff.added.slice(0, 20), removedLines: diff.removed.slice(0, 20) });
+      }
+    } else if (before === undefined) {
       entry.status = 'baseline';
     } else {
       const diff = diffLines(before, text);
       entry.added = diff.addedTotal;
       entry.removed = diff.removedTotal;
+      // Für „Änderungen anzeigen“: die ersten Zeilen jeder Seite merken.
+      entry.addedLines = diff.added.slice(0, 20);
+      entry.removedLines = diff.removed.slice(0, 20);
       if (!diff.changed) {
         entry.status = 'same';
       } else {
@@ -163,6 +178,33 @@ async function runCheck(id) {
   }
   const history = [entry, ...(watch.history || [])].slice(0, HISTORY);
   return updateWatch(id, { history, lastCheck: entry.t });
+}
+
+// Zahlen-Wächter: Code findet alle Zahlen, Jev wählt die gemeinte, Code vergleicht exakt.
+// Gemeldet wird nur beim Wechsel von „nicht erfüllt“ zu „erfüllt“.
+async function checkNumber(watch, page, text, entry, settings) {
+  const candidates = numberCandidates(text);
+  if (!candidates.length) throw new Error('Auf der Seite steht keine Zahl mit Währung oder Prozent.');
+  let pick = candidates[0];
+  if (candidates.length > 1 && hasKey(settings)) {
+    const criteria = Object.fromEntries(candidates.map((c, i) => [`n${i}`, c.context]));
+    criteria.none = 'None of the numbers is the one described in `watch_request`';
+    const result = await decide({ watch_request: watch.condition, page: { title: page.title || '', site: watch.site } }, {
+      number: { type: 'choice', instructions: 'Which text snippet contains the number that `watch_request` is about? Each option is a snippet around one number on the page.', criteria },
+    });
+    entry.cost = result.cost;
+    const choice = result.answers.number.choice;
+    if (choice === 'none') throw new Error('Jev findet die gemeinte Zahl nicht auf der Seite.');
+    pick = candidates[Number(choice.slice(1))];
+    entry.confidence = result.answers.number.confidence;
+  }
+  entry.value = pick.value;
+  entry.evidence = pick.context;
+  const met = compare(pick.value, watch.number.op, watch.number.limit);
+  const wasMet = (watch.history || []).find((h) => typeof h.value === 'number')?.met;
+  entry.met = met;
+  entry.status = met ? (wasMet ? 'same' : 'match') : 'noise';
+  if (entry.status === 'match') notify(watch, entry);
 }
 
 function notify(watch, entry) {

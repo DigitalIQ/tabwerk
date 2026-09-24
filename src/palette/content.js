@@ -16,8 +16,28 @@
     'background:rgba(128,136,150,0.14)',
     'backdrop-filter:blur(9px) saturate(1.25)', '-webkit-backdrop-filter:blur(9px) saturate(1.25)',
   ].join(';');
+  // Hell oder dunkel? Hintergrundfarbe der Seite messen, sonst ihr color-scheme lesen.
+  const siteIsDark = () => {
+    const rgb = (el) => {
+      if (!el) return null;
+      const m = getComputedStyle(el).backgroundColor.match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?/);
+      if (!m || (m[4] !== undefined && Number(m[4]) < 0.5)) return null;
+      return [m[1], m[2], m[3]].map((v) => Number(v) / 255);
+    };
+    const c = rgb(document.body) || rgb(document.documentElement);
+    if (!c) return /(^|\s)dark/.test(getComputedStyle(document.documentElement).colorScheme || '') && !/light/.test(getComputedStyle(document.documentElement).colorScheme || '');
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2] < 0.4;
+  };
+  const params = new URLSearchParams({
+    site: siteIsDark() ? 'dark' : 'light',
+    sys: matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+  });
+  // Die Schnellsuche kann mit einer Eingabe starten, etwa „/f “ für Formulare.
+  if (window.__tabwerkPaletteQuery) params.set('q', window.__tabwerkPaletteQuery);
+  window.__tabwerkPaletteQuery = undefined;
   const frame = document.createElement('iframe');
-  frame.src = chrome.runtime.getURL('src/palette/palette.html');
+  frame.src = chrome.runtime.getURL(`src/palette/palette.html?${params}`);
+  frame.allow = 'clipboard-write';
   frame.title = 'Tabwerk Schnellsuche';
   // color-scheme muss beim iFrame-Element und im Dokument darin gleich sein, sonst malt Chrome
   // bei dunklen Seiten (etwa GitHub) einen deckenden Hintergrund. Das Dunkel-Design der Suche

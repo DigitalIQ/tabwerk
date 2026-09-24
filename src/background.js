@@ -1,11 +1,17 @@
-// Service Worker: nimmt Aufträge aus Popup und Einstellungen an und startet die Wächter.
+// Service Worker: nimmt Aufträge aus Popup, Schnellsuche und Einstellungen an,
+// hört auf Tab-Ereignisse, weckt Wächter und baut das Kontextmenü.
 
 import * as F from './lib/features.js';
 import * as W from './lib/watch.js';
 import * as H from './lib/history.js';
 import * as A from './lib/actions.js';
+import * as X from './lib/extras.js';
+import * as FO from './lib/formsbg.js';
+import * as T from './lib/transfer.js';
 import { decide } from './lib/jev.js';
-import { getUsage } from './lib/settings.js';
+import { getUsage, getSettings } from './lib/settings.js';
+import { isOn } from './lib/flags.js';
+import { SNOOZE_PRESETS } from './lib/snoozetime.js';
 
 const handlers = {
   duplicates: F.duplicates,
@@ -16,9 +22,9 @@ const handlers = {
   proposeGroups: F.proposeGroups,
   applyGroups: F.applyGroups,
   sortTabs: F.sortTabs,
+  sortGroups: F.sortGroups,
   undo: H.undoLastAction,
   lastAction: H.getLastAction,
-  sortGroups: F.sortGroups,
   paletteActions: A.listActions,
   runAction: A.runAction,
   listSnapshots: H.listSnapshots,
@@ -31,6 +37,35 @@ const handlers = {
   removeWatch: W.removeWatch,
   toggleWatch: W.toggleWatch,
   checkWatch: ({ id }) => W.checkWatch(id),
+  suggestCleanup: X.suggestCleanup,
+  suggestGroupNames: X.suggestGroupNames,
+  listNotes: X.listNotes,
+  getNote: X.getNote,
+  setNote: X.setNote,
+  listSessions: X.listSessions,
+  saveSession: X.saveSession,
+  renameSession: X.renameSession,
+  deleteSession: X.deleteSession,
+  openSession: X.openSession,
+  focusState: X.focusState,
+  startFocus: X.startFocus,
+  endFocus: X.endFocus,
+  allowOnce: X.allowOnce,
+  findHistory: X.findHistory,
+  tabTexts: X.tabTexts,
+  listSnoozed: X.listSnoozed,
+  snoozeTab: X.snoozeTab,
+  wakeSnoozed: ({ id }) => X.wakeSnoozed({ id, notify: false }),
+  stats: X.stats,
+  discardInactive: X.discardInactive,
+  listProfiles: FO.listProfiles,
+  saveForm: FO.saveForm,
+  fillForm: FO.fillForm,
+  fillTestData: FO.fillTestData,
+  renameProfile: FO.renameProfile,
+  deleteProfile: FO.deleteProfile,
+  exportAll: T.exportAll,
+  importAll: T.importAll,
   usage: getUsage,
   // Kleiner Probelauf mit erfundenem Text für die Einstellungen.
   testJev: () => decide({ tab: { title: 'Invoice 2026-114, please pay by Friday', site: 'billing.example' } }, {
@@ -52,7 +87,17 @@ chrome.runtime.onMessage.addListener((message, _sender, reply) => {
   return true;
 });
 
+// ---------- Tab-Ereignisse ----------
+
 chrome.tabs.onCreated.addListener((tab) => F.trackOpened(tab.id));
+
+chrome.tabs.onUpdated.addListener((tabId, change, tab) => {
+  if (change.url) {
+    X.guardDuplicate(tabId, change.url).catch(() => {});
+    X.guardFocus(tabId, change.url).catch(() => {});
+  }
+  if (change.status === 'complete') X.autoGroupTab(tab).catch(() => {});
+});
 
 // Verlauf: jede Änderung an Fenstern, Tabs und Gruppen löst eine Sicherung aus.
 for (const event of [
@@ -64,70 +109,162 @@ chrome.tabs.onUpdated.addListener((_id, change) => {
   if (change.url || 'pinned' in change || 'groupId' in change) H.scheduleSnapshot();
 });
 
-chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === 'history') H.takeSnapshot('Automatisch');
-  if (alarm.name.startsWith('watch:')) W.checkWatch(alarm.name.slice(6));
+// ---------- Wecker ----------
+
+chrome.alarms.onAlarm.addListener(async (alarm) => {
+  if (alarm.name === 'history') {
+    if (isOn(await getSettings(), 'history')) H.takeSnapshot('Automatisch');
+  } else if (alarm.name === 'discard') {
+    X.discardInactive();
+  } else if (alarm.name === 'focus-end') {
+    X.endFocus();
+  } else if (alarm.name.startsWith('snooze:')) {
+    X.wakeSnoozed({ id: alarm.name.slice(7) });
+  } else if (alarm.name.startsWith('watch:')) {
+    W.checkWatch(alarm.name.slice(6));
+  }
 });
 
-chrome.notifications.onClicked.addListener((id) => {
+chrome.notifications.onClicked.addListener(async (id) => {
   if (id.startsWith('watch:')) W.openFromNotification(id);
+  if (id.startsWith('woke:')) {
+    const tabId = Number(id.split(':')[1]);
+    const tab = await chrome.tabs.get(tabId).catch(() => null);
+    if (tab) {
+      await chrome.tabs.update(tabId, { active: true });
+      await chrome.windows.update(tab.windowId, { focused: true });
+    }
+    chrome.notifications.clear(id);
+  }
 });
 
-// Sicherheitsnetz, falls der Service Worker ein Ereignis verschlafen hat.
-async function ensureHistoryAlarm() {
+chrome.notifications.onButtonClicked.addListener((id, index) => {
+  if (id.startsWith('dupe:')) X.onDupeButton(id, index);
+});
+
+async function ensureAlarms() {
+  // Sicherheitsnetz, falls der Service Worker ein Ereignis verschlafen hat.
   if (!(await chrome.alarms.get('history'))) await chrome.alarms.create('history', { periodInMinutes: 10 });
+  if (!(await chrome.alarms.get('discard'))) await chrome.alarms.create('discard', { periodInMinutes: 5 });
 }
 
-// ---------- Kontextmenü: Wächter direkt von der Seite ----------
+// ---------- Kontextmenü ----------
 
 const WEB = ['http://*/*', 'https://*/*'];
 
-function createMenus() {
-  chrome.contextMenus.removeAll(() => {
-    chrome.contextMenus.create({ id: 'watch-page', title: 'Tabwerk: Diese Seite beobachten …', contexts: ['page'], documentUrlPatterns: WEB });
-    chrome.contextMenus.create({ id: 'watch-selection', title: 'Tabwerk: Auf „%s“ achten …', contexts: ['selection'], documentUrlPatterns: WEB });
-    chrome.contextMenus.create({ id: 'watch-link', title: 'Tabwerk: Verlinkte Seite beobachten …', contexts: ['link'], targetUrlPatterns: WEB });
-  });
+async function createMenus() {
+  const settings = await getSettings();
+  const on = (id) => isOn(settings, id);
+  await chrome.contextMenus.removeAll();
+  const add = (props) => chrome.contextMenus.create({ documentUrlPatterns: WEB, ...props });
+  if (on('watches')) {
+    add({ id: 'watch-page', title: 'Diese Seite beobachten …', contexts: ['page'] });
+    add({ id: 'watch-selection', title: 'Auf „%s“ achten …', contexts: ['selection'] });
+    chrome.contextMenus.create({ id: 'watch-link', title: 'Verlinkte Seite beobachten …', contexts: ['link'], targetUrlPatterns: WEB });
+  }
+  if (on('notes')) add({ id: 'note', title: 'Notiz zu diesem Tab …', contexts: ['page', 'selection'] });
+  if (on('snooze')) {
+    add({ id: 'snooze', title: 'Tab schlummern lassen', contexts: ['page'] });
+    for (const p of SNOOZE_PRESETS) add({ id: `snooze:${p.id}`, parentId: 'snooze', title: p.label, contexts: ['page'] });
+  }
+  if (on('forms')) {
+    add({ id: 'form-save', title: 'Formular speichern', contexts: ['page', 'editable'] });
+    add({ id: 'form-fill', title: 'Formular ausfüllen …', contexts: ['page', 'editable'] });
+    if (on('formsTestData')) add({ id: 'form-test', title: 'Mit Testdaten füllen', contexts: ['page', 'editable'] });
+  }
+  if (await chrome.permissions.contains({ permissions: ['bookmarks'] })) {
+    add({ id: 'bookmark', title: on('bookmarkFolder') ? 'Lesezeichen mit Ordner-Vorschlag' : 'Lesezeichen setzen', contexts: ['page'] });
+  }
 }
 
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  if (!info.menuItemId.startsWith('watch-')) return;
-  const url = info.menuItemId === 'watch-link' ? info.linkUrl : info.pageUrl;
-  const params = new URLSearchParams({ url });
-  if (info.menuItemId === 'watch-selection') params.set('sel', (info.selectionText || '').slice(0, 300));
-  const base = tab?.windowId ? await chrome.windows.get(tab.windowId) : await chrome.windows.getLastFocused();
-  const width = 460;
-  await chrome.windows.create({
-    url: chrome.runtime.getURL(`src/watch/new.html?${params}`),
-    type: 'popup',
-    width,
-    height: 560,
+function centered(base, width, height, top = 80) {
+  return {
+    type: 'popup', width, height,
     left: Math.round((base.left ?? 0) + ((base.width ?? width) - width) / 2),
-    top: Math.round((base.top ?? 0) + 80),
-  });
+    top: Math.round((base.top ?? 0) + top),
+  };
+}
+
+// Kurze Rückmeldung direkt auf der Seite, für Aktionen aus Kontextmenü und Tastenkürzeln.
+async function toast(tabId, text) {
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    args: [text],
+    func: (message) => {
+      const el = document.createElement('div');
+      el.textContent = message;
+      el.setAttribute('role', 'status');
+      el.style.cssText = 'all:initial;position:fixed;z-index:2147483647;left:50%;bottom:28px;transform:translateX(-50%);'
+        + 'background:rgba(20,24,29,0.92);color:#fff;font:500 13px/1.4 system-ui,sans-serif;padding:10px 14px;border-radius:10px;'
+        + 'box-shadow:0 8px 24px rgba(0,0,0,0.25);max-width:80vw;';
+      document.documentElement.appendChild(el);
+      setTimeout(() => el.remove(), 2600);
+    },
+  }).catch(() => {});
+}
+
+const hostOfTab = (tab) => { try { return new URL(tab.url).hostname.replace(/^www\./, ''); } catch { return ''; } };
+
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  const id = String(info.menuItemId);
+  const base = tab?.windowId ? await chrome.windows.get(tab.windowId) : await chrome.windows.getLastFocused();
+  const say = (p) => p.then((r) => toast(tab.id, r?.message || 'Erledigt')).catch((e) => toast(tab.id, e.message));
+  if (id.startsWith('watch-')) {
+    const url = id === 'watch-link' ? info.linkUrl : info.pageUrl;
+    const params = new URLSearchParams({ url });
+    if (id === 'watch-selection') params.set('sel', (info.selectionText || '').slice(0, 300));
+    await chrome.windows.create({ url: chrome.runtime.getURL(`src/watch/new.html?${params}`), ...centered(base, 460, 600) });
+  } else if (id === 'note') {
+    await X.openNoteEditor(tab);
+  } else if (id.startsWith('snooze:')) {
+    say(X.snoozeTab({ tabId: tab.id, preset: id.slice(7) }));
+  } else if (id === 'form-save') {
+    say(FO.saveForm({ windowId: tab.windowId }));
+  } else if (id === 'form-test') {
+    say(FO.fillTestData({ windowId: tab.windowId }));
+  } else if (id === 'form-fill') {
+    const mine = (await FO.listProfiles()).filter((p) => p.host === hostOfTab(tab));
+    if (mine.length === 1) say(FO.fillForm({ windowId: tab.windowId, profileId: mine[0].id }));
+    else openPalette(tab, '/f ');
+  } else if (id === 'bookmark') {
+    say(X.bookmarkWithFolder({ windowId: tab.windowId }));
+  }
 });
 
+// Menü neu bauen, wenn sich Schalter oder Rechte ändern.
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'local' && changes.features) createMenus();
+});
+chrome.permissions.onAdded.addListener(() => createMenus());
+chrome.permissions.onRemoved.addListener(() => createMenus());
+
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
-  createMenus();
+  await createMenus();
   await W.rescheduleAll();
-  await ensureHistoryAlarm();
+  await ensureAlarms();
   H.takeSnapshot('Erste Sicherung');
   if (reason === 'install') chrome.runtime.openOptionsPage();
 });
 
 chrome.runtime.onStartup.addListener(async () => {
+  await createMenus();
   await W.rescheduleAll();
-  await ensureHistoryAlarm();
-  H.takeSnapshot('Browserstart');
+  await ensureAlarms();
+  if (isOn(await getSettings(), 'history')) H.takeSnapshot('Browserstart');
+  if (await X.focusState()) chrome.action.setBadgeText({ text: 'F' });
 });
 
 // ---------- Schnellsuche ----------
 
 // Auf normalen Seiten legt Tabwerk die Suche über die Seite. Auf chrome:// und im Web Store
-// geht das nicht, dann öffnet sich ein kleines Fenster.
-async function openPalette(tab) {
+// geht das nicht, dann öffnet sich ein kleines Fenster. query startet die Suche mit einer Eingabe.
+async function openPalette(tab, query = '') {
+  if (!isOn(await getSettings(), 'palette')) return;
   if (tab?.id && /^(https?|file):/.test(tab.url || '')) {
     try {
+      if (query) {
+        await chrome.scripting.executeScript({ target: { tabId: tab.id }, args: [query], func: (q) => { window.__tabwerkPaletteQuery = q; } });
+      }
       await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['src/palette/content.js'] });
       return;
     } catch {}
@@ -141,26 +278,29 @@ async function openPalette(tab) {
     } catch {}
   }
   const base = tab?.windowId ? await chrome.windows.get(tab.windowId) : await chrome.windows.getLastFocused();
-  const width = 680;
-  const height = 520;
-  const win = await chrome.windows.create({
-    url: chrome.runtime.getURL(`src/palette/palette.html?standalone=1&win=${base.id}`),
-    type: 'popup',
-    width,
-    height,
-    left: Math.round((base.left ?? 0) + ((base.width ?? width) - width) / 2),
-    top: Math.round((base.top ?? 0) + 90),
-  });
+  const params = new URLSearchParams({ standalone: '1', win: String(base.id) });
+  if (query) params.set('q', query);
+  const win = await chrome.windows.create({ url: chrome.runtime.getURL(`src/palette/palette.html?${params}`), ...centered(base, 680, 520, 90) });
   await chrome.storage.session.set({ paletteWindow: win.id });
 }
 
 chrome.commands.onCommand.addListener(async (command, tab) => {
-  if (command !== 'open-palette') return;
-  openPalette(tab || (await chrome.tabs.query({ active: true, lastFocusedWindow: true }))[0]);
+  const target = tab || (await chrome.tabs.query({ active: true, lastFocusedWindow: true }))[0];
+  const settings = await getSettings();
+  if (command === 'open-palette') openPalette(target);
+  if (command === 'tab-note' && isOn(settings, 'notes')) X.openNoteEditor(target);
+  if (command === 'undo' && isOn(settings, 'undo')) {
+    const r = await H.undoLastAction({ windowId: target.windowId });
+    if (/^https?:/.test(target.url || '')) toast(target.id, r.ok ? `Stand vor „${r.label}“ wiederhergestellt` : 'Nichts rückgängig zu machen');
+  }
+  if (command === 'fill-form' && isOn(settings, 'forms')) {
+    const mine = (await FO.listProfiles()).filter((p) => p.host === hostOfTab(target));
+    if (mine.length === 1) FO.fillForm({ windowId: target.windowId, profileId: mine[0].id }).then((r) => toast(target.id, r.message)).catch((e) => toast(target.id, e.message));
+    else openPalette(target, '/f ');
+  }
 });
 
 chrome.windows.onRemoved.addListener(async (id) => {
   const { paletteWindow } = await chrome.storage.session.get('paletteWindow');
   if (paletteWindow === id) chrome.storage.session.remove('paletteWindow');
 });
-

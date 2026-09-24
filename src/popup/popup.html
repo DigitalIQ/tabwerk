@@ -18,12 +18,12 @@
   </header>
 
   <nav class="strip" role="tablist" aria-label="Bereiche">
-    <button role="tab" data-panel="find" aria-selected="true">Finden</button>
-    <button role="tab" data-panel="groups" aria-selected="false">Gruppen</button>
-    <button role="tab" data-panel="sort" aria-selected="false">Sortieren</button>
-    <button role="tab" data-panel="dupes" aria-selected="false">Doppelte</button>
-    <button role="tab" data-panel="watch" aria-selected="false">Wächter</button>
-    <button role="tab" data-panel="history" aria-selected="false">Verlauf</button>
+    <button role="tab" data-panel="find" data-flag="find" aria-selected="true">Finden</button>
+    <button role="tab" data-panel="groups" data-flag="groups" aria-selected="false">Gruppen</button>
+    <button role="tab" data-panel="sort" data-flag="sort" aria-selected="false">Sortieren</button>
+    <button role="tab" data-panel="dupes" data-flag="cleanup" aria-selected="false">Aufräumen</button>
+    <button role="tab" data-panel="watch" data-flag="watches" aria-selected="false">Wächter</button>
+    <button role="tab" data-panel="history" data-flag="history|sessions" aria-selected="false">Verlauf</button>
   </nav>
 
   <div class="keybar" id="keybar" hidden>
@@ -50,6 +50,7 @@
         <label class="check"><input type="checkbox" id="only-ungrouped" checked> Nur Tabs ohne Gruppe</label>
         <button class="primary" id="propose">Vorschlag holen</button>
       </div>
+      <button class="ghost" id="name-groups" data-flag="groupNames"><span class="ico i-bolt"></span>Gruppen ohne Titel benennen</button>
       <div id="groups-out" class="out"></div>
     </section>
 
@@ -73,9 +74,17 @@
 
     <!-- Doppelte -->
     <section class="panel" id="panel-dupes" role="tabpanel" hidden>
-      <div class="bar">
+      <div class="subtabs" role="radiogroup" aria-label="Aufräumen">
+        <label><input type="radio" name="clean" value="dupes" checked><span>Doppelte</span></label>
+        <label data-flag="cleanupSuggest"><input type="radio" name="clean" value="suggest"><span>Vorschlag</span></label>
+      </div>
+      <div class="bar" id="dupes-bar">
         <label class="check"><input type="checkbox" id="dupes-all"> Alle Fenster</label>
-        <button id="similar">Ähnliche prüfen</button>
+        <button id="similar" data-flag="similar">Ähnliche prüfen</button>
+      </div>
+      <div class="bar" id="suggest-bar" hidden>
+        <label class="check"><input type="checkbox" id="suggest-jev" checked> Mit Jev bewerten</label>
+        <button class="primary" id="suggest-go">Vorschlag holen</button>
       </div>
       <div id="dupes-out" class="out"></div>
     </section>
@@ -91,12 +100,26 @@
 
     <!-- Verlauf -->
     <section class="panel" id="panel-history" role="tabpanel" hidden>
-      <div class="bar">
-        <label class="check"><input type="checkbox" id="history-all"> Alle Fenster</label>
-        <button id="snap-now">Jetzt sichern</button>
+      <div class="subtabs" role="radiogroup" aria-label="Verlauf">
+        <label data-flag="history"><input type="radio" name="hist" value="snaps" checked><span>Sicherungen</span></label>
+        <label data-flag="sessions"><input type="radio" name="hist" value="sessions"><span>Sitzungen</span></label>
       </div>
-      <p class="help">Tabwerk sichert nach jeder Änderung. Ohne Häkchen siehst du nur dieses Fenster und setzt nur dieses zurück.</p>
-      <div id="history-out" class="out"></div>
+      <div id="snaps-view">
+        <div class="bar">
+          <label class="check"><input type="checkbox" id="history-all"> Alle Fenster</label>
+          <button id="snap-now">Jetzt sichern</button>
+        </div>
+        <p class="help">Tabwerk sichert nach jeder Änderung. Ohne Häkchen siehst du nur dieses Fenster und setzt nur dieses zurück.</p>
+        <div id="history-out" class="out"></div>
+      </div>
+      <div id="sessions-view" hidden>
+        <form class="searchrow" id="session-form">
+          <label class="visually-hidden" for="session-name">Name der Sitzung</label>
+          <input id="session-name" type="text" placeholder="Name, z. B. Umzug planen" autocomplete="off">
+          <button class="primary" type="submit">Fenster speichern</button>
+        </form>
+        <div id="sessions-out" class="out"></div>
+      </div>
     </section>
   </main>
 

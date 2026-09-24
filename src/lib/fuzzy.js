@@ -96,7 +96,10 @@ export function scoreItem(query, fields) {
 }
 
 // Filter wie bei Omni: "/t", "/tabs", "/a", "/b", "/h" am Anfang.
-const PREFIXES = { t: 'tab', tabs: 'tab', a: 'action', actions: 'action', b: 'bookmark', bookmarks: 'bookmark', h: 'history', history: 'history' };
+const PREFIXES = {
+  t: 'tab', tabs: 'tab', a: 'action', actions: 'action', b: 'bookmark', bookmarks: 'bookmark', h: 'history', history: 'history',
+  n: 'note', notes: 'note', s: 'session', sessions: 'session', z: 'snooze', snooze: 'snooze', f: 'form', forms: 'form',
+};
 
 export function parseQuery(raw) {
   const m = /^\/(\w+)\s*(.*)$/.exec(raw || '');
