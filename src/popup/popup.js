@@ -72,6 +72,16 @@ function failure(error) {
   return h('div', { class: 'fail', role: 'alert' }, icon('warn'), h('span', {}, text));
 }
 
+// Letztes Netz: ein Fehler ohne eigene Behandlung erscheint unten im Popup statt nur in chrome://extensions.
+window.addEventListener('unhandledrejection', (event) => {
+  event.preventDefault();
+  const box = failure(event.reason instanceof Error ? event.reason : new Error(String(event.reason)));
+  box.classList.add('float');
+  document.querySelector('.fail.float')?.remove();
+  document.body.append(box);
+  setTimeout(() => box.remove(), 6000);
+});
+
 function empty(ico, title, text) {
   return h('div', { class: 'empty' }, icon(ico), h('b', {}, title), text ? h('span', {}, text) : null);
 }

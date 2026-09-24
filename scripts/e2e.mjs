@@ -444,6 +444,18 @@ const setFeatures = (features) => popup.evaluate(async (f) => {
 }, features);
 const tabsIn = (wid) => popup.evaluate(async (w) => (await chrome.tabs.query({ windowId: w })).map((t) => ({ id: t.id, url: t.url || t.pendingUrl, groupId: t.groupId, discarded: t.discarded })), wid);
 
+// Geschlossene Tabs: Aktionen mit alter Tab-ID dürfen nicht abbrechen
+{
+  const gone = await context.newPage();
+  await gone.goto('about:blank');
+  const goneId = await popup.evaluate(async () => (await chrome.tabs.query({ url: 'about:blank' })).at(-1)?.id);
+  await gone.close();
+  const res = await call('closeTabs', { tabIds: [goneId], windowId: null });
+  check('Schließen mit schon geschlossenem Tab bricht nicht ab', res.closed === 0 && res.gone === 1, JSON.stringify(res));
+  const focus = await popup.evaluate((id) => chrome.runtime.sendMessage({ type: 'focusTab', payload: { tabId: id } }), goneId);
+  check('Wechsel zu geschlossenem Tab meldet verständlichen Fehler', !focus.ok && /schon geschlossen/.test(focus.error), focus.error);
+}
+
 // Schalter: ausgeschaltete Funktion verschwindet aus dem Popup
 await setFeatures({ find: false });
 await popup.reload();

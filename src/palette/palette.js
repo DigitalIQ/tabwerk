@@ -294,7 +294,7 @@ async function choose() {
 async function closeSelectedTab() {
   const item = results[selected];
   if (item?.kind !== 'tab') return;
-  await chrome.tabs.remove(item.tab.id);
+  await chrome.tabs.remove(item.tab.id).catch(() => {});
   sources.tabs = sources.tabs.filter((t) => t.id !== item.id);
   const keep = selected;
   results = rank($('#q').value);

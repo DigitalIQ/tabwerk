@@ -233,6 +233,7 @@ button.row:hover { background: var(--sunken); border-color: var(--line); }
 .empty b { color: var(--ink); font-weight: 550; }
 .fail { display: flex; gap: 8px; align-items: start; padding: 10px; border-radius: var(--r); background: var(--warn-soft); color: var(--ink); font-size: 12.5px; }
 .fail .ico { color: var(--danger); margin-top: 1px; }
+.fail.float { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 50; background: var(--surface); box-shadow: var(--shadow); border: 1px solid var(--danger); }
 
 .skel { display: grid; gap: 6px; }
 .skel i {

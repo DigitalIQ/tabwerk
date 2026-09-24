@@ -141,9 +141,11 @@ export async function guardDuplicate(tabId, url) {
     });
     return { asked: true };
   }
+  // Der neue Tab kann schon wieder zu sein, etwa bei Pop-ups, die sich selbst schließen.
+  if (!(await chrome.tabs.get(tabId).catch(() => null))) return { gone: true };
   await chrome.tabs.update(other.id, { active: true });
   await chrome.windows.update(other.windowId, { focused: true });
-  await chrome.tabs.remove(tabId);
+  await chrome.tabs.remove(tabId).catch(() => {});
   chrome.notifications.create(`dupeinfo:${Date.now()}`, {
     type: 'basic',
     iconUrl: chrome.runtime.getURL('icons/icon128.png'),
@@ -418,8 +420,9 @@ export async function listSnoozed() {
 
 export async function snoozeTab({ windowId, tabId = null, preset }) {
   await need('snooze', 'Schlummern');
-  const tab = tabId ? await chrome.tabs.get(tabId) : (await chrome.tabs.query({ active: true, windowId }))[0];
-  if (!tab || !isWebUrl(tab.url)) throw new Error('Nur Webseiten lassen sich schlummern.');
+  const tab = tabId ? await chrome.tabs.get(tabId).catch(() => null) : (await chrome.tabs.query({ active: true, windowId }))[0];
+  if (!tab) throw new Error('Dieser Tab ist schon geschlossen.');
+  if (!isWebUrl(tab.url)) throw new Error('Nur Webseiten lassen sich schlummern.');
   const when = wakeTime(preset);
   if (!when) throw new Error('Unbekannte Weckzeit.');
   const item = { id: crypto.randomUUID(), url: tab.url, title: tab.title, when, t: Date.now() };

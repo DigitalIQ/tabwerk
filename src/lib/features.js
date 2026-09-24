@@ -58,10 +58,18 @@ export async function similar({ windowId, allWindows }) {
 }
 
 // windowId null heißt: Tabs aus mehreren Fenstern, Rückgängig gilt dann für alle.
+// Tabs können zwischen Anzeige und Klick schon zu sein. Chrome bricht dann den ganzen Aufruf ab.
+export async function liveTabIds(tabIds) {
+  const open = new Set((await chrome.tabs.query({})).map((t) => t.id));
+  return tabIds.filter((id) => open.has(id));
+}
+
 export async function closeTabs({ tabIds, windowId = null, label = 'Doppelte schließen' }) {
+  const ids = await liveTabIds(tabIds);
+  if (!ids.length) return { closed: 0, gone: tabIds.length };
   await beforeAction(label, windowId);
-  await chrome.tabs.remove(tabIds);
-  return { closed: tabIds.length };
+  await chrome.tabs.remove(ids);
+  return { closed: ids.length, gone: tabIds.length - ids.length };
 }
 
 // ---------- Finden ----------
@@ -81,8 +89,10 @@ export async function find({ query }) {
 }
 
 export async function focusTab({ tabId, windowId }) {
+  const tab = await chrome.tabs.get(tabId).catch(() => null);
+  if (!tab) throw new Error('Dieser Tab ist schon geschlossen.');
   await chrome.tabs.update(tabId, { active: true });
-  await chrome.windows.update(windowId, { focused: true });
+  await chrome.windows.update(tab.windowId ?? windowId, { focused: true });
   return { ok: true };
 }
 
@@ -121,17 +131,23 @@ export async function proposeGroups({ windowId, onlyUngrouped }) {
 // plan: [{tabId, target}] mit target = gX, cY oder none.
 export async function applyGroups({ windowId, plan, options }) {
   await beforeAction('Gruppieren', windowId);
+  const live = new Set(await liveTabIds(plan.map((p) => p.tabId)));
   const byTarget = new Map();
   for (const { tabId, target } of plan) {
-    if (target === 'none') continue;
+    if (target === 'none' || !live.has(tabId)) continue;
     if (!byTarget.has(target)) byTarget.set(target, []);
     byTarget.get(target).push(tabId);
   }
   for (const [target, tabIds] of byTarget) {
     const opt = options[target];
     if (opt.type === 'existing') {
-      await chrome.tabs.group({ groupId: opt.groupId, tabIds });
-      continue;
+      // Die Gruppe kann inzwischen weg sein. Dann gilt sie als neue Gruppe mit ihrem Namen.
+      const group = await chrome.tabGroups.get(opt.groupId).catch(() => null);
+      if (group) {
+        await chrome.tabs.group({ groupId: opt.groupId, tabIds });
+        continue;
+      }
+      if (!opt.name) continue;
     }
     const existing = (await chrome.tabGroups.query({ windowId })).find((g) => (g.title || '').toLowerCase() === opt.name.toLowerCase());
     if (existing) {
@@ -141,7 +157,7 @@ export async function applyGroups({ windowId, plan, options }) {
       await chrome.tabGroups.update(groupId, { title: opt.name, color: opt.color || 'grey' });
     }
   }
-  return { moved: plan.filter((p) => p.target !== 'none').length };
+  return { moved: plan.filter((p) => p.target !== 'none' && live.has(p.tabId)).length };
 }
 
 // ---------- Sortieren ----------
@@ -161,7 +177,8 @@ export async function sortTabs({ windowId, by }) {
     );
     cost = result.cost;
     scores = Object.fromEntries(Object.entries(result.answers).map(([k, a]) => [P.idFromKey(k), { score: a.score, confidence: a.confidence }]));
-    tabs = tabs.map((t) => ({ ...t, score: scores[t.id]?.score }));
+    // Jev braucht ein paar Sekunden. In der Zeit können Tabs zu- oder aufgehen.
+    tabs = (await windowTabs(windowId)).map((t) => ({ ...t, score: scores[t.id]?.score }));
   }
   const plan = planSort(tabs, SORTERS[by]);
   if (plan.length) await beforeAction('Sortieren', windowId);
