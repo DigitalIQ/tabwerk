@@ -9,7 +9,7 @@ Tabwerk hilft, viele offene Browser-Tabs zu verwalten: finden, ordnen, aufräume
 |---|---|
 | tabs | Titel und Adressen der Tabs lesen, um sie zu suchen, zu gruppieren, zu sortieren und Doppelte zu finden. |
 | tabGroups | Tab-Gruppen anlegen, benennen, einfärben, sortieren und wiederherstellen. |
-| storage, unlimitedStorage | Einstellungen, Verlauf der Tab-Stände, Sitzungen, Notizen, Wächter und Formulare lokal speichern. Der Verlauf kann bei vielen Tabs mehrere MB groß werden. |
+| storage, unlimitedStorage | Einstellungen, Verlauf der Tab-Stände, Sitzungen, Notizen, Wächter, Formulare und die gelernten Entscheidungen des Nutzers lokal speichern. Der Verlauf kann bei vielen Tabs mehrere MB groß werden. |
 | alarms | Wächter im gewählten Takt prüfen, geschlummerte Tabs wecken, Fokus beenden, inaktive Tabs entladen. |
 | notifications | Melden, wenn ein Wächter anschlägt oder ein geschlummerter Tab zurück ist. |
 | offscreen | HTML einer beobachteten Seite in Text umwandeln. Der Service Worker hat keinen DOMParser. |
@@ -29,7 +29,7 @@ Nein. Tabwerk lädt und führt keinen Code von außen aus. Alle Skripte liegen i
 ## Datennutzung (ankreuzen)
 - Webprotokoll (Web history): ja. Titel, Website und Pfad von Tabs und besuchten Seiten gehen an OpenRouter oder TypeSafe, wenn der Nutzer eine Jev-Funktion nutzt.
 - Website-Inhalte (Website content): ja. Geänderte Zeilen beobachteter Seiten gehen an OpenRouter oder TypeSafe, wenn ein Wächter mit Jev prüft.
-- Alle anderen Kategorien: nein. Formulardaten, Notizen und Verlauf bleiben lokal.
+- Alle anderen Kategorien: nein. Formulardaten, Notizen, Verlauf und gelernte Entscheidungen bleiben lokal.
 
 Bestätigungen:
 - Daten werden nicht an Dritte verkauft, außer im genehmigten Einsatzfall (hier: das vom Nutzer gewählte Entscheidungsmodell).
