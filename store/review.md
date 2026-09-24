@@ -5,11 +5,15 @@ Tabwerk hilft, viele offene Browser-Tabs zu verwalten: finden, ordnen, aufräume
 
 ## Begründung der Berechtigungen
 
+Zum Kopieren besser `store/berechtigungen.txt` nehmen: dort steht ein Text pro Feld, ohne Tabellenzeichen.
+
+
 | Berechtigung | Begründung |
 |---|---|
 | tabs | Titel und Adressen der Tabs lesen, um sie zu suchen, zu gruppieren, zu sortieren und Doppelte zu finden. |
 | tabGroups | Tab-Gruppen anlegen, benennen, einfärben, sortieren und wiederherstellen. |
-| storage, unlimitedStorage | Einstellungen, Verlauf der Tab-Stände, Sitzungen, Notizen, Wächter, Formulare und die gelernten Entscheidungen des Nutzers lokal speichern. Der Verlauf kann bei vielen Tabs mehrere MB groß werden. |
+| storage | Einstellungen, Verlauf der Tab-Stände, Sitzungen, Notizen, Wächter, Formulare und die gelernten Entscheidungen des Nutzers lokal speichern. |
+| unlimitedStorage | Der Verlauf kann bei vielen Tabs mehrere MB groß werden und die normale Speichergrenze überschreiten. Alles bleibt lokal. |
 | alarms | Wächter im gewählten Takt prüfen, geschlummerte Tabs wecken, Fokus beenden, inaktive Tabs entladen. |
 | notifications | Melden, wenn ein Wächter anschlägt oder ein geschlummerter Tab zurück ist. |
 | offscreen | HTML einer beobachteten Seite in Text umwandeln. Der Service Worker hat keinen DOMParser. |
