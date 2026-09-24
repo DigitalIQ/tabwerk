@@ -10,6 +10,7 @@ Alles, was sich exakt berechnen lässt, erledigt Code. Für semantische Fragen n
 |---|---|---|
 | Schnellsuche | Per Tastenkürzel über jeder Seite: Tabs, Aktionen, Lesezeichen, Verlauf | Code (unscharfe Suche), Jev nur auf Wunsch mit `⇧↵` |
 | Finden | Du beschreibst einen Tab in eigenen Worten, Tabwerk springt hin | Jev (`choice`) |
+| Seitensuche | Du beschreibst in eigenen Worten, was auf der aktuellen Seite stehen soll, Tabwerk hebt die Stelle hervor | Auszug: Code, Relevanz und Satz: Jev (`noul`/`choice`) |
 | Gruppen | Vorschlag für bestehende Gruppen oder neue aus deinen Kategorien, mit Sicherheit pro Tab | Jev (`choice`) |
 | Sortieren | Tabs oder ganze Gruppen nach Priorität, dazu nach Website, zuletzt benutzt, Öffnungszeit oder Titel | Priorität: Jev (`score`), sonst Code |
 | Doppelte | gleiche Adressen finden, pro Eintrag wählen, was zugeht; gleichen Inhalt unter anderer Adresse finden | Adressen: Code, Inhalt: Jev (`noul`) |
@@ -64,6 +65,7 @@ Tastenkürzel:
 | `Alt+Umschalt+N` | Notiz zum aktuellen Tab |
 | `Alt+Umschalt+Z` | Letzte Tabwerk-Aktion rückgängig |
 | frei wählbar | Formular ausfüllen |
+| frei wählbar | Seitensuche nach Bedeutung |
 
 Ändern unter `chrome://extensions/shortcuts`.
 
@@ -76,6 +78,7 @@ Gruppen, Sortieren, Doppelte, Rückgängig und der Verlauf arbeiten im Fenster, 
 - Tippen sucht per Code, unscharf: „gh tabw“ findet „GitHub … tabwerk“. Umlaute und ß sind egal.
 - Filter: `/t` Tabs, `/a` Aktionen, `/b` Lesezeichen, `/h` Verlauf, `/n` Notizen, `/s` Sitzungen, `/z` geschlummerte Tabs, `/f` Formulare.
 - Notiz zum aktiven Tab: `/N` öffnet das Notiz-Fenster. `/N Text` speichert den Text sofort. Eine vorhandene Notiz bekommt ihn als neue Zeile dazu.
+- Seitensuche nach Bedeutung: `/F Suchtext` durchsucht die aktive Seite sofort mit Jev. `/F` allein öffnet nur die Suchleiste. Ein eigenes Tastenkürzel ist damit nicht nötig.
 - Farbmodus: automatisch nach Website, wie das System, immer hell oder immer dunkel.
 - Volltext: auf Wunsch sucht die Schnellsuche auch im sichtbaren Text offener Tabs.
 - Mit `/h` und `⇧↵` findet Jev Seiten aus dem Verlauf per Beschreibung, etwa „der Artikel über Solarstrom von letzter Woche“.
@@ -85,6 +88,12 @@ Gruppen, Sortieren, Doppelte, Rückgängig und der Verlauf arbeiten im Fenster, 
 - Jev fragt die Schnellsuche nie beim Tippen, nur mit `⇧↵` und nur, wenn du das in den Einstellungen einschaltest.
 
 Auf normalen Webseiten liegt die Suche über der Seite, der Hintergrund bleibt als Milchglas sichtbar. Auf `chrome://`-Seiten und im Web Store darf keine Erweiterung etwas einblenden. Dort öffnet sich ein kleines Fenster.
+
+## Seitensuche nach Bedeutung
+
+Statt nach einem genauen Wort zu suchen wie mit `Strg+F`, beschreibst du in eigenen Worten, was auf der Seite stehen soll, etwa „Kosten außer dem angegebenen Preis“ oder „was passiert, wenn ich kündige“. Tabwerk liest die sichtbaren Absätze, Listenpunkte, Überschriften, Zitate und Tabellenzellen der Seite, Jev bewertet jede Stelle und wählt pro Treffer den stärksten Satz aus, ohne einen neuen zu schreiben. Der stärkste Satz erscheint kräftig grün, der Rest der Stelle blass grün. Mit den Pfeilen in der Leiste oder `↵`/`⇧↵` springst du zwischen den Treffern.
+
+Am schnellsten geht es in der Schnellsuche mit `/F Suchtext`. Die Suche startet dann sofort. Alternativ: der Knopf „Seite durchsuchen“ im Popup unter „Finden“ oder ein eigenes Tastenkürzel unter `chrome://extensions/shortcuts`. Ein zweiter Druck auf das Kürzel schließt die Leiste. Die Suche läuft nur auf Aufruf, nicht laufend im Hintergrund, und nur auf der sichtbaren Seite selbst: eingebettete Rahmen fremder Herkunft, der PDF-Betrachter und Inhalte in einem Schatten-DOM bleiben außen vor. Auf `chrome://`-Seiten und im Web Store öffnet sich ein kurzer Hinweis statt der Leiste. Ohne Schlüssel für Jev zeigt Tabwerk einen Hinweis statt zu suchen.
 
 ## Wächter
 

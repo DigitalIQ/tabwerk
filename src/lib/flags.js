@@ -9,6 +9,7 @@ export const FEATURES = [
   { id: 'paletteFulltext', parent: 'palette', get area() { return t('ft_area_search'); }, get label() { return t('ft_paletteFulltext_label'); }, get hint() { return t('ft_paletteFulltext_hint'); }, def: false, perm: { origins: ['https://*/*', 'http://*/*'] } },
   { id: 'paletteHistoryJev', parent: 'palette', get area() { return t('ft_area_search'); }, get label() { return t('ft_paletteHistoryJev_label'); }, get hint() { return t('ft_paletteHistoryJev_hint'); }, def: false, jev: true, perm: { permissions: ['history'] } },
   { id: 'find', get area() { return t('ft_area_search'); }, get label() { return t('ft_find_label'); }, get hint() { return t('ft_find_hint'); }, def: true, jev: true },
+  { id: 'pageSearch', get area() { return t('ft_area_search'); }, get label() { return t('ft_pageSearch_label'); }, get hint() { return t('ft_pageSearch_hint'); }, def: true, jev: true },
 
   { id: 'groups', get area() { return t('ft_area_organize'); }, get label() { return t('ft_groups_label'); }, get hint() { return t('ft_groups_hint'); }, def: true, jev: true },
   { id: 'groupNames', parent: 'groups', get area() { return t('ft_area_organize'); }, get label() { return t('ft_groupNames_label'); }, get hint() { return t('ft_groupNames_hint'); }, def: true, jev: true },

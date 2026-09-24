@@ -7,6 +7,7 @@ import * as H from './history.js';
 import * as X from './extras.js';
 import * as FO from './formsbg.js';
 import * as U from './unlock.js';
+import * as PS from './pagesearchbg.js';
 import { getSettings, hasKey } from './settings.js';
 import { isOn } from './flags.js';
 import { toLinkList } from './links.js';
@@ -102,6 +103,7 @@ const ACTIONS = [
     const tab = await activeTab(windowId);
     return U.setAlwaysUnlock({ host: U.hostKey(tab.url), on: true, windowId }).then((r) => r.message);
   } },
+  { id: 'pagesearch.open', flag: 'pageSearch', jev: true, get title() { return t('act_pageSearchOpen'); }, get words() { return `${t('act_pageSearchOpenWords')} seitensuche needle bedeutung find page`; }, run: ({ windowId }) => PS.openPageSearch({ windowId }) },
   { id: 'options', get title() { return t('act_options'); }, get words() { return `${t('act_optionsWords')} settings options`; }, run: () => chrome.runtime.openOptionsPage() },
   { id: 'shortcuts', get title() { return t('act_shortcuts'); }, get words() { return `${t('act_shortcutsWords')} shortcut hotkey`; }, run: () => chrome.tabs.create({ url: 'chrome://extensions/shortcuts' }) },
 ];

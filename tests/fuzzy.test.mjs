@@ -40,4 +40,6 @@ test('/N legt eine Notiz an, /n sucht in Notizen', () => {
   assert.deepEqual(parseQuery('/N'), { only: null, create: 'note', text: '' });
   assert.deepEqual(parseQuery('/N Das ist neu'), { only: null, create: 'note', text: 'Das ist neu' });
   assert.deepEqual(parseQuery('/n rechnung'), { only: 'note', text: 'rechnung' });
+  assert.deepEqual(parseQuery('/F kündigungsfrist'), { only: null, create: 'pagesearch', text: 'kündigungsfrist' });
+  assert.deepEqual(parseQuery('/f kontakt'), { only: 'form', text: 'kontakt' });
 });

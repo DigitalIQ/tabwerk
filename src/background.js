@@ -10,6 +10,7 @@ import * as FO from './lib/formsbg.js';
 import * as T from './lib/transfer.js';
 import * as U from './lib/unlock.js';
 import * as Learn from './lib/learn.js';
+import * as PS from './lib/pagesearchbg.js';
 import { decide } from './lib/jev.js';
 import { getUsage, getSettings } from './lib/settings.js';
 import { isOn } from './lib/flags.js';
@@ -81,6 +82,8 @@ const handlers = {
   clearLearn: Learn.clearLearn,
   learnJsonl: Learn.learnJsonl,
   watchFeedback: W.watchFeedback,
+  pageSearch: PS.evaluate,
+  openPageSearch: ({ windowId, query }) => PS.openPageSearch({ windowId, query }),
   unlockTab: U.unlockTab,
   setAlwaysUnlock: U.setAlwaysUnlock,
   listUnlockHosts: U.listUnlockHosts,
@@ -331,6 +334,7 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
     if (mine.length === 1) FO.fillForm({ windowId: target.windowId, profileId: mine[0].id }).then((r) => toast(target.id, r.message)).catch((e) => toast(target.id, e.message));
     else openPalette(target, '/f ');
   }
+  if (command === 'page-search') PS.openPageSearch({ tab: target });
 });
 
 chrome.windows.onRemoved.addListener(async (id) => {

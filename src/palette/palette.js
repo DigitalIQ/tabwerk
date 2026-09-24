@@ -123,6 +123,7 @@ async function loadHistory() {
 const WEIGHT = { tab: 1, action: 0.95, form: 0.9, session: 0.85, note: 0.8, bookmark: 0.8, snooze: 0.75, history: 0.65 };
 const KIND_LABEL = {
   get newnote() { return t('pal_kindNewnote'); },
+  get pagesearch() { return t('pal_kindJev'); },
   get tab() { return t('pal_kindTab'); },
   get action() { return t('pal_kindAction'); },
   get bookmark() { return t('pal_kindBookmark'); },
@@ -168,6 +169,15 @@ function rank(raw) {
       kind: 'newnote', id: 'newnote', text: text.trim(),
       title: text.trim() ? t('pal_newNoteSave', text.trim()) : t('pal_newNoteOpen'),
       sub: [activeTab?.title, old ? t('pal_newNoteAppend') : null].filter(Boolean).join(' · '),
+    }];
+  }
+  if (create === 'pagesearch' && on('pageSearch')) {
+    $('#scope').hidden = false;
+    $('#scope').textContent = t('pal_scopePageSearch');
+    return [{
+      kind: 'pagesearch', id: 'pagesearch', text: text.trim(),
+      title: text.trim() ? t('pal_pageSearchRun', text.trim()) : t('pal_pageSearchOpen'),
+      sub: activeTab?.title || '',
     }];
   }
   $('#scope').hidden = !only;
@@ -216,6 +226,7 @@ function lead(item) {
   else if (item.kind === 'session') inner = icon('window');
   else if (item.kind === 'form') inner = icon('edit');
   else if (item.kind === 'newnote') inner = icon('note');
+  else if (item.kind === 'pagesearch') inner = icon('search');
   else if (item.kind === 'snooze') inner = icon('moon');
   else if (item.url) inner = favicon(item.url);
   else inner = icon('window');
@@ -288,6 +299,15 @@ async function choose() {
         await send('runAction', { id: 'note.edit', windowId });
         close();
       }
+    } catch (error) {
+      status(error.message, true);
+    }
+    return;
+  }
+  if (item.kind === 'pagesearch') {
+    try {
+      await send('openPageSearch', { windowId, query: item.text });
+      close();
     } catch (error) {
       status(error.message, true);
     }

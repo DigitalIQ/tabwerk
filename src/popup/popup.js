@@ -168,6 +168,11 @@ $('#find-form').addEventListener('submit', (event) => {
   });
 });
 
+$('#pagesearch-open')?.addEventListener('click', async () => {
+  await send('openPageSearch', { windowId: win.id });
+  window.close();
+});
+
 // ---------- Gruppen ----------
 
 function reiter(opt) {

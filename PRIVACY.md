@@ -25,6 +25,7 @@ Nur wenn du einen Schlüssel einträgst und eine Funktion nutzt, die Jev braucht
 | Funktion | Inhalt der Anfrage |
 |---|---|
 | Finden, Gruppen, Sortieren, Aufräumen, Gruppennamen | Titel, Website und Pfad der Tabs. Keine Parameter nach „?“ und keine Anker nach „#“ |
+| Seitensuche nach Bedeutung | deine Suche und der sichtbare Text der aktuellen Seite: Absätze, Listenpunkte, Überschriften, Zitate und Tabellenzellen, höchstens 160 Stellen und 60.000 Zeichen. Werte aus Formularfeldern gehen nie mit |
 | Gleichen Inhalt finden | Titel, Website und Pfad der verglichenen Tabs |
 | Wächter | deine Bedingung, Titel und Website der Seite, die geänderten Zeilen oder Textstellen um Zahlen |
 | Verlauf in Alltagssprache | deine Suche und Titel, Website und Pfad von bis zu 200 besuchten Seiten aus dem gewählten Zeitraum |

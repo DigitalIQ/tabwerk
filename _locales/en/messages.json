@@ -152,6 +152,12 @@
   "act_optionsWords": {
     "message": "settings options"
   },
+  "act_pageSearchOpen": {
+    "message": "Search page by meaning"
+  },
+  "act_pageSearchOpenWords": {
+    "message": "page search meaning needle find"
+  },
   "act_saved": {
     "message": "Saved"
   },
@@ -664,6 +670,12 @@
   },
   "ft_notes_label": {
     "message": "Notes on tabs"
+  },
+  "ft_pageSearch_hint": {
+    "message": "Describe what you are looking for, Jev finds the matching spot in the page text."
+  },
+  "ft_pageSearch_label": {
+    "message": "In-page search by meaning"
   },
   "ft_palette_hint": {
     "message": "Search with a keyboard shortcut over any page."
@@ -1497,6 +1509,13 @@
     "message": "✎ $1",
     "description": "$1 is the note text"
   },
+  "pal_pageSearchOpen": {
+    "message": "Open page search by meaning"
+  },
+  "pal_pageSearchRun": {
+    "message": "Search this page: “$1”",
+    "description": "$1 is the search text the user typed"
+  },
   "pal_resultsLabel": {
     "message": "Results"
   },
@@ -1520,6 +1539,9 @@
   },
   "pal_scopeNote": {
     "message": "notes only"
+  },
+  "pal_scopePageSearch": {
+    "message": "page by meaning"
   },
   "pal_scopeSession": {
     "message": "sessions only"
@@ -1840,6 +1862,9 @@
   },
   "popup_orderAlreadyFine": {
     "message": "The order is already right:"
+  },
+  "popup_pageSearchOpen": {
+    "message": "Search page"
   },
   "popup_pause": {
     "message": "Pause"
@@ -2508,5 +2533,50 @@
   },
   "xfer_notATabwerkFile": {
     "message": "This isn't a Tabwerk file."
+  },
+  "cmdPageSearch": {
+    "message": "Open in-page search by meaning"
+  },
+  "ps_close": {
+    "message": "Close"
+  },
+  "ps_count": {
+    "message": "$1 of $2"
+  },
+  "ps_error": {
+    "message": "Error: $1"
+  },
+  "ps_featureOff": {
+    "message": "Page search is turned off in settings."
+  },
+  "ps_next": {
+    "message": "Next match"
+  },
+  "ps_noKey": {
+    "message": "Without a key for Jev, page search finds nothing. Add one in Tabwerk's settings."
+  },
+  "ps_noMatch": {
+    "message": "No spot matches well enough."
+  },
+  "ps_pageTitle": {
+    "message": "In-page search by meaning"
+  },
+  "ps_placeholder": {
+    "message": "What are you looking for on this page?"
+  },
+  "ps_prev": {
+    "message": "Previous match"
+  },
+  "ps_privacyHint": {
+    "message": "The visible text of this page and your search go to Jev."
+  },
+  "ps_searching": {
+    "message": "Searching…"
+  },
+  "ps_unknownError": {
+    "message": "unknown error"
+  },
+  "ps_unsupportedPage": {
+    "message": "Tabwerk cannot show anything on this page. That includes chrome:// pages, the Web Store and the PDF viewer."
   }
 }

@@ -152,6 +152,12 @@
   "act_optionsWords": {
     "message": "einstellungen optionen"
   },
+  "act_pageSearchOpen": {
+    "message": "Seite nach Bedeutung durchsuchen"
+  },
+  "act_pageSearchOpenWords": {
+    "message": "seitensuche bedeutung needle finden"
+  },
   "act_saved": {
     "message": "Gesichert"
   },
@@ -664,6 +670,12 @@
   },
   "ft_notes_label": {
     "message": "Notizen an Tabs"
+  },
+  "ft_pageSearch_hint": {
+    "message": "Du beschreibst, was du suchst, Jev findet die passende Stelle im Text der Seite."
+  },
+  "ft_pageSearch_label": {
+    "message": "Seitensuche nach Bedeutung"
   },
   "ft_palette_hint": {
     "message": "Suche per Tastenkürzel über jeder Seite."
@@ -1497,6 +1509,13 @@
     "message": "✎ $1",
     "description": "$1 is the note text"
   },
+  "pal_pageSearchOpen": {
+    "message": "Seitensuche nach Bedeutung öffnen"
+  },
+  "pal_pageSearchRun": {
+    "message": "Diese Seite durchsuchen: „$1“",
+    "description": "$1 is the search text the user typed"
+  },
   "pal_resultsLabel": {
     "message": "Treffer"
   },
@@ -1520,6 +1539,9 @@
   },
   "pal_scopeNote": {
     "message": "nur Notizen"
+  },
+  "pal_scopePageSearch": {
+    "message": "Seite nach Bedeutung"
   },
   "pal_scopeSession": {
     "message": "nur Sitzungen"
@@ -1840,6 +1862,9 @@
   },
   "popup_orderAlreadyFine": {
     "message": "Die Reihenfolge passt schon:"
+  },
+  "popup_pageSearchOpen": {
+    "message": "Seite durchsuchen"
   },
   "popup_pause": {
     "message": "Pausieren"
@@ -2508,5 +2533,50 @@
   },
   "xfer_notATabwerkFile": {
     "message": "Das ist keine Tabwerk-Datei."
+  },
+  "cmdPageSearch": {
+    "message": "Seitensuche nach Bedeutung öffnen"
+  },
+  "ps_close": {
+    "message": "Schließen"
+  },
+  "ps_count": {
+    "message": "$1 von $2"
+  },
+  "ps_error": {
+    "message": "Fehler: $1"
+  },
+  "ps_featureOff": {
+    "message": "Die Seitensuche ist in den Einstellungen ausgeschaltet."
+  },
+  "ps_next": {
+    "message": "Nächster Treffer"
+  },
+  "ps_noKey": {
+    "message": "Ohne Schlüssel für Jev findet die Seitensuche nichts. Trag ihn in den Tabwerk-Einstellungen ein."
+  },
+  "ps_noMatch": {
+    "message": "Keine Stelle passt gut genug."
+  },
+  "ps_pageTitle": {
+    "message": "Seitensuche nach Bedeutung"
+  },
+  "ps_placeholder": {
+    "message": "Was suchst du auf dieser Seite?"
+  },
+  "ps_prev": {
+    "message": "Vorheriger Treffer"
+  },
+  "ps_privacyHint": {
+    "message": "Der sichtbare Text dieser Seite und deine Suche gehen an Jev."
+  },
+  "ps_searching": {
+    "message": "Suche läuft …"
+  },
+  "ps_unknownError": {
+    "message": "unbekannter Fehler"
+  },
+  "ps_unsupportedPage": {
+    "message": "Auf dieser Seite kann Tabwerk nichts einblenden. Das betrifft chrome://-Seiten, den Web Store und den PDF-Betrachter."
   }
 }

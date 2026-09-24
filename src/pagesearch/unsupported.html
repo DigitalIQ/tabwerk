@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="ps_pageTitle">Seitensuche nach Bedeutung</title>
+  <link rel="stylesheet" href="../ui/base.css">
+  <style>
+    html, body { background: var(--surface); min-height: 100%; }
+    body { padding: 22px 22px 20px; display: grid; gap: 12px; justify-items: center; text-align: center; }
+    .ico { width: 26px; height: 26px; color: var(--ink-3); }
+    p { margin: 0; color: var(--ink-2); font-size: 13px; line-height: 1.5; }
+    button { margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <span class="ico i-warn" aria-hidden="true"></span>
+  <p data-i18n="ps_unsupportedPage">Auf dieser Seite kann Tabwerk nichts einblenden.</p>
+  <button class="primary" id="close" data-i18n="ps_close">Schließen</button>
+  <script type="module" src="unsupported.js"></script>
+</body>
+</html>

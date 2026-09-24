@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "default_locale": "en",
   "description": "__MSG_extDescription__",
   "minimum_chrome_version": "116",
@@ -77,6 +77,9 @@
     },
     "fill-form": {
       "description": "__MSG_cmdFillForm__"
+    },
+    "page-search": {
+      "description": "__MSG_cmdPageSearch__"
     }
   },
   "optional_permissions": [
@@ -87,6 +90,7 @@
     {
       "resources": [
         "src/palette/*",
+        "src/pagesearch/*",
         "src/ui/*",
         "src/lib/*",
         "assets/*",

@@ -127,6 +127,34 @@ export function watchRequest(watch, page, diff) {
   return { state, questions, evidence };
 }
 
+// ---------- Seitensuche nach Bedeutung ----------
+
+// passages: [{ id, text }]. Der Zustand trägt die Suche und den Text jeder Passage.
+export function pageSearchState(passages, query) {
+  return { query, passages: Object.fromEntries(passages.map((p) => [p.id, p.text])) };
+}
+
+export function pageSearchQuestion(id) {
+  return {
+    type: 'noul',
+    instructions: `Does the passage \`passages.${id}\` help answer or relate to \`query\`? Judge the passage on its own.`,
+    criteria: {
+      true: 'The passage contains information relevant to the query',
+      false: 'The passage is unrelated to the query',
+    },
+  };
+}
+
+// sentences: die Sätze der Passage. Jev wählt den stärksten aus, erfindet keinen neuen.
+export function sentencePickQuestion(id, sentences) {
+  const criteria = Object.fromEntries(sentences.map((s, i) => [`s${i}`, s]));
+  return {
+    type: 'choice',
+    instructions: `Which sentence in \`passages.${id}\` best answers \`query\`? Pick the single strongest sentence, word for word.`,
+    criteria,
+  };
+}
+
 // Liest eine Choice-Antwort als Rangliste.
 export function ranked(answer, top = 3) {
   return Object.entries(answer.probabilities || {})
