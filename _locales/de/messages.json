@@ -551,6 +551,9 @@
   "focus_waitingTitle": {
     "message": "Diese Seite wartet bis nach dem Fokus."
   },
+  "form_cannotDecrypt": {
+    "message": "Tabwerk kann die gespeicherten Formulare nicht entschlüsseln."
+  },
   "form_cannotReadPage": {
     "message": "Tabwerk darf diese Seite gerade nicht lesen. Öffne die Schnellsuche per Tastenkürzel oder nutze das Kontextmenü auf der Seite."
   },
@@ -718,7 +721,7 @@
     "message": "Unbekannte Felder mit Jev zuordnen"
   },
   "ft_formsSensitive_hint": {
-    "message": "Speichert auch Passwort-, Karten-, Konto-, IBAN- und TAN-Felder. Tabwerk legt sie unverschlüsselt in Chrome ab und nimmt sie in den Export auf. Jev sieht nie Werte."
+    "message": "Speichert auch Passwort-, Karten-, Konto-, IBAN- und TAN-Felder. Tabwerk verschlüsselt sie mit einem Schlüssel in deinem Chrome-Profil und nimmt sie lesbar in den Export auf. Jev sieht nie Werte."
   },
   "ft_formsSensitive_label": {
     "message": "Auch geschützte Felder speichern"

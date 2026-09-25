@@ -12,7 +12,7 @@ Alles, was Tabwerk speichert, liegt in `chrome.storage.local` in deinem Chrome-P
 - der Verlauf deiner Fenster, Tabs und Gruppen
 - benannte Sitzungen, Notizen, geschlummerte Tabs
 - Wächter und der zuletzt gelesene Text der beobachteten Seiten
-- gespeicherte Formulare. Passwort-, Karten-, Konto-, IBAN- und TAN-Felder speichert Tabwerk nur, wenn du den Schalter „Auch geschützte Felder speichern“ einschaltest. Dann liegen sie unverschlüsselt in deinem Chrome-Profil und kommen mit in den Export.
+- gespeicherte Formulare, verschlüsselt mit AES-GCM. Den Schlüssel erzeugt Tabwerk selbst und legt ihn nicht auslesbar in deinem Chrome-Profil ab. Das schützt vor einem Blick in die Profildateien, nicht vor Schadsoftware auf deinem Rechner. Passwort-, Karten-, Konto-, IBAN- und TAN-Felder speichert Tabwerk nur, wenn du den Schalter „Auch geschützte Felder speichern“ einschaltest. Im Export stehen Formulare lesbar.
 - die Liste der Websites, auf denen Tabwerk Kopieren immer erlaubt
 - beim Lernen: bis zu 1000 deiner Entscheidungen zu Jev-Vorschlägen, mit Titel und Website des Tabs, Jevs Vorschlag, deiner Wahl und Jevs Sicherheit. Websites auf der Ausschlussliste fehlen. Du löschst das in den Einstellungen unter „Lernen“.
 

@@ -8,6 +8,9 @@ import { hostOf } from './url.js';
 import { matchFields, describeField, fakePerson, fakeValue, fakeSensitive, isSensitive } from './formcore.js';
 import { collectFields, fillFields } from '../content/forms.js';
 import { t, tp, fmtDate } from './i18n.js';
+import { listProfiles, saveProfiles } from './formstore.js';
+
+export { listProfiles };
 
 async function activeTab(windowId) {
   const [tab] = await chrome.tabs.query({ active: true, windowId });
@@ -24,17 +27,8 @@ async function inPage(tabId, func, args = []) {
   }
 }
 
-export async function listProfiles() {
-  const { formProfiles = [] } = await chrome.storage.local.get('formProfiles');
-  return formProfiles;
-}
-
 // Geschützt: Passwort, Karte, Konto, IBAN, TAN. Standard: bleiben draußen.
 const guarded = (f) => f.sensitive || isSensitive(f);
-
-async function saveProfiles(list) {
-  await chrome.storage.local.set({ formProfiles: list });
-}
 
 export async function saveForm({ windowId, name }) {
   const settings = await getSettings();

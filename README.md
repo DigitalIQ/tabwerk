@@ -140,6 +140,7 @@ Der Verlauf liegt nur lokal in `chrome.storage.local`. Er ersetzt kein Backup ü
 - An Jev gehen nur die Daten der jeweiligen Frage: Tab-Titel, Website und Pfad. Query-Parameter und Anker bleiben lokal. Wächter schicken nur die geänderten Zeilen der beobachteten Seite.
 - Websites auf der Ausschlussliste in den Einstellungen gehen nie an Jev.
 - Der Schlüssel liegt unverschlüsselt in `chrome.storage.local` und wird nicht synchronisiert. Jede Erweiterung mit Zugriff auf dein Chrome-Profil könnte ihn lesen. Nutze einen eigenen Schlüssel mit Ausgabenlimit.
+- Gespeicherte Formulare liegen verschlüsselt (AES-GCM). Der Schlüssel liegt nicht auslesbar in IndexedDB. Im Export stehen sie lesbar.
 - Leserechte für Websites fragt Tabwerk einzeln an, erst beim Anlegen eines Wächters.
 - Lesezeichen und Verlauf sind optionale Rechte. Tabwerk fragt erst, wenn du die Suche darin einschaltest.
 - Das Repository enthält keine Schlüssel. Tests laufen ohne Schlüssel mit festen Testantworten.
@@ -187,6 +188,7 @@ src/lib/duration.js    Intervalle
 src/lib/flags.js       Schalter für jede Funktion
 src/lib/extras.js      Aufräumen, Einsortieren, Doppel-Schutz, Notizen, Sitzungen, Fokus, Schlummern, Statistik
 src/lib/formsbg.js     Formulare speichern und ausfüllen
+src/lib/formstore.js   Formulare verschlüsselt ablegen
 src/lib/transfer.js    Export und Import
 src/content/forms.js   Funktionen, die in der Seite laufen
 src/palette/           Schnellsuche

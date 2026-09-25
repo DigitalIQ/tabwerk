@@ -718,6 +718,8 @@ check('Formular mit Schalter: Passwort und IBAN gespeichert und markiert', allNa
 await form.reload();
 await call('fillForm', { windowId: formWin, profileId: savedAll.profile.id });
 check('Formular mit Schalter: Passwort kommt zurück', (await form.inputValue('#pw')) === 'geheim456');
+const rawStore = await popup.evaluate(async () => JSON.stringify(await chrome.storage.local.get(null)));
+check('Formular: Werte liegen verschlüsselt im Speicher', !rawStore.includes('geheim456') && !rawStore.includes('Erika') && rawStore.includes('formVault'));
 await form.reload();
 await call('fillTestData', { windowId: formWin });
 check('Testdaten mit Schalter: Beispiel-IBAN im IBAN-Feld', (await form.inputValue('#iban')) === 'DE89370400440532013000');

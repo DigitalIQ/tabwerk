@@ -551,6 +551,9 @@
   "focus_waitingTitle": {
     "message": "This page waits until focus is over."
   },
+  "form_cannotDecrypt": {
+    "message": "Tabwerk cannot decrypt the saved forms."
+  },
   "form_cannotReadPage": {
     "message": "Tabwerk can't read this page right now. Open quick search with the keyboard shortcut, or use the context menu on the page."
   },
@@ -718,7 +721,7 @@
     "message": "Match unknown fields with Jev"
   },
   "ft_formsSensitive_hint": {
-    "message": "Also saves password, card, account, IBAN, and TAN fields. Tabwerk stores them unencrypted in Chrome and includes them in exports. Jev never sees values."
+    "message": "Also saves password, card, account, IBAN, and TAN fields. Tabwerk encrypts them with a key in your Chrome profile and includes them readable in exports. Jev never sees values."
   },
   "ft_formsSensitive_label": {
     "message": "Also save protected fields"

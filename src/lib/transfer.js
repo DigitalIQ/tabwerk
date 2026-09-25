@@ -3,13 +3,14 @@
 import { getSettings, saveSettings, DEFAULTS } from './settings.js';
 import { listSnapshots, getSnapshot, compactHistory } from './history.js';
 import { t } from './i18n.js';
+import { listProfiles, saveProfiles } from './formstore.js';
 
 const KEYS = ['apiKey', 'typesafeKey'];
 
 export async function exportAll({ withKeys = false, withHistory = true, withForms = true } = {}) {
   const settings = await getSettings();
   if (!withKeys) for (const k of KEYS) delete settings[k];
-  const store = await chrome.storage.local.get(['sessions', 'watches', 'notes', 'snoozed', 'formProfiles', 'learnLog', 'declutterProfiles']);
+  const store = await chrome.storage.local.get(['sessions', 'watches', 'notes', 'snoozed', 'learnLog', 'declutterProfiles']);
   const data = {
     format: 'tabwerk',
     version: 1,
@@ -22,7 +23,8 @@ export async function exportAll({ withKeys = false, withHistory = true, withForm
     learnLog: store.learnLog || [],
     declutterProfiles: store.declutterProfiles || {},
   };
-  if (withForms) data.formProfiles = store.formProfiles || [];
+  // Im Export stehen die Formulare lesbar, sonst ließe sich die Datei nirgends einspielen.
+  if (withForms) data.formProfiles = await listProfiles();
   if (withHistory) {
     const index = await listSnapshots();
     // Die Datei enthält jede Sicherung vollständig, damit sie auch ohne Tabwerk lesbar bleibt.
@@ -43,7 +45,7 @@ const mergeById = (a = [], b = []) => {
 // Führt zusammen, statt zu ersetzen. Vorhandenes bleibt.
 export async function importAll({ data }) {
   if (data?.format !== 'tabwerk') throw new Error(t('xfer_notATabwerkFile'));
-  const store = await chrome.storage.local.get(['sessions', 'watches', 'notes', 'snoozed', 'formProfiles', 'learnLog', 'declutterProfiles']);
+  const store = await chrome.storage.local.get(['sessions', 'watches', 'notes', 'snoozed', 'learnLog', 'declutterProfiles']);
   // Lern-Ereignisse haben keine ID. Gleich sind sie bei gleicher Zeit, Funktion und gleichem Titel.
   const eventKey = (e) => `${e.t}|${e.f}|${e.title || ''}`;
   const knownEvents = new Set((store.learnLog || []).map(eventKey));
@@ -52,12 +54,12 @@ export async function importAll({ data }) {
     watches: mergeById(store.watches, (data.watches || []).map((w) => ({ ...w, history: [] }))),
     notes: { ...(data.notes || {}), ...(store.notes || {}) },
     snoozed: mergeById(store.snoozed, data.snoozed),
-    formProfiles: mergeById(store.formProfiles, data.formProfiles),
     // Seite aufräumen: vorhandene Profile gehen vor, die Datei ergänzt nur neue Seitentypen.
     declutterProfiles: { ...(data.declutterProfiles || {}), ...(store.declutterProfiles || {}) },
     learnLog: [...(store.learnLog || []), ...(data.learnLog || []).filter((e) => !knownEvents.has(eventKey(e)))].sort((a, b) => b.t - a.t).slice(0, 1000),
   };
   await chrome.storage.local.set(next);
+  if (data.formProfiles?.length) await saveProfiles(mergeById(await listProfiles(), data.formProfiles));
   if (data.settings) {
     const patch = Object.fromEntries(Object.entries(data.settings).filter(([k]) => k in DEFAULTS));
     await saveSettings(patch);
