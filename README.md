@@ -2,6 +2,8 @@
 
 Chrome-Extension für viele offene Tabs. Tabwerk findet, gruppiert, sortiert und entdoppelt Tabs, beobachtet Webseiten und sichert jeden Stand von Fenstern, Tabs und Gruppen.
 
+**Installieren:** [Tabwerk im Chrome Web Store](https://chromewebstore.google.com/detail/tabwerk/jimalfhplojokembebogjlplobgoobdg)
+
 Alles, was sich exakt berechnen lässt, erledigt Code. Für semantische Fragen nutzt Tabwerk optional [Jev](https://docs.typesafe.ai), ein Entscheidungsmodell von TypeSafe. Jev ist erreichbar über [OpenRouter](https://openrouter.ai) oder direkt über [TypeSafe](https://typesafe.ai). Ohne Schlüssel laufen alle Funktionen, die nur Code brauchen.
 
 ## Funktionen
