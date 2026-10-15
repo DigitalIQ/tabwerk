@@ -51,6 +51,12 @@ Jede Aktion sichert vorher den Stand. „Rückgängig“ im Popup oder `Alt+Umsc
 
 Was Jev gut kann und wo es schwach ist, steht in [docs/jev-im-browser.md](docs/jev-im-browser.md).
 
+## Session-Codec für Entwickler
+
+Der Speicherbaustein unter [packages/session-codec](packages/session-codec/README.md) ist ein eigenständiges ESM-Paket für komprimierte Browserfenster. Tabwerk verwendet dessen Legacy-Einstieg, damit bestehende Verläufe unverändert lesbar bleiben. Die neue API bietet ein versioniertes Format, Inhaltsprüfung und Eingabegrenzen.
+
+Das Paket ist noch nicht veröffentlicht. Ein [Offline-Beispiel für Tab Session Manager](examples/tab-session-manager/README.md) zeigt eine weitere Verwendung mit dessen Exportformat. Die [lokale Abnahme](docs/session-codec.md) beschreibt Paket-, Kompatibilitäts- und Browserprüfungen.
+
 ## Installieren
 
 1. Repository klonen oder als ZIP laden und entpacken.

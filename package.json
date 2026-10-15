@@ -5,6 +5,10 @@
   "description": "Chrome-Extension: Tabs finden, gruppieren, sortieren, entdoppeln und Webseiten beobachten. Entscheidungen trifft Jev.",
   "scripts": {
     "test": "node --import ./tests/setup.mjs --test tests/",
+    "test:codec": "node --test packages/session-codec/test/",
+    "test:adapter": "node --test examples/tab-session-manager/adapter.test.mjs",
+    "test:distribution": "node scripts/check-codec-distribution.mjs",
+    "test:codec-browser": "node scripts/check-codec-browser.mjs",
     "icons": "node scripts/icons.mjs",
     "e2e": "node scripts/e2e.mjs",
     "pack": "node scripts/pack.mjs",
