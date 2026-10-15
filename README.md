@@ -55,7 +55,7 @@ Was Jev gut kann und wo es schwach ist, steht in [docs/jev-im-browser.md](docs/j
 
 Der Speicherbaustein unter [packages/session-codec](packages/session-codec/README.md) ist ein eigenständiges ESM-Paket für komprimierte Browserfenster. Tabwerk verwendet dessen Legacy-Einstieg, damit bestehende Verläufe unverändert lesbar bleiben. Die neue API bietet ein versioniertes Format, Inhaltsprüfung und Eingabegrenzen.
 
-Das Paket ist noch nicht veröffentlicht. Ein [Offline-Beispiel für Tab Session Manager](examples/tab-session-manager/README.md) zeigt eine weitere Verwendung mit dessen Exportformat. Die [lokale Abnahme](docs/session-codec.md) beschreibt Paket-, Kompatibilitäts- und Browserprüfungen.
+Das Paket ist als [tabwerk-session-codec auf npm](https://www.npmjs.com/package/tabwerk-session-codec) verfügbar. Ein [Offline-Beispiel für Tab Session Manager](examples/tab-session-manager/README.md) zeigt eine weitere Verwendung mit dessen Exportformat. Die [lokale Abnahme](docs/session-codec.md) beschreibt Paket-, Kompatibilitäts- und Browserprüfungen.
 
 ## Installieren
 
