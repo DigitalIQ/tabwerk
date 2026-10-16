@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="de">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lokaler Garrison-Backupvergleich</title>
+<style>body{max-width:960px;margin:40px auto;padding:0 20px;font:16px/1.5 system-ui;color:#17232d;background:#f7f9fb}button{padding:12px 18px;margin:8px 12px 8px 0;font:inherit}pre{white-space:pre-wrap;background:white;padding:18px;border:1px solid #ccd5df}small{color:#52606c}</style>
+<h1>Lokaler Garrison-Backupvergleich</h1>
+<p>TSM-Daten bleiben auf diesem Rechner. Getestet werden vollständige Datenbank-Backups, Browsertransaktionen und unabhängige Wiederherstellung.</p>
+<button id="tests">Browserprüfungen starten</button>
+<button id="benchmark">Vergleich mit fünf Messrunden starten</button>
+<p id="status" role="status">Bereit. Noch kein Lauf gestartet.</p>
+<pre id="result">Hier erscheinen ausschließlich Prüfergebnisse und aggregierte Messwerte.</pre>
+<small>Lokaler Prototyp. Kein Upload, keine Veröffentlichung, keine Kontaktaufnahme.</small>
+<script type="module" src="./benchmark-page.mjs"></script>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "tabwerk-garrison-backup-benchmark",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test *.test.mjs",
+    "test:browser": "node --test browser/*.test.mjs",
+    "benchmark": "node benchmark.mjs"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "6.2.5",
+    "fflate": "0.8.3"
+  }
+}

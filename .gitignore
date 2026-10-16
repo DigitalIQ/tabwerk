@@ -4,3 +4,7 @@ dist/
 test-results/
 store/
 .tmp/
+
+# Private experiment chronology and local workstation inventory.
+examples/garrison-backup-benchmark/RESULTS.md
+examples/garrison-backup-benchmark/LOCAL-DATA.md

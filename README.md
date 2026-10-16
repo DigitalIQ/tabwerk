@@ -57,6 +57,8 @@ Der Speicherbaustein unter [packages/session-codec](packages/session-codec/READM
 
 Das Paket ist als [tabwerk-session-codec auf npm](https://www.npmjs.com/package/tabwerk-session-codec) verfügbar. Ein [Offline-Beispiel für Tab Session Manager](examples/tab-session-manager/README.md) zeigt eine weitere Verwendung mit dessen Exportformat. Die [lokale Abnahme](docs/session-codec.md) beschreibt Paket-, Kompatibilitäts- und Browserprüfungen.
 
+Ein separater [experimenteller Delta-Store und Browservergleich](examples/garrison-backup-benchmark/README.md) untersucht transaktionale Speicherung, Crash-Recovery, Retention und inkrementelle Exporte. [Messwerte und Grenzen](examples/garrison-backup-benchmark/PUBLIC-RESULTS.md) dokumentieren den Vergleich mit Garrisons Backup-Code. Der Prototyp ist nicht Bestandteil der npm-Version 0.1.0 und keine Integration in Garrison. Security-Meldungen zu diesem Code betreut ebenfalls Manuel Bissinger (DigitalIQ) über die [Security Policy](SECURITY.md).
+
 ## Installieren
 
 1. Repository klonen oder als ZIP laden und entpacken.
