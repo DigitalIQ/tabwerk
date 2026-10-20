@@ -58,9 +58,9 @@ export const hasKey = (settings) => Boolean(connection(settings).key);
 export const DEFAULTS = {
   provider: 'openrouter',
   apiKey: '',
-  model: 'typesafe/jev-1.14',
+  model: '~typesafe/jev-latest',
   typesafeKey: '',
-  typesafeModel: 'jev-1.14',
+  typesafeModel: 'jev-latest',
   // "auto" heißt: Sprache des Browsers. Siehe initI18n() in i18n.js.
   uiLanguage: 'auto',
   // Ab dieser Sicherheit übernimmt Tabwerk einen Vorschlag ohne Nachfrage.
