@@ -26,7 +26,7 @@ export const PROVIDERS = {
     modelField: 'model',
     keyPrefix: 'sk-or-',
     models: {
-      get 'typesafe/jev-1.13'() { return t('set_modelFixed'); },
+      get 'typesafe/jev-1.14'() { return t('set_modelFixed'); },
       get '~typesafe/jev-latest'() { return t('set_modelLatest'); },
     },
   },
@@ -37,7 +37,7 @@ export const PROVIDERS = {
     modelField: 'typesafeModel',
     keyPrefix: '',
     models: {
-      get 'jev-1.13'() { return t('set_modelFixed'); },
+      get 'jev-1.14'() { return t('set_modelFixed'); },
       get 'jev-latest'() { return t('set_modelLatest'); },
     },
   },
@@ -58,9 +58,9 @@ export const hasKey = (settings) => Boolean(connection(settings).key);
 export const DEFAULTS = {
   provider: 'openrouter',
   apiKey: '',
-  model: 'typesafe/jev-1.13',
+  model: 'typesafe/jev-1.14',
   typesafeKey: '',
-  typesafeModel: 'jev-1.13',
+  typesafeModel: 'jev-1.14',
   // "auto" heißt: Sprache des Browsers. Siehe initI18n() in i18n.js.
   uiLanguage: 'auto',
   // Ab dieser Sicherheit übernimmt Tabwerk einen Vorschlag ohne Nachfrage.
