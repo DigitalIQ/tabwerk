@@ -213,6 +213,10 @@ tests/                 node --test
 scripts/e2e.mjs        Ende-zu-Ende-Test
 ```
 
+## Unterstützen
+
+Wenn dir Tabwerk hilft, kannst du mir [einen Kaffee spendieren](https://buymeacoffee.com/manuel_8472). Tabwerk bleibt so oder so kostenlos.
+
 ## Lizenz
 
 Tabwerk steht unter der MIT-Lizenz, siehe [LICENSE](LICENSE).
