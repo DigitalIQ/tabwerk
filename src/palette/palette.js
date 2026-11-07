@@ -11,6 +11,25 @@ import { scoreItem, parseQuery } from '../lib/fuzzy.js';
 import { hostOf } from '../lib/url.js';
 import { t, tp, fmtNumber, fmtDate, initI18n, localizeDom } from '../lib/i18n.js';
 
+// Nur weiter, wenn Tabwerk die Suche selbst geöffnet hat. Eine fremde Seite, die palette.html
+// einrahmt, bekommt eine leere Fläche (siehe checkPaletteGrant in background.js).
+// Im iFrame schickt content.js das Token nach dem Laden, im eigenen Fenster gibt es keins.
+const framed = window.top !== window;
+const token = framed ? await new Promise((resolve) => {
+  const onToken = (event) => {
+    if (event.source !== parent || typeof event.data?.tabwerkToken !== 'string') return;
+    window.removeEventListener('message', onToken);
+    resolve(event.data.tabwerkToken);
+  };
+  window.addEventListener('message', onToken);
+  setTimeout(() => resolve(null), 5000);
+}) : null;
+const auth = await chrome.runtime.sendMessage({ type: 'paletteAuth', payload: { token } }).catch(() => null);
+if (!auth?.ok) {
+  document.documentElement.replaceChildren();
+  throw new Error('Tabwerk palette: not opened by Tabwerk');
+}
+
 await initI18n();
 localizeDom();
 

@@ -46,7 +46,13 @@
   frame.setAttribute('allowtransparency', 'true');
   host.appendChild(frame);
   document.documentElement.appendChild(host);
-  frame.addEventListener('load', () => frame.focus());
+  const token = window.__tabwerkPaletteToken;
+  window.__tabwerkPaletteToken = undefined;
+  frame.addEventListener('load', () => {
+    // Nur der eigene iFrame mit Tabwerks Origin bekommt das Token, siehe background.js.
+    frame.contentWindow.postMessage({ tabwerkToken: token }, new URL(frame.src).origin);
+    frame.focus();
+  }, { once: true });
   const onMessage = (event) => {
     if (event.source !== frame.contentWindow || event.data?.tabwerk !== 'close') return;
     host.remove();

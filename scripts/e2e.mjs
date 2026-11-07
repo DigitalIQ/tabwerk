@@ -284,6 +284,30 @@ checkJev('Gruppen angelegt', groups.length >= 3, groups.join(', '));
 const learnedGroups = await popup.evaluate(async () => ((await chrome.storage.local.get('learnLog')).learnLog || []).filter((e) => e.f === 'groups'));
 check('Lernen: Gruppen-Entscheidungen lokal gemerkt', learnedGroups.length > 0 && learnedGroups.every((e) => typeof e.ok === 'boolean' && e.title), `${learnedGroups.length} Einträge`);
 
+// Die Schnellsuche läuft nur nach einer Freigabe durch Tabwerk, als Schutz vor fremdem Einrahmen.
+// Der Test öffnet sie direkt, ohne Tastenkürzel, und vergibt die Freigabe deshalb selbst.
+let palN = 0;
+async function openPalettePage(query) {
+  const p = await context.newPage();
+  const mark = `https://www.example.com/palette-test-${(palN += 1)}`;
+  await p.goto(mark);
+  await popup.evaluate(async (url) => {
+    const tab = (await chrome.tabs.query({})).find((t) => t.url === url);
+    await chrome.storage.session.set({ paletteGrant: { windowId: tab.windowId, until: Date.now() + 15000 } });
+  }, mark);
+  await p.goto(`chrome-extension://${id}/src/palette/palette.html?${query}`);
+  return p;
+}
+async function injectPalette(urlPart) {
+  await popup.evaluate(async (part) => {
+    const [tab] = (await chrome.tabs.query({})).filter((t) => t.url.includes(part));
+    const token = crypto.randomUUID();
+    await chrome.storage.session.set({ paletteGrant: { tabId: tab.id, token, until: Date.now() + 15000 } });
+    await chrome.scripting.executeScript({ target: { tabId: tab.id }, args: [token], func: (k) => { window.__tabwerkPaletteToken = k; } });
+    await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['src/palette/content.js'] });
+  }, urlPart);
+}
+
 // Zweites Fenster: darf von allem in Fenster 1 unberührt bleiben.
 const win1 = await popup.evaluate(async () => (await chrome.windows.getCurrent()).id);
 const win2 = await popup.evaluate(async () => (await chrome.windows.create({ url: 'https://www.youtube.com/watch?v=zweites', focused: false })).id);
@@ -393,10 +417,9 @@ await shot('7-gruppen-dunkel');
 await popup.emulateMedia({ colorScheme: 'light' });
 
 // Schnellsuche als eigenes Fenster (so wie auf chrome://-Seiten)
-const palette = await context.newPage();
+const palette = await openPalettePage(`standalone=1&win=${win1}`);
 palette.on('pageerror', (e) => errors.push(e.message));
 await palette.setViewportSize({ width: 680, height: 520 });
-await palette.goto(`chrome-extension://${id}/src/palette/palette.html?standalone=1&win=${win1}`);
 await palette.waitForSelector('#list .item');
 await palette.fill('#q', 'kopfhor preis');
 await palette.waitForTimeout(100);
@@ -434,10 +457,7 @@ if (!wnew.isClosed()) await wnew.close();
 // Schnellsuche als Overlay über einer Seite
 const host = opened.find((p) => !p.isClosed() && /idealo/.test(p.url())) || opened.find((p) => !p.isClosed());
 await host.bringToFront();
-await popup.evaluate(async (url) => {
-  const [tab] = (await chrome.tabs.query({})).filter((t) => t.url.startsWith(url));
-  await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['src/palette/content.js'] });
-}, host.url().split('#')[0]);
+await injectPalette(host.url().split('#')[0]);
 const frame = await (await host.waitForSelector('#tabwerk-palette-host iframe')).contentFrame();
 await frame.waitForSelector('#list .item');
 await frame.fill('#q', 'bericht');
@@ -447,14 +467,25 @@ await frame.press('#q', 'Escape');
 await host.waitForTimeout(200);
 check('Overlay schließt mit Esc', (await host.$('#tabwerk-palette-host')) === null);
 
+// Eine fremde Seite rahmt die Schnellsuche selbst ein. Ohne Freigabe bleibt sie leer.
+const framer = await context.newPage();
+framer.on('pageerror', () => {});
+await framer.goto('https://www.example.com/fremd-einrahmen');
+await framer.evaluate((src) => {
+  const f = document.createElement('iframe');
+  f.src = src;
+  document.body.appendChild(f);
+}, `chrome-extension://${id}/src/palette/palette.html?q=%2Ff%20`);
+await framer.waitForTimeout(6000);
+const foreign = framer.frames().find((f) => f.url().includes('palette.html'));
+check('Schnellsuche bleibt in fremdem iFrame leer', Boolean(foreign) && (await foreign.$('#q')) === null);
+await framer.close();
+
 // Milchglas auf einer dunklen Seite wie GitHub: der Hintergrund muss dunkel durchscheinen.
 const dark = await context.newPage();
 await dark.goto('https://github.com/example/dark-theme-test');
 await dark.bringToFront();
-await popup.evaluate(async () => {
-  const [tab] = (await chrome.tabs.query({})).filter((t) => t.url.includes('dark-theme-test'));
-  await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['src/palette/content.js'] });
-});
+await injectPalette('dark-theme-test');
 const darkFrame = await (await dark.waitForSelector('#tabwerk-palette-host iframe')).contentFrame();
 await darkFrame.waitForSelector('#list .item');
 await dark.waitForTimeout(250);
@@ -533,8 +564,7 @@ await popup.reload();
 
 // Farbmodus der Schnellsuche
 const themeOf = async (query) => {
-  const p = await context.newPage();
-  await p.goto(`chrome-extension://${id}/src/palette/palette.html?${query}`);
+  const p = await openPalettePage(query);
   await p.waitForSelector('#q');
   const t = await p.evaluate(() => document.documentElement.dataset.theme);
   await p.close();
@@ -759,8 +789,7 @@ await always.close();
 const noteTarget = await context.newPage();
 await noteTarget.goto('https://www.spiegel.de/notiz-test');
 const noteWinId = await popup.evaluate(async () => (await chrome.tabs.query({})).find((t) => (t.url || '').includes('notiz-test')).windowId);
-const pal3 = await context.newPage();
-await pal3.goto(`chrome-extension://${id}/src/palette/palette.html?standalone=1&win=${noteWinId}`);
+const pal3 = await openPalettePage(`standalone=1&win=${noteWinId}`);
 await noteTarget.bringToFront();
 await pal3.waitForSelector('#list .item');
 await pal3.fill('#q', '/N');
@@ -837,8 +866,7 @@ const fullPage = await context.newPage();
 await fullPage.goto('https://github.com/example/dark-theme-test?volltext');
 const texts = await call('tabTexts');
 check('Volltext: Seitentext wird gelesen', texts.some((t) => /consectetur adipiscing/.test(t.text)));
-const pal2 = await context.newPage();
-await pal2.goto(`chrome-extension://${id}/src/palette/palette.html?standalone=1&win=${win1}`);
+const pal2 = await openPalettePage(`standalone=1&win=${win1}`);
 await pal2.waitForSelector('#list .item');
 await pal2.waitForTimeout(800);
 await pal2.fill('#q', 'consectetur adipiscing');

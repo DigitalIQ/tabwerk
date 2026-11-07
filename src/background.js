@@ -107,8 +107,12 @@ const handlers = {
   }),
 };
 
-chrome.runtime.onMessage.addListener((message, _sender, reply) => {
+chrome.runtime.onMessage.addListener((message, sender, reply) => {
   if (message?.target === 'offscreen') return false;
+  if (message?.type === 'paletteAuth') {
+    checkPaletteGrant(sender, message.payload?.token).then((ok) => reply({ ok }), () => reply({ ok: false }));
+    return true;
+  }
   const handler = handlers[message?.type];
   if (!handler) return false;
   i18nReady
@@ -304,13 +308,49 @@ chrome.runtime.onStartup.addListener(async () => {
 
 // Auf normalen Seiten legt Tabwerk die Suche über die Seite. Auf chrome:// und im Web Store
 // geht das nicht, dann öffnet sich ein kleines Fenster. query startet die Suche mit einer Eingabe.
+// palette.html muss für Webseiten abrufbar sein, damit content.js sie als iFrame einbauen kann.
+// Damit könnte aber jede fremde Seite sie selbst einrahmen und Klicks hineinlenken. Deshalb
+// läuft die Suche nur, wenn Tabwerk sie gerade selbst geöffnet hat: einmalig und für kurze Zeit.
+// Im iFrame zählt ein Token, das nur content.js kennt. Es liegt in der isolierten Welt des
+// Content-Skripts und geht per postMessage gezielt an den eigenen iFrame, nie in die Seite.
+// Das eigene Fenster erkennt Tabwerk an seiner ID.
+const PALETTE_GRANT_MS = 15000;
+
+async function grantPalette(grant) {
+  await chrome.storage.session.set({ paletteGrant: { ...grant, until: Date.now() + PALETTE_GRANT_MS } });
+}
+
+async function checkPaletteGrant(sender, token) {
+  const tab = sender.tab;
+  if (!tab) return false;
+  // Das Fenster kann schneller laden, als windows.create seine ID zurückgibt.
+  for (let i = 0; i < 20; i += 1) {
+    const { paletteGrant: g } = await chrome.storage.session.get('paletteGrant');
+    if (!g || g.until < Date.now()) return false;
+    const match = g.windowId !== undefined
+      ? sender.frameId === 0 && tab.windowId === g.windowId
+      : sender.frameId !== 0 && tab.id === g.tabId && typeof token === 'string' && token === g.token;
+    if (match) {
+      await chrome.storage.session.remove('paletteGrant');
+      return true;
+    }
+    if (!g.pendingWindow) return false;
+    await new Promise((r) => setTimeout(r, 100));
+  }
+  return false;
+}
+
 async function openPalette(tab, query = '') {
   if (!isOn(await getSettings(), 'palette')) return;
   if (tab?.id && /^(https?|file):/.test(tab.url || '')) {
     try {
-      if (query) {
-        await chrome.scripting.executeScript({ target: { tabId: tab.id }, args: [query], func: (q) => { window.__tabwerkPaletteQuery = q; } });
-      }
+      const token = crypto.randomUUID();
+      await grantPalette({ tabId: tab.id, token });
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        args: [query, token],
+        func: (q, k) => { window.__tabwerkPaletteQuery = q || undefined; window.__tabwerkPaletteToken = k; },
+      });
       await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['src/palette/content.js'] });
       return;
     } catch {}
@@ -326,8 +366,11 @@ async function openPalette(tab, query = '') {
   const base = tab?.windowId ? await chrome.windows.get(tab.windowId) : await chrome.windows.getLastFocused();
   const params = new URLSearchParams({ standalone: '1', win: String(base.id) });
   if (query) params.set('q', query);
+  await grantPalette({ pendingWindow: true });
   const win = await chrome.windows.create({ url: chrome.runtime.getURL(`src/palette/palette.html?${params}`), ...centered(base, 680, 520, 90) });
   await chrome.storage.session.set({ paletteWindow: win.id });
+  const { paletteGrant: g } = await chrome.storage.session.get('paletteGrant');
+  if (g?.pendingWindow) await grantPalette({ windowId: win.id });
 }
 
 chrome.commands.onCommand.addListener(async (command, tab) => {
