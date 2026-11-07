@@ -22,4 +22,6 @@ test('diffLines zählt doppelte Zeilen', () => {
 test('hasNumericCondition erkennt Preisbedingungen', () => {
   assert.ok(hasNumericCondition('wenn der Preis unter 200 € fällt'));
   assert.ok(!hasNumericCondition('wenn ein neuer Artikel erscheint'));
+  assert.ok(hasNumericCondition('when the price drops below 200 dollars'));
+  assert.ok(!hasNumericCondition('when a new article appears'));
 });

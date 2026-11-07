@@ -46,5 +46,5 @@ export function diffLines(before, after) {
 
 // Jev rechnet nicht zuverlässig. Bedingungen mit Zahlen bekommen einen Hinweis.
 export function hasNumericCondition(text) {
-  return /\d/.test(text || '') && /(unter|über|mehr|weniger|kleiner|größer|ab|bis|<|>|€|\$|%|prozent|preis)/i.test(text || '');
+  return /\d/.test(text || '') && /(unter|über|mehr|weniger|kleiner|größer|ab|bis|prozent|preis|under|below|above|over|more|less|fewer|greater|smaller|at least|at most|percent|price|cost|<|>|€|\$|£|%)/i.test(text || '');
 }

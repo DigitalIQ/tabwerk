@@ -1,224 +1,232 @@
 # Tabwerk
 
-Chrome-Extension für viele offene Tabs. Tabwerk findet, gruppiert, sortiert und entdoppelt Tabs, beobachtet Webseiten und sichert jeden Stand von Fenstern, Tabs und Gruppen.
+English · [Deutsch](README.de.md)
 
-**Installieren:** [Tabwerk im Chrome Web Store](https://chromewebstore.google.com/detail/tabwerk/jimalfhplojokembebogjlplobgoobdg)
+A Chrome extension for people with many open tabs. Tabwerk finds, groups, sorts and deduplicates tabs, watches web pages and saves every state of your windows, tabs and groups.
 
-Alles, was sich exakt berechnen lässt, erledigt Code. Für semantische Fragen nutzt Tabwerk optional [Jev](https://docs.typesafe.ai), ein Entscheidungsmodell von TypeSafe. Jev ist erreichbar über [OpenRouter](https://openrouter.ai) oder direkt über [TypeSafe](https://typesafe.ai). Ohne Schlüssel laufen alle Funktionen, die nur Code brauchen.
+**Install:** [Tabwerk in the Chrome Web Store](https://chromewebstore.google.com/detail/tabwerk/jimalfhplojokembebogjlplobgoobdg)
 
-## Funktionen
+Anything that can be computed exactly is done in code. For semantic questions Tabwerk can optionally use [Jev](https://docs.typesafe.ai), a decision model by TypeSafe. Jev is available through [OpenRouter](https://openrouter.ai) or directly from [TypeSafe](https://typesafe.ai). Without a key, every feature that only needs code still works.
 
-| Bereich | Was passiert | Wer entscheidet |
+## Features
+
+| Area | What happens | Who decides |
 |---|---|---|
-| Schnellsuche | Per Tastenkürzel über jeder Seite: Tabs, Aktionen, Lesezeichen, Verlauf | Code (unscharfe Suche), Jev nur auf Wunsch mit `⇧↵` |
-| Finden | Du beschreibst einen Tab in eigenen Worten, Tabwerk springt hin | Jev (`choice`) |
-| Seitensuche | Du beschreibst in eigenen Worten, was auf der aktuellen Seite stehen soll, Tabwerk hebt die Stelle hervor | Auszug: Code, Relevanz und Satz: Jev (`noul`/`choice`) |
-| Gruppen | Vorschlag für bestehende Gruppen oder neue aus deinen Kategorien, mit Sicherheit pro Tab | Jev (`choice`) |
-| Sortieren | Tabs oder ganze Gruppen nach Priorität, dazu nach Website, zuletzt benutzt, Öffnungszeit oder Titel | Priorität: Jev (`score`), sonst Code |
-| Doppelte | gleiche Adressen finden, pro Eintrag wählen, was zugeht; gleichen Inhalt unter anderer Adresse finden | Adressen: Code, Inhalt: Jev (`noul`) |
-| Wächter | Seite beobachten und melden, wenn eine Bedingung in Alltagssprache eintritt | Vergleich: Code, Bewertung: Jev (`noul`) |
-| Verlauf | sichert nach jeder Änderung, stellt jeden Stand wieder her | Code |
-| Aufräum-Vorschlag | markiert alte und unwichtige Tabs zum Schließen | Alter: Code, Wichtigkeit: Jev (`score`) |
-| Einsortieren | neue Tabs landen automatisch in der passenden Gruppe | Regeln: Code, sonst optional Jev |
-| Doppel-Schutz | eine schon offene Seite öffnet sich nicht noch einmal, außer du willst es | Code |
-| Entladen | inaktive Tabs geben Speicher frei | Code |
-| Notizen | Notiz an einen Tab heften, per Rechtsklick, `Alt+Umschalt+N` oder Schnellsuche | Code |
-| Gruppennamen | Gruppen ohne Titel bekommen einen kurzen Namen | Kandidaten: Code, Auswahl: Jev |
-| Sitzungen | Fenster unter einem Namen speichern und wieder öffnen | Code |
-| Fokus | andere Gruppen einklappen, ablenkende Seiten auf Zeit sperren | Code |
-| Schlummern | Tab schließen und zur gewählten Zeit wieder öffnen | Code |
-| Linkliste | Tabs als Markdown oder Text kopieren | Code |
-| Statistik | Tabs pro Fenster und Website, älteste Tabs, Verlauf der Anzahl | Code |
-| Seite aufräumen | blendet Werbung, Cookie-Banner, Aktionen, Newsletter-Kästen, Social-Media-Knöpfe und auf Wunsch Kommentare, Empfehlungen oder eine eigene Regel aus. Einmal pro Seitentyp analysiert, danach ohne Anfrage | Kandidaten und Ausblenden: Code, Einordnung: Jev (`choice`) |
-| Formulare | speichern, ausfüllen, mit Testdaten füllen; geschützte Felder nur mit eigenem Schalter | Code, unbekannte Felder optional Jev |
-| Lernen | merkt sich lokal, wo du Jev folgst oder korrigierst: schlägt Regeln vor, passt die Sicherheitsschwelle je Funktion an, gibt frühere Zuordnungen als Beispiele an Jev, Daumen bei Wächtern | Code, Beispiele optional an Jev |
-| Kopieren erlauben | hebt Sperren für Kopieren, Einfügen, Markieren und Rechtsklick auf, für einen Tab oder immer für eine Website | Code |
-| Export und Import | alles als Datei, Sitzungen auch als Lesezeichen-Datei | Code |
+| Quick search | A shortcut opens a search on top of any page: tabs, actions, bookmarks, history | Code (fuzzy search), Jev only on request with `⇧↵` |
+| Find | Describe a tab in your own words and Tabwerk jumps to it | Jev (`choice`) |
+| Page search | Describe in your own words what you are looking for on the current page, Tabwerk highlights the passage | Extraction: code, relevance and sentence: Jev (`noul`/`choice`) |
+| Groups | Suggests existing groups or new ones from your categories, with a confidence per tab | Jev (`choice`) |
+| Sort | Tabs or whole groups by priority, or by site, last used, opening time or title | Priority: Jev (`score`), otherwise code |
+| Duplicates | Finds identical addresses and lets you pick what to close per entry; finds the same content under a different address | Addresses: code, content: Jev (`noul`) |
+| Watchers | Watches a page and notifies you when a condition in plain language is met | Comparison: code, evaluation: Jev (`noul`) |
+| History | Saves after every change and restores any state | Code |
+| Cleanup suggestion | Marks old and unimportant tabs for closing | Age: code, importance: Jev (`score`) |
+| Auto-sort | New tabs land in the right group automatically | Rules: code, otherwise optionally Jev |
+| Duplicate guard | A page that is already open does not open again, unless you want it to | Code |
+| Discard | Inactive tabs free their memory | Code |
+| Notes | Pin a note to a tab via right-click, `Alt+Shift+N` or quick search | Code |
+| Group names | Untitled groups get a short name | Candidates: code, choice: Jev |
+| Sessions | Save a window under a name and reopen it later | Code |
+| Focus | Collapse other groups and block distracting sites for a while | Code |
+| Snooze | Close a tab and reopen it at the time you choose | Code |
+| Link list | Copy tabs as Markdown or plain text | Code |
+| Statistics | Tabs per window and site, oldest tabs, tab count over time | Code |
+| Declutter page | Hides ads, cookie banners, promotions, newsletter boxes, social buttons and, if you like, comments, recommendations or a rule of your own. Each page type is analyzed once, later visits need no request | Candidates and hiding: code, classification: Jev (`choice`) |
+| Forms | Save, fill, fill with test data; protected fields only with a separate switch | Code, unknown fields optionally Jev |
+| Learning | Remembers locally where you follow or correct Jev: suggests rules, adjusts the confidence threshold per feature, passes earlier choices to Jev as examples, thumbs up or down on watchers | Code, examples optionally to Jev |
+| Allow copying | Lifts blocks on copy, paste, selection and right-click, for one tab or always for a site | Code |
+| Export and import | Everything as a file, sessions also as a bookmarks file | Code |
 
-Jede Funktion lässt sich in den Einstellungen einzeln ausschalten. Abhängige Funktionen hängen an der übergeordneten.
+Every feature can be switched off on its own in the settings. Dependent features follow their parent.
 
-## Sprachen
+Every action saves the current state first. “Undo” in the popup or `Alt+Shift+Z` jumps right back to it.
 
-Tabwerk spricht Deutsch und Englisch. Es folgt der Sprache des Browsers. In den Einstellungen unter „Sprache“ lässt sich die Sprache fest wählen. Datum, Uhrzeit, Zahlen, Beträge und Mehrzahl formatiert Tabwerk passend zur Sprache über `Intl`. Testdaten für Formulare gibt es als deutsche und als US-amerikanische Adressen.
+What Jev does well and where it is weak is described in [docs/jev-im-browser.md](docs/jev-im-browser.md) (German).
 
-Eine neue Sprache anlegen:
+## Languages
 
-1. `_locales/en/messages.json` nach `_locales/<code>/messages.json` kopieren und die Werte von `message` übersetzen. `$1` bis `$9` bleiben stehen. Schlüssel mit `_one` und `_other` sind Einzahl und Mehrzahl.
-2. Den Code in `LANGUAGES` in `src/lib/i18n.js` ergänzen und einen Namen unter `lang_<code>` in allen Sprachdateien anlegen.
-3. `npm test` prüft, dass alle Sprachen dieselben Schlüssel und Platzhalter haben.
+Tabwerk speaks English and German. It follows the browser language. You can pin a language in the settings under “Language”. Dates, times, numbers, amounts and plurals are formatted for the chosen language through `Intl`. Test data for forms comes as US and German addresses. Any other browser language falls back to English.
 
-Jede Aktion sichert vorher den Stand. „Rückgängig“ im Popup oder `Alt+Umschalt+Z` springt genau dorthin zurück.
+Adding a language:
 
-Was Jev gut kann und wo es schwach ist, steht in [docs/jev-im-browser.md](docs/jev-im-browser.md).
+1. Copy `_locales/en/messages.json` to `_locales/<code>/messages.json` and translate the `message` values. Keep `$1` to `$9` as they are. Keys ending in `_one` and `_other` are singular and plural.
+2. Add the code to `LANGUAGES` in `src/lib/i18n.js` and add a name under `lang_<code>` in every language file.
+3. `npm test` checks that all languages have the same keys and placeholders.
 
-## Session-Codec für Entwickler
+Translations are welcome as a pull request.
 
-Der Speicherbaustein unter [packages/session-codec](packages/session-codec/README.md) ist ein eigenständiges ESM-Paket für komprimierte Browserfenster. Tabwerk verwendet dessen Legacy-Einstieg, damit bestehende Verläufe unverändert lesbar bleiben. Die neue API bietet ein versioniertes Format, Inhaltsprüfung und Eingabegrenzen.
+## Session codec for developers
 
-Das Paket ist als [tabwerk-session-codec auf npm](https://www.npmjs.com/package/tabwerk-session-codec) verfügbar. Ein [Offline-Beispiel für Tab Session Manager](examples/tab-session-manager/README.md) zeigt eine weitere Verwendung mit dessen Exportformat. Die [lokale Abnahme](docs/session-codec.md) beschreibt Paket-, Kompatibilitäts- und Browserprüfungen.
+The storage module in [packages/session-codec](packages/session-codec/README.md) is a standalone ESM package for compressed browser windows. Tabwerk uses its legacy entry point so existing histories stay readable as they are. The new API adds a versioned format, content checks and input limits.
 
-Ein separater [experimenteller Delta-Store und Browservergleich](examples/garrison-backup-benchmark/README.md) untersucht transaktionale Speicherung, Crash-Recovery, Retention und inkrementelle Exporte. [Messwerte und Grenzen](examples/garrison-backup-benchmark/PUBLIC-RESULTS.md) dokumentieren den Vergleich mit Garrisons Backup-Code. Der Prototyp ist nicht Bestandteil der npm-Version 0.1.0 und keine Integration in Garrison. Security-Meldungen zu diesem Code betreut ebenfalls Manuel Bissinger (DigitalIQ) über die [Security Policy](SECURITY.md).
+The package is available as [tabwerk-session-codec on npm](https://www.npmjs.com/package/tabwerk-session-codec). An [offline example for Tab Session Manager](examples/tab-session-manager/README.md) shows another use with that extension's export format. The [local acceptance notes](docs/session-codec.md) (German) describe the package, compatibility and browser checks.
 
-## Installieren
+A separate [experimental delta store and browser comparison](examples/garrison-backup-benchmark/README.md) explores transactional storage, crash recovery, retention and incremental exports. [Measurements and limits](examples/garrison-backup-benchmark/PUBLIC-RESULTS.md) document the comparison with Garrison's backup code. The prototype is not part of npm version 0.1.0 and is not an integration into Garrison. Security reports about this code are also handled by Manuel Bissinger (DigitalIQ) through the [security policy](SECURITY.md).
 
-1. Repository klonen oder als ZIP laden und entpacken.
-2. In Chrome `chrome://extensions` öffnen.
-3. Oben rechts „Entwicklermodus“ einschalten.
-4. „Entpackte Erweiterung laden“ und den Ordner wählen.
-5. Die Einstellungen öffnen sich. Wähle OpenRouter oder TypeSafe und verbinde Tabwerk. Das ist optional.
+## Install from source
 
-Tastenkürzel:
+1. Clone the repository or download it as a ZIP and unpack it.
+2. Open `chrome://extensions` in Chrome.
+3. Turn on “Developer mode” in the top right.
+4. Click “Load unpacked” and pick the folder.
+5. The settings open. Choose OpenRouter or TypeSafe and connect Tabwerk. This step is optional.
 
-| Kürzel | Aktion |
+Shortcuts:
+
+| Shortcut | Action |
 |---|---|
-| `⌘⇧Leertaste` (Mac), `Strg+Umschalt+Leertaste` | Schnellsuche |
-| `Alt+Umschalt+T` | Popup |
-| `Alt+Umschalt+N` | Notiz zum aktuellen Tab |
-| `Alt+Umschalt+Z` | Letzte Tabwerk-Aktion rückgängig |
-| frei wählbar | Formular ausfüllen |
-| frei wählbar | Seitensuche nach Bedeutung |
+| `⌘⇧Space` (Mac), `Ctrl+Shift+Space` | Quick search |
+| `Alt+Shift+T` | Popup |
+| `Alt+Shift+N` | Note for the current tab |
+| `Alt+Shift+Z` | Undo the last Tabwerk action |
+| your choice | Fill form |
+| your choice | Page search by meaning |
 
-Ändern unter `chrome://extensions/shortcuts`.
+Change them at `chrome://extensions/shortcuts`.
 
-## Pro Fenster
+## Per window
 
-Gruppen, Sortieren, Doppelte, Rückgängig und der Verlauf arbeiten im Fenster, in dem du das Popup öffnest. Andere Fenster bleiben unberührt. Doppelte und Verlauf haben ein Häkchen „Alle Fenster“. Finden und Schnellsuche durchsuchen alle Fenster und zeigen Tabs aus dem aktuellen Fenster zuerst.
+Groups, sorting, duplicates, undo and history work in the window where you open the popup. Other windows stay untouched. Duplicates and history have an “All windows” checkbox. Find and quick search look through all windows and list tabs from the current window first.
 
-## Schnellsuche
+## Quick search
 
-- Tippen sucht per Code, unscharf: „gh tabw“ findet „GitHub … tabwerk“. Umlaute und ß sind egal.
-- Filter: `/t` Tabs, `/a` Aktionen, `/b` Lesezeichen, `/h` Verlauf, `/n` Notizen, `/s` Sitzungen, `/z` geschlummerte Tabs, `/f` Formulare.
-- Notiz zum aktiven Tab: `/N` öffnet das Notiz-Fenster. `/N Text` speichert den Text sofort. Eine vorhandene Notiz bekommt ihn als neue Zeile dazu.
-- Seitensuche nach Bedeutung: `/F Suchtext` durchsucht die aktive Seite sofort mit Jev. `/F` allein öffnet nur die Suchleiste. Ein eigenes Tastenkürzel ist damit nicht nötig.
-- Farbmodus: automatisch nach Website, wie das System, immer hell oder immer dunkel.
-- Volltext: auf Wunsch sucht die Schnellsuche auch im sichtbaren Text offener Tabs.
-- Mit `/h` und `⇧↵` findet Jev Seiten aus dem Verlauf per Beschreibung, etwa „der Artikel über Solarstrom von letzter Woche“.
-- `↵` öffnet, `⌘⌫` schließt den gewählten Tab, `Esc` schließt die Suche.
-- Aktionen: Tab schließen, anpinnen, stumm, duplizieren, in neues Fenster, Doppelte schließen, sortieren, Gruppen ein- und ausklappen, Rückgängig, Jetzt sichern und mehr. Aktionen mit Jev sind markiert.
-- Lesezeichen und Verlauf schaltest du in den Einstellungen ein. Chrome fragt dann einmal nach der Erlaubnis.
-- Jev fragt die Schnellsuche nie beim Tippen, nur mit `⇧↵` und nur, wenn du das in den Einstellungen einschaltest.
+- Typing searches in code, fuzzy: “gh tabw” finds “GitHub … tabwerk”. Accents and ß do not matter.
+- Filters: `/t` tabs, `/a` actions, `/b` bookmarks, `/h` history, `/n` notes, `/s` sessions, `/z` snoozed tabs, `/f` forms.
+- Note for the active tab: `/N` opens the note window. `/N text` saves the text right away. An existing note gets it as a new line.
+- Page search by meaning: `/F query` searches the active page with Jev at once. `/F` alone only opens the search bar. So you do not need a separate shortcut.
+- Color mode: automatic per site, follow the system, always light or always dark.
+- Full text: if you like, quick search also looks through the visible text of open tabs.
+- With `/h` and `⇧↵` Jev finds pages in your history from a description, such as “the article about solar power from last week”.
+- `↵` opens, `⌘⌫` closes the selected tab, `Esc` closes the search.
+- Actions: close tab, pin, mute, duplicate, move to new window, close duplicates, sort, collapse and expand groups, undo, back up now and more. Actions that use Jev are marked.
+- Turn on bookmarks and history in the settings. Chrome then asks for permission once.
+- Quick search never asks Jev while you type, only on `⇧↵` and only if you turn that on in the settings.
 
-Auf normalen Webseiten liegt die Suche über der Seite, der Hintergrund bleibt als Milchglas sichtbar. Auf `chrome://`-Seiten und im Web Store darf keine Erweiterung etwas einblenden. Dort öffnet sich ein kleines Fenster.
+On normal web pages the search sits on top of the page, with the page visible behind frosted glass. Extensions cannot show anything on `chrome://` pages or in the Web Store. There a small window opens instead.
 
-## Seitensuche nach Bedeutung
+## Page search by meaning
 
-Statt nach einem genauen Wort zu suchen wie mit `Strg+F`, beschreibst du in eigenen Worten, was auf der Seite stehen soll, etwa „Kosten außer dem angegebenen Preis“ oder „was passiert, wenn ich kündige“. Tabwerk liest die sichtbaren Absätze, Listenpunkte, Überschriften, Zitate und Tabellenzellen der Seite, Jev bewertet jede Stelle und wählt pro Treffer den stärksten Satz aus, ohne einen neuen zu schreiben. Der stärkste Satz erscheint kräftig grün, der Rest der Stelle blass grün. Mit den Pfeilen in der Leiste oder `↵`/`⇧↵` springst du zwischen den Treffern.
+Instead of searching for an exact word as with `Ctrl+F`, you describe in your own words what the page should say, for example “costs on top of the listed price” or “what happens if I cancel”. Tabwerk reads the visible paragraphs, list items, headings, quotes and table cells of the page. Jev rates each passage and picks the strongest sentence per match without writing a new one. The strongest sentence shows in bold green, the rest of the passage in pale green. Use the arrows in the bar or `↵`/`⇧↵` to move between matches.
 
-Am schnellsten geht es in der Schnellsuche mit `/F Suchtext`. Die Suche startet dann sofort. Alternativ: der Knopf „Seite durchsuchen“ im Popup unter „Finden“ oder ein eigenes Tastenkürzel unter `chrome://extensions/shortcuts`. Ein zweiter Druck auf das Kürzel schließt die Leiste. Die Suche läuft nur auf Aufruf, nicht laufend im Hintergrund, und nur auf der sichtbaren Seite selbst: eingebettete Rahmen fremder Herkunft, der PDF-Betrachter und Inhalte in einem Schatten-DOM bleiben außen vor. Auf `chrome://`-Seiten und im Web Store öffnet sich ein kurzer Hinweis statt der Leiste. Ohne Schlüssel für Jev zeigt Tabwerk einen Hinweis statt zu suchen.
+The fastest way is `/F query` in quick search, which starts the search at once. Alternatively use the “Search page” button in the popup under “Find”, or set your own shortcut at `chrome://extensions/shortcuts`. Pressing the shortcut again closes the bar. The search only runs when you ask for it, never in the background, and only on the visible page itself: embedded frames from other origins, the PDF viewer and content inside a shadow DOM are left out. On `chrome://` pages and in the Web Store a short notice opens instead of the bar. Without a Jev key Tabwerk shows a notice instead of searching.
 
-## Seite aufräumen
+## Declutter page
 
-Nach dem Vorbild von [Unclutter](https://github.com/kitze/unclutter) von Kitze (MIT-Lizenz, siehe `NOTICE`), neu geschrieben für Tabwerk.
+Modeled on [Unclutter](https://github.com/kitze/unclutter) by Kitze (MIT license, see `NOTICE`), rewritten for Tabwerk.
 
-- Einschalten unter Einstellungen, Funktionen, Seiten. Chrome fragt einmal nach dem Zugriff auf alle Websites, weil gespeicherte Regeln beim Laden jeder Seite greifen sollen.
-- Im Popup unter „Seite“ oder in der Schnellsuche mit „Seite aufräumen“ startet die Analyse. Tabwerk sammelt bis zu 60 verdächtige Elemente per Code, Jev ordnet jedes einer Kategorie zu. Nur was Jev mit mindestens 90 % Sicherheit einordnet, verschwindet.
-- Das Ergebnis gilt für den ganzen Seitentyp, etwa alle Artikel einer Rubrik. Weitere Seiten desselben Typs räumt Tabwerk ohne neue Anfrage auf.
-- Kategorien: Werbung, Cookie-Banner, Aktionen, Newsletter, Social Media sind an. Kommentare, empfohlene Artikel und eine eigene Regel in deinen Worten schaltest du dazu. Umschalten wirkt sofort, ohne neue Analyse.
-- Cookie-Banner verschwinden nur optisch. Tabwerk klickt nichts und gibt keine Einwilligung. Wer die Auswahl treffen will, pausiert das Aufräumen auf der Seite.
-- Häkchen weg im Popup blendet ein Element wieder ein. Das zählt als Korrektur: Liegt Jev auf einer Seite öfter daneben, hebt Tabwerk die Schwelle an. Unter 90 % geht sie nie.
-- „Nie aufräumen“ gilt für eine Website mit allen Subdomains. Websites auf der Datenschutz-Liste analysiert Tabwerk nie.
-- „Beim Seitenaufruf analysieren“ analysiert neue Seitentypen von selbst, einmal pro Typ. Die Kosten laufen in den Verbrauch des Monats, eine Analyse kostet etwa 0,0001 bis 0,001 $.
-- Nie geschützt ausgeblendet werden Hauptinhalt, Navigation, Überschrift, Login, Zahlung und Paywalls.
+- Turn it on under Settings, Features, Pages. Chrome asks once for access to all sites, because saved rules should apply whenever a page loads.
+- “Page” in the popup or “Declutter page” in quick search starts the analysis. Tabwerk collects up to 60 suspicious elements in code, and Jev assigns each one a category. Only what Jev classifies with at least 90 % confidence disappears.
+- The result applies to the whole page type, for example all articles in one section. Tabwerk declutters further pages of the same type without a new request.
+- Categories: ads, cookie banners, promotions, newsletters and social media are on. Comments, recommended articles and a rule in your own words can be added. Switching takes effect at once, without a new analysis.
+- Cookie banners are only hidden. Tabwerk clicks nothing and gives no consent. If you want to make a choice, pause decluttering on that page.
+- Unchecking an element in the popup shows it again. That counts as a correction: if Jev is often wrong on a site, Tabwerk raises the threshold. It never goes below 90 %.
+- “Never declutter” applies to a site and all its subdomains. Sites on the privacy list are never analyzed.
+- “Analyze on page visit” analyzes new page types on its own, once per type. The cost counts toward the monthly usage, one analysis costs about $0.0001 to $0.001.
+- Main content, navigation, headings, login, payment and paywalls are protected and never hidden.
 
-## Wächter
+## Watchers
 
-Ein Wächter prüft eine Seite in festem Abstand: 5 Minuten, 15 Minuten, 1 Stunde, 6 Stunden, 24 Stunden oder individuell im Format `hh:mm:ss`. Chrome weckt Erweiterungen höchstens alle 30 Sekunden.
+A watcher checks a page at a fixed interval: 5 minutes, 15 minutes, 1 hour, 6 hours, 24 hours or a custom value in `hh:mm:ss`. Chrome wakes extensions at most every 30 seconds.
 
-Anlegen geht im Popup oder per Rechtsklick auf einer Seite:
+Create one in the popup or by right-clicking a page:
 
-- „Diese Seite beobachten“
-- „Auf markierten Text achten“ übernimmt die Markierung in die Bedingung
-- „Verlinkte Seite beobachten“ auf einem Link
+- “Watch this page”
+- “Watch selected text” puts the selection into the condition
+- “Watch linked page” on a link
 
-Tabwerk vergleicht den Text der Seite im Code. Nur wenn sich etwas geändert hat, fragt es Jev, ob die Änderung zur Bedingung passt. Ist die Seite in einem Tab offen, liest Tabwerk den gerenderten Text aus dem Tab. Sonst lädt es die Seite im Hintergrund.
+Tabwerk compares the page text in code. Only when something has changed does it ask Jev whether the change matches the condition. If the page is open in a tab, Tabwerk reads the rendered text from that tab. Otherwise it loads the page in the background.
 
-## Verlauf
+## History
 
-Tabwerk hört auf jede Änderung an Tabs, Gruppen und Fenstern. Nach 1,5 Sekunden Ruhe legt es eine Sicherung an. Ist der Stand gleich wie zuletzt, entsteht keine neue. Zusätzlich sichert ein Wecker alle 10 Minuten.
+Tabwerk listens to every change to tabs, groups and windows. After 1.5 seconds of quiet it saves a snapshot. If nothing changed since the last one, no new snapshot is made. On top of that an alarm saves every 10 minutes.
 
-Aufbewahrung: die letzten 24 Stunden vollständig (höchstens 400), bis 7 Tage eine pro Stunde, bis 90 Tage eine pro Tag.
+Retention: everything from the last 24 hours (at most 400), one per hour up to 7 days, one per day up to 90 days.
 
-Speicherformat: Jedes Fenster liegt als eigener Block, gepackt mit gzip. Der Name eines Blocks ist ein Fingerabdruck (SHA-256) seines Inhalts. Ein Fenster, das sich nicht ändert, liegt deshalb nur einmal im Speicher, egal wie viele Sicherungen darauf zeigen. Auf einem simulierten Tag mit 8 Fenstern, 320 Tabs und 600 Änderungen braucht das 2,2 MB statt 34 MB. Blöcke, auf die keine Sicherung mehr zeigt, löscht Tabwerk beim Aufräumen. Sicherungen im alten Format baut Tabwerk nach dem Update einmal um.
+Storage format: each window is stored as its own block, compressed with gzip. A block is named after a fingerprint (SHA-256) of its content. A window that does not change is therefore stored only once, no matter how many snapshots point to it. On a simulated day with 8 windows, 320 tabs and 600 changes this takes 2.2 MB instead of 34 MB. Blocks that no snapshot points to anymore are removed during cleanup. Snapshots in the old format are converted once after the update.
 
-Beim Wiederherstellen nutzt Tabwerk offene Tabs weiter. Fehlende Tabs öffnet es neu. Tabs, die im alten Stand nicht vorkamen, bleiben offen und rücken ans Ende. Vor jedem Wiederherstellen sichert Tabwerk den aktuellen Stand.
+When restoring, Tabwerk reuses open tabs and opens missing ones. Tabs that were not part of the old state stay open and move to the end. Tabwerk saves the current state before every restore.
 
-Der Verlauf liegt nur lokal in `chrome.storage.local`. Er ersetzt kein Backup über eine Neuinstallation hinweg.
+History lives only locally in `chrome.storage.local`. It is not a backup that survives reinstalling the extension.
 
-## Datenschutz und Sicherheit
+## Privacy and security
 
-- Tabwerk hat keinen eigenen Server und sammelt keine Nutzungsdaten.
-- An Jev gehen nur die Daten der jeweiligen Frage: Tab-Titel, Website und Pfad. Query-Parameter und Anker bleiben lokal. Wächter schicken nur die geänderten Zeilen der beobachteten Seite.
-- Websites auf der Ausschlussliste in den Einstellungen gehen nie an Jev.
-- Der Schlüssel liegt unverschlüsselt in `chrome.storage.local` und wird nicht synchronisiert. Jede Erweiterung mit Zugriff auf dein Chrome-Profil könnte ihn lesen. Nutze einen eigenen Schlüssel mit Ausgabenlimit.
-- Gespeicherte Formulare liegen verschlüsselt (AES-GCM). Der Schlüssel liegt nicht auslesbar in IndexedDB. Im Export stehen sie lesbar.
-- Leserechte für Websites fragt Tabwerk einzeln an, erst beim Anlegen eines Wächters.
-- Lesezeichen und Verlauf sind optionale Rechte. Tabwerk fragt erst, wenn du die Suche darin einschaltest.
-- Das Repository enthält keine Schlüssel. Tests laufen ohne Schlüssel mit festen Testantworten.
+- Tabwerk has no server of its own and collects no usage data.
+- Jev only receives the data for the question at hand: tab title, site and path. Query parameters and anchors stay local. Watchers only send the changed lines of the watched page.
+- Sites on the exclusion list in the settings never go to Jev.
+- The key is stored unencrypted in `chrome.storage.local` and is not synced. Any extension with access to your Chrome profile could read it. Use a dedicated key with a spending limit.
+- Saved forms are encrypted (AES-GCM). The key is stored non-extractable in IndexedDB. Exports contain them in readable form.
+- Tabwerk asks for site access one site at a time, only when you create a watcher.
+- Bookmarks and history are optional permissions. Tabwerk only asks when you turn on searching them.
+- The repository contains no keys. Tests run without keys against fixed test answers.
 
-Die ausführliche Datenschutzerklärung steht in [PRIVACY.md](PRIVACY.md).
+The full privacy policy is in [PRIVACY.md](PRIVACY.md).
 
-## Entwickeln
+## Development
 
 ```bash
 npm install
-npm test          # Unit-Tests ohne Browser
-npm run e2e       # lädt die Extension in Chrome for Testing und klickt alles durch
-npm run icons     # rendert die Icons neu
-npm run pack      # baut dist/tabwerk-<version>.zip für den Chrome Web Store
-npm run store     # erzeugt Store-Bilder aus den Test-Screenshots
+npm test          # unit tests without a browser
+npm run e2e       # loads the extension in Chrome for Testing and clicks through everything
+npm run icons     # renders the icons again
+npm run pack      # builds dist/tabwerk-<version>.zip for the Chrome Web Store
+npm run store     # creates store images from the test screenshots
 ```
 
-`npm install` schaltet die Git-Hooks in `.githooks/` ein. Danach baut jeder Commit das Store-Paket in `dist/` neu. Ohne `npm install`: `git config core.hooksPath .githooks`.
+`npm install` enables the Git hooks in `.githooks/`. After that every commit rebuilds the store package in `dist/`. Without `npm install`: `git config core.hooksPath .githooks`.
 
-Texte und Angaben für den Chrome Web Store stehen in [store/listing.md](store/listing.md) und [store/review.md](store/review.md).
+Texts and details for the Chrome Web Store are in [store/listing.md](store/listing.md) and [store/review.md](store/review.md).
 
-`npm run e2e` braucht ein Chrome for Testing aus dem Playwright-Cache oder `CHROME_PATH`. Jev-Anfragen gehen im Test an einen lokalen Proxy:
+`npm run e2e` needs Chrome for Testing from the Playwright cache or `CHROME_PATH`. During tests, Jev requests go to a local proxy:
 
-| Umgebung | Proxy antwortet mit |
+| Environment | Proxy answers with |
 |---|---|
-| nichts gesetzt oder `JEV_OFFLINE=1` | festen Testantworten, ohne Netz |
-| `OPENROUTER_API_KEY` | echten Antworten von Jev über OpenRouter |
-| `JEV_HELPER=/pfad/zum/skript` | Ausgabe eines eigenen Skripts, das eine Anfrage-Datei an Jev schickt |
+| nothing set or `JEV_OFFLINE=1` | fixed test answers, no network |
+| `OPENROUTER_API_KEY` | real answers from Jev through OpenRouter |
+| `JEV_HELPER=/path/to/script` | output of your own script that sends a request file to Jev |
 
-Prüfungen, die echte Jev-Antworten brauchen, überspringt der Test offline. Alle Testdaten sind erfunden.
+Checks that need real Jev answers are skipped offline. All test data is made up.
 
-Aufbau:
+Layout:
 
 ```
 manifest.json
-src/background.js      Service Worker, Nachrichten, Ereignisse, Wecker, Kontextmenü
-src/lib/jev.js         Jev über OpenRouter oder TypeSafe
-src/lib/prompts.js     Fragen an Jev (reine Funktionen)
-src/lib/features.js    Finden, Gruppen, Sortieren, Doppelte
-src/lib/history.js     Verlauf und Wiederherstellen
-src/lib/fuzzy.js       unscharfe Suche
-src/lib/actions.js     Aktionen der Schnellsuche
-src/lib/watch.js       Wächter
-src/lib/duration.js    Intervalle
-src/lib/flags.js       Schalter für jede Funktion
-src/lib/extras.js      Aufräumen, Einsortieren, Doppel-Schutz, Notizen, Sitzungen, Fokus, Schlummern, Statistik
-src/lib/formsbg.js     Formulare speichern und ausfüllen
-src/lib/formstore.js   Formulare verschlüsselt ablegen
-src/lib/transfer.js    Export und Import
-src/content/forms.js   Funktionen, die in der Seite laufen
-src/palette/           Schnellsuche
-src/popup/             Popup
-src/options/           Einstellungen
-src/watch/             Fenster für neue Wächter aus dem Kontextmenü
-src/note/              Notiz-Fenster
-src/focus/             Seite für gesperrte Websites im Fokus
-src/stats/             Statistik
-src/offscreen/         HTML zu Text für Wächter
+_locales/              UI texts per language (Chrome i18n format)
+src/background.js      service worker, messages, events, alarms, context menu
+src/lib/i18n.js        translation and per-language formats
+src/lib/jev.js         Jev through OpenRouter or TypeSafe
+src/lib/prompts.js     questions to Jev (pure functions)
+src/lib/features.js    find, groups, sort, duplicates
+src/lib/history.js     history and restore
+src/lib/fuzzy.js       fuzzy search
+src/lib/actions.js     quick search actions
+src/lib/watch.js       watchers
+src/lib/duration.js    intervals
+src/lib/flags.js       switches for every feature
+src/lib/extras.js      cleanup, auto-sort, duplicate guard, notes, sessions, focus, snooze, statistics
+src/lib/formsbg.js     save and fill forms
+src/lib/formstore.js   store forms encrypted
+src/lib/transfer.js    export and import
+src/content/forms.js   functions that run inside the page
+src/palette/           quick search
+src/popup/             popup
+src/options/           settings
+src/watch/             window for new watchers from the context menu
+src/note/              note window
+src/focus/             page shown for sites blocked in focus mode
+src/stats/             statistics
+src/offscreen/         HTML to text for watchers
 tests/                 node --test
-scripts/e2e.mjs        Ende-zu-Ende-Test
+scripts/e2e.mjs        end-to-end test
 ```
 
-## Unterstützen
+Code comments and the files in `docs/` are written in German.
 
-Wenn dir Tabwerk hilft, kannst du mir [einen Kaffee spendieren](https://buymeacoffee.com/manuel_8472). Tabwerk bleibt so oder so kostenlos.
+## Support
 
-## Lizenz
+If Tabwerk helps you, you can [buy me a coffee](https://buymeacoffee.com/manuel_8472). Tabwerk stays free either way.
 
-Tabwerk steht unter der MIT-Lizenz, siehe [LICENSE](LICENSE).
+## License
 
-Schrift Geist und Geist Mono: SIL Open Font License, siehe `assets/fonts/LICENSE-Geist.txt`. Icons Phosphor: MIT, siehe `assets/icons/LICENSE-Phosphor.txt`.
+Tabwerk is released under the MIT license, see [LICENSE](LICENSE).
+
+Fonts Geist and Geist Mono: SIL Open Font License, see `assets/fonts/LICENSE-Geist.txt`. Phosphor icons: MIT, see `assets/icons/LICENSE-Phosphor.txt`.
