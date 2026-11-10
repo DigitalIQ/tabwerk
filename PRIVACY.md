@@ -14,6 +14,7 @@ Everything Tabwerk stores lives in `chrome.storage.local` in your Chrome profile
 - the history of your windows, tabs and groups
 - named sessions, notes, snoozed tabs
 - for each emoji you select, the number of successful selections and the time of last use for favorites and statistics
+- the skin tones you set as defaults for individual emojis
 - watchers and the last text read from each watched page
 - saved forms, encrypted with AES-GCM. Tabwerk creates the key itself and stores it non-extractable in your Chrome profile. This protects against someone looking into the profile files, not against malware on your computer. Password, card, account, IBAN and TAN fields are only saved if you turn on the switch “Also save protected fields”. Exports contain forms in readable form.
 - the list of sites where Tabwerk always allows copying

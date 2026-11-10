@@ -9,23 +9,30 @@
 </head>
 <body>
   <div class="scrim" id="scrim"></div>
-  <div class="panel" role="dialog" aria-modal="true" aria-label="Schnellsuche" data-i18n-aria-label="pal_dialogLabel">
-    <div class="field-row">
-      <span class="ico i-search" aria-hidden="true"></span>
-      <input id="q" type="text" autocomplete="off" spellcheck="false" placeholder="Tabs, Aktionen, Lesezeichen, Verlauf" data-i18n-placeholder="pal_searchPlaceholder" aria-label="Suchen" data-i18n-aria-label="pal_searchLabel" aria-controls="list" aria-activedescendant="">
-      <span class="scope mono" id="scope" hidden></span>
+  <div role="dialog" aria-modal="true" aria-label="Schnellsuche" data-i18n-aria-label="pal_dialogLabel">
+    <div class="panel">
+      <div class="field-row">
+        <span class="ico i-search" aria-hidden="true"></span>
+        <input id="q" type="text" autocomplete="off" spellcheck="false" placeholder="Tabs, Aktionen, Lesezeichen, Verlauf" data-i18n-placeholder="pal_searchPlaceholder" aria-label="Suchen" data-i18n-aria-label="pal_searchLabel" aria-controls="list" aria-activedescendant="">
+        <span class="scope mono" id="scope" hidden></span>
+      </div>
+      <ul class="list" id="list" role="listbox" aria-label="Treffer" data-i18n-aria-label="pal_resultsLabel"></ul>
+      <div class="status" id="status" aria-live="polite" hidden></div>
+      <footer class="keys mono">
+        <span><span id="horizontal-keys" hidden><kbd>←</kbd><kbd>→</kbd></span><kbd>↑</kbd><kbd>↓</kbd> <span data-i18n="pal_kbdSelect">wählen</span></span>
+        <span><kbd>↵</kbd> <span id="enter-label" data-i18n="pal_kbdOpen">öffnen</span></span>
+        <span id="close-tab-key"><kbd>⌘</kbd><kbd>⌫</kbd> <span data-i18n="pal_kbdCloseTab">Tab schließen</span></span>
+        <span id="jev-key" hidden><kbd>⇧</kbd><kbd>↵</kbd> <span data-i18n="pal_kbdJevSearch">mit Jev suchen</span></span>
+        <span id="emoji-variant-key" hidden><kbd>⇧</kbd><kbd>↵</kbd> <span data-i18n="pal_kbdEmojiVariants">Hautton wählen</span></span>
+        <span class="filters" id="palette-filters">/t /a /h /n /N /F <kbd data-i18n-title="pal_emojiScope">:</kbd></span>
+      </footer>
     </div>
-    <ul class="list" id="list" role="listbox" aria-label="Treffer" data-i18n-aria-label="pal_resultsLabel"></ul>
-    <div class="status" id="status" aria-live="polite" hidden></div>
-    <footer class="keys mono">
-      <span><span id="horizontal-keys" hidden><kbd>←</kbd><kbd>→</kbd></span><kbd>↑</kbd><kbd>↓</kbd> <span data-i18n="pal_kbdSelect">wählen</span></span>
-      <span><kbd>↵</kbd> <span id="enter-label" data-i18n="pal_kbdOpen">öffnen</span></span>
-      <span id="close-tab-key"><kbd>⌘</kbd><kbd>⌫</kbd> <span data-i18n="pal_kbdCloseTab">Tab schließen</span></span>
-      <span id="jev-key" hidden><kbd>⇧</kbd><kbd>↵</kbd> <span data-i18n="pal_kbdJevSearch">mit Jev suchen</span></span>
-      <span class="filters" id="palette-filters">/t /a /h /n /N /F <kbd data-i18n-title="pal_emojiScope">:</kbd></span>
-    </footer>
+    <div id="emoji-tip" class="emoji-tip" aria-hidden="true" hidden></div>
+    <div id="emoji-variants" class="emoji-variants" role="group" aria-labelledby="emoji-variant-heading" hidden>
+      <div id="emoji-variant-heading" data-i18n="pal_emojiVariantHeading">Hautton als Standard wählen</div>
+      <div id="emoji-variant-options" class="emoji-variant-options"></div>
+    </div>
   </div>
-  <div id="emoji-tip" class="emoji-tip" aria-hidden="true" hidden></div>
   <script type="module" src="palette.js"></script>
 </body>
 </html>

@@ -91,6 +91,7 @@ Gruppen, Sortieren, Doppelte, Rückgängig und der Verlauf arbeiten im Fenster, 
 - Tippen sucht per Code, unscharf: „gh tabw“ findet „GitHub … tabwerk“. Umlaute und ß sind egal.
 - Filter: `/t` Tabs, `/a` Aktionen, `/b` Lesezeichen, `/h` Verlauf, `/n` Notizen, `/s` Sitzungen, `/z` geschlummerte Tabs, `/f` Formulare.
 - Mit `:` öffnest du den Emoji-Katalog als Raster mit Kategorien. Die Namen erscheinen beim Darüberfahren. Suche auf Deutsch oder Englisch, etwa mit `:schweden`, `:sweden` oder `:thumbsup`. Wähle mit den Pfeiltasten und Enter oder per Klick. Bei leerer Emoji-Suche stehen zuletzt und häufig verwendete Emojis oben. Unter **Einstellungen → Emojis** wählst du die Darstellung und ob Tabwerk einfügt, kopiert oder beides macht. Dort findest du auch deine lokale Nutzungsstatistik.
+- Hat ein Emoji Hauttöne, öffnet sich beim Darüberfahren oder mit `Umschalt+Enter` die Auswahl. Wähle einen Hautton als Standard für dieses Emoji. Die neutrale Variante setzt den Standard zurück. Eine gezielte Suche nach einem anderen Hautton lässt den Standard bestehen.
 - Notiz zum aktiven Tab: `/N` öffnet das Notiz-Fenster. `/N Text` speichert den Text sofort. Eine vorhandene Notiz bekommt ihn als neue Zeile dazu.
 - Seitensuche nach Bedeutung: `/F Suchtext` durchsucht die aktive Seite sofort mit Jev. `/F` allein öffnet nur die Suchleiste. Ein eigenes Tastenkürzel ist damit nicht nötig.
 - Farbmodus: automatisch nach Website, wie das System, immer hell oder immer dunkel.

@@ -494,6 +494,9 @@ await emojiQuery.press('ArrowDown');
 check('Pfeil nach unten wählt dieselbe Spalte in der nächsten Zeile', gridColumns > 1
   && await emojiQuery.getAttribute('aria-activedescendant') === `r${gridColumns}`);
 await emojiQuery.press('ArrowUp');
+await emojiQuery.press('ArrowRight');
+check('Pfeil nach rechts wählt nächsten Emoji-Treffer', await emojiQuery.getAttribute('aria-activedescendant') === 'r1');
+await emojiQuery.press('ArrowLeft');
 await emojiRows.nth(2).hover();
 const emojiTip = emojiFrame.locator('#emoji-tip');
 check('Name erscheint nur beim Hover als Tooltip', await emojiTip.isVisible()
@@ -506,9 +509,6 @@ for (const [query, glyph] of [[':schweden', '🇸🇪'], [':sweden', '🇸🇪']
   await emojiQuery.fill(query);
   check(`Emoji-Suche ${query}`, await firstEmoji.textContent() === glyph);
 }
-await emojiQuery.press('ArrowRight');
-check('Pfeil nach rechts wählt nächsten Emoji-Treffer', await emojiQuery.getAttribute('aria-activedescendant') === 'r1');
-await emojiQuery.press('ArrowLeft');
 await emojiQuery.press('Enter');
 await emojiPage.locator('#tabwerk-palette-host').waitFor({ state: 'detached' });
 check('Enter ersetzt die markierte Stelle im Textfeld und kopiert',
@@ -637,6 +637,61 @@ for (const [size, viewport, theme] of [['wide', { width: 1100, height: 800 }, 'l
   await emojiQuery.press('Escape');
   await emojiPage.locator('#tabwerk-palette-host').waitFor({ state: 'detached' });
 }
+await emojiPage.fill('#vn', 'AB');
+await emojiPage.locator('#vn').evaluate((el) => el.setSelectionRange(1, 1));
+await injectPalette('/form-emoji-restricted');
+await emojiQuery.fill(':thumbsup');
+await emojiRows.first().hover();
+const emojiVariants = emojiFrame.locator('#emoji-variants');
+const variantButtons = emojiVariants.locator('button');
+await emojiVariants.waitFor();
+const variantBounds = await emojiVariants.boundingBox();
+const emojiBounds = await emojiRows.first().boundingBox();
+check('Hautton-Picker zeigt sechs Varianten über einem einzigen Daumen-Treffer',
+  await emojiRows.count() === 1 && await variantButtons.count() === 6
+  && variantBounds.y + variantBounds.height <= emojiBounds.y);
+if (process.env.EMOJI_VISUAL_QA) await emojiPage.screenshot({ path: join(out, 'emoji-variants-narrow.png') });
+await variantButtons.filter({ hasText: '👍🏽' }).click();
+await firstEmoji.filter({ hasText: '👍🏽' }).waitFor();
+check('Hautton auswählen speichert den Standard ohne Einfügen', await emojiPage.inputValue('#vn') === 'AB'
+  && !(await emojiVariants.isVisible()));
+await emojiQuery.press('Escape');
+await emojiPage.locator('#tabwerk-palette-host').waitFor({ state: 'detached' });
+
+await emojiPage.locator('#vn').evaluate((el) => { el.focus(); el.setSelectionRange(1, 1); });
+await injectPalette('/form-emoji-restricted');
+await emojiQuery.fill(':thumbsup');
+await firstEmoji.filter({ hasText: '👍🏽' }).waitFor();
+await emojiQuery.press('Enter');
+await emojiPage.locator('#tabwerk-palette-host').waitFor({ state: 'detached' });
+check('Gespeicherter Hautton wird beim nächsten Öffnen eingefügt und kopiert',
+  await emojiPage.inputValue('#vn') === 'A👍🏽B' && await emojiPage.evaluate(() => navigator.clipboard.readText()) === '👍🏽');
+
+await injectPalette('/form-emoji-restricted');
+await emojiQuery.fill(':thumbs up light skin tone');
+await firstEmoji.filter({ hasText: '👍🏻' }).waitFor();
+await emojiQuery.press('Shift+Enter');
+const focusedVariant = emojiVariants.locator('button:focus');
+check('Gezielte Suche zeigt den gewünschten Ton, der Picker markiert den gespeicherten Standard',
+  await firstEmoji.textContent() === '👍🏻' && await focusedVariant.textContent() === '👍🏽');
+for (let i = 0; i < 3; i += 1) await focusedVariant.press('ArrowLeft');
+await focusedVariant.press('Enter');
+await emojiVariants.waitFor({ state: 'hidden' });
+await emojiQuery.fill(':thumbsup');
+check('Neutrales Emoji setzt den Standard per Tastatur zurück', await firstEmoji.textContent() === '👍');
+await emojiQuery.fill(':handshake');
+await emojiQuery.press('Shift+Enter');
+check('Gemischte Hauttöne gehören zum Handschlag', await variantButtons.count() === 26
+  && await variantButtons.filter({ hasText: '🫱🏻‍🫲🏿' }).count() === 1);
+if (process.env.EMOJI_VISUAL_QA) {
+  await emojiPage.setViewportSize({ width: 1100, height: 800 });
+  await emojiPage.screenshot({ path: join(out, 'emoji-variants-wide.png') });
+}
+await focusedVariant.press('Escape');
+check('Escape im Hautton-Picker gibt den Fokus an die Suche zurück', !(await emojiVariants.isVisible())
+  && await emojiQuery.evaluate((el) => el === document.activeElement));
+await emojiPage.keyboard.press('Escape');
+await emojiPage.locator('#tabwerk-palette-host').waitFor({ state: 'detached' });
 await popup.evaluate(() => chrome.storage.local.set({ paletteTheme: 'site' }));
 await emojiPage.close();
 

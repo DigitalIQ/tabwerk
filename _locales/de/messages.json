@@ -1692,6 +1692,18 @@
   "pal_emojiNoResults": {
     "message": "Keine passenden Emojis."
   },
+  "pal_emojiVariantHeading": {
+    "message": "Hautton als Standard wählen"
+  },
+  "pal_emojiVariantSaved": {
+    "message": "$1 als Standard gespeichert."
+  },
+  "pal_emojiVariantFailed": {
+    "message": "Der Hautton konnte nicht gespeichert werden."
+  },
+  "pal_kbdEmojiVariants": {
+    "message": "Hautton wählen"
+  },
   "pal_emojiScope": {
     "message": "Emojis"
   },

@@ -10,7 +10,7 @@ import { normalizeUrl } from '../lib/url.js';
 import { scoreItem, parseQuery } from '../lib/fuzzy.js';
 import { hostOf } from '../lib/url.js';
 import { t, tp, fmtNumber, fmtDate, initI18n, language, localizeDom } from '../lib/i18n.js';
-import { loadEmoji, searchEmoji } from './emoji.js';
+import { emojiDefaultKey, emojiTiles, indexEmojiVariants, loadEmoji, preferredEmoji, searchEmoji } from './emoji.js';
 import { readEmojiUsage, rankEmojiUsage } from '../lib/emoji-usage.js';
 
 // Nur weiter, wenn Tabwerk die Suche selbst geöffnet hat. Eine fremde Seite, die palette.html
@@ -244,6 +244,11 @@ let rendered = 0;
 let emojiCatalog;
 let emojiLoad;
 let emojiUsage;
+let emojiVariants;
+let emojiDefaults = {};
+let variantAnchor;
+let variantDismissTimer;
+let savingEmojiDefault = false;
 let emojiSections = new Map();
 let emojiRows;
 let choosingEmoji = false;
@@ -252,12 +257,13 @@ const emojiMode = () => $('#q').value.startsWith(':');
 const emojiGrid = () => emojiMode() && settings.emojiLayout !== 'list';
 
 function emojiResults(query) {
-  const matches = searchEmoji(emojiCatalog, query);
+  const matches = emojiTiles(searchEmoji(emojiCatalog, query), emojiVariants, emojiDefaults, { query });
   const groups = new Map();
   if (!query.trim() && emojiUsage) {
     const byEmoji = new Map(emojiCatalog.map((item) => [item.emoji, item]));
     for (const key of ['recent', 'frequent']) {
-      groups.set(`emoji_${key}`, emojiUsage[key].map(([emoji]) => byEmoji.get(emoji)).filter(Boolean));
+      const items = emojiUsage[key].map(([emoji]) => byEmoji.get(emoji)).filter(Boolean);
+      groups.set(`emoji_${key}`, emojiTiles(items, emojiVariants, emojiDefaults, { keepUsedTone: true }));
     }
   }
   if (settings.emojiLayout === 'grouped') {
@@ -318,6 +324,68 @@ function hideEmojiTip() {
   $('#emoji-tip').hidden = true;
 }
 
+function hideEmojiVariants() {
+  clearTimeout(variantDismissTimer);
+  const popup = $('#emoji-variants');
+  if (popup.contains(document.activeElement)) $('#q').focus({ preventScroll: true });
+  popup.hidden = true;
+  variantAnchor = undefined;
+}
+
+function leaveEmojiVariants() {
+  clearTimeout(variantDismissTimer);
+  if (!$('#emoji-variants').contains(document.activeElement)) variantDismissTimer = setTimeout(hideEmojiVariants, 180);
+}
+
+function positionEmojiVariants() {
+  const popup = $('#emoji-variants');
+  const choices = $('#emoji-variant-options');
+  const cell = variantAnchor.getBoundingClientRect();
+  const above = cell.top - 12;
+  const below = innerHeight - cell.bottom - 12;
+  const headingHeight = popup.offsetHeight - choices.offsetHeight;
+  const showAbove = above >= choices.scrollHeight + headingHeight || above >= below;
+  choices.style.maxHeight = `${Math.max(0, (showAbove ? above : below) - headingHeight)}px`;
+  const x = cell.left + (cell.width - popup.offsetWidth) / 2;
+  popup.style.left = `${Math.max(8, Math.min(x, innerWidth - popup.offsetWidth - 8))}px`;
+  popup.style.top = `${showAbove ? cell.top - popup.offsetHeight - 4 : cell.bottom + 4}px`;
+}
+
+async function saveEmojiVariant(family, variant) {
+  if (savingEmojiDefault) return;
+  savingEmojiDefault = true;
+  const anchor = variantAnchor;
+  const key = emojiDefaultKey(family.base.emoji);
+  try {
+    await chrome.storage.local.set({ [key]: variant.emoji });
+    emojiDefaults[key] = variant.emoji;
+    if (!emojiMode()) return;
+    if (anchor?.isConnected) selected = Number(anchor.id.slice(1));
+    results = emojiResults($('#q').value.slice(1));
+    selected = Math.min(selected, Math.max(0, results.length - 1));
+    render();
+    status(t('pal_emojiVariantSaved', variant.title));
+  } catch {
+    status(t('pal_emojiVariantFailed'), true);
+  } finally {
+    savingEmojiDefault = false;
+  }
+}
+
+function showEmojiVariants(target, family, keyboard = false) {
+  hideEmojiVariants();
+  hideEmojiTip();
+  variantAnchor = target;
+  const preferred = preferredEmoji(family, emojiDefaults);
+  $('#emoji-variant-options').replaceChildren(...family.choices.map((variant) => h('button', {
+    type: 'button', tabindex: '-1', title: variant.title, 'aria-label': variant.title,
+    'aria-pressed': String(variant === preferred), onclick: () => saveEmojiVariant(family, variant),
+  }, variant.emoji)));
+  $('#emoji-variants').hidden = false;
+  positionEmojiVariants();
+  if (keyboard) $('#emoji-variant-options [aria-pressed="true"]').focus();
+}
+
 function appendEmojiRows(limit) {
   const list = $('#list');
   for (; rendered < limit; rendered += 1) {
@@ -330,10 +398,14 @@ function appendEmojiRows(limit) {
     }
     const item = results[rendered];
     const grid = emojiGrid();
+    const family = emojiVariants.get(item.emoji);
     emojiRows.append(h('li', {
-      ...resultAttrs(rendered), class: 'item emoji-entry', 'aria-label': item.title,
-      onmouseenter: grid ? (event) => showEmojiTip(event.currentTarget) : null,
-      onmouseleave: grid ? hideEmojiTip : null,
+      ...resultAttrs(rendered), class: `item emoji-entry${family ? ' has-variants' : ''}`, 'aria-label': item.title,
+      onmouseenter: family ? (event) => showEmojiVariants(event.currentTarget, family) : (event) => {
+        hideEmojiVariants();
+        if (grid) showEmojiTip(event.currentTarget);
+      },
+      onmouseleave: family ? leaveEmojiVariants : hideEmojiTip,
     },
     h('span', { class: 'emoji', 'aria-hidden': 'true' }, item.emoji),
     grid ? null : h('span', { class: 'title' }, item.title)));
@@ -365,6 +437,7 @@ function render() {
   list.classList.toggle('emoji-grid', emojiGrid());
   list.replaceChildren();
   hideEmojiTip();
+  hideEmojiVariants();
   emojiRows = undefined;
   rendered = 0;
   appendRows(emojiMode() ? EMOJI_BATCH : results.length);
@@ -380,6 +453,7 @@ function mark(scroll = true) {
   if (selected >= rendered && selected < results.length) appendRows(selected + EMOJI_BATCH);
   $('#list [aria-selected="true"]')?.setAttribute('aria-selected', 'false');
   const el = document.getElementById(`r${selected}`);
+  $('#emoji-variant-key').hidden = !emojiMode() || !emojiVariants?.has(results[selected]?.emoji);
   el?.setAttribute('aria-selected', 'true');
   if (scroll) el?.scrollIntoView({ block: 'nearest' });
   $('#q').setAttribute('aria-activedescendant', el ? el.id : '');
@@ -405,11 +479,14 @@ function update() {
     $('#scope').textContent = t('pal_emojiScope');
     results = emojiCatalog ? emojiResults($('#q').value.slice(1)) : [];
     status(emojiCatalog ? (results.length ? '' : t('pal_emojiNoResults')) : t('pal_emojiLoading'));
-    emojiLoad ??= Promise.all([loadEmoji(language()), readEmojiUsage().catch(() => ({}))]).then(([catalog, usage]) => {
+    emojiLoad ??= Promise.all([loadEmoji(language()), readEmojiUsage().catch(() => ({}))]).then(async ([catalog, usage]) => {
+      emojiVariants = indexEmojiVariants(catalog);
+      const keys = [...new Set([...emojiVariants.values()].map(({ base }) => emojiDefaultKey(base.emoji)))];
+      emojiDefaults = await chrome.storage.local.get(keys).catch(() => ({}));
       emojiCatalog = catalog;
       emojiUsage = rankEmojiUsage(usage);
       if (emojiMode()) update();
-    }, () => {
+    }).catch(() => {
       emojiLoad = undefined;
       if (emojiMode()) status(t('pal_emojiLoadFailed'), true);
     });
@@ -631,14 +708,49 @@ $('#q').addEventListener('keydown', (e) => {
     const target = vertical && emojiGrid() ? verticalEmojiTarget(direction) : selected + direction;
     selected = Math.max(0, Math.min(target, results.length - 1));
     hideEmojiTip();
+    hideEmojiVariants();
     mark();
   }
-  else if (e.key === 'Enter' && e.shiftKey) { e.preventDefault(); if (!emojiMode()) askJev(); }
+  else if (e.key === 'Enter' && e.shiftKey) {
+    e.preventDefault();
+    if (!emojiMode()) askJev();
+    else {
+      const family = emojiVariants?.get(results[selected]?.emoji);
+      if (family) showEmojiVariants(document.getElementById(`r${selected}`), family, true);
+    }
+  }
   else if (e.key === 'Enter') { e.preventDefault(); choose(); }
-  else if (e.key === 'Escape') { e.preventDefault(); close(); }
+  else if (e.key === 'Escape') { e.preventDefault(); if (variantAnchor) hideEmojiVariants(); else close(); }
   else if (e.key === 'Backspace' && (e.metaKey || e.ctrlKey) && results[selected]?.kind === 'tab') { e.preventDefault(); closeSelectedTab(); }
 });
+const variantPopup = $('#emoji-variants');
+variantPopup.addEventListener('mouseenter', () => clearTimeout(variantDismissTimer));
+variantPopup.addEventListener('mouseleave', leaveEmojiVariants);
+variantPopup.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' || event.key === 'Tab') {
+    event.preventDefault();
+    hideEmojiVariants();
+    return;
+  }
+  const buttons = [...$('#emoji-variant-options').children];
+  const columns = getComputedStyle($('#emoji-variant-options')).gridTemplateColumns.split(' ').length;
+  const offsets = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -columns, ArrowDown: columns };
+  const offset = offsets[event.key];
+  if (!offset) return;
+  event.preventDefault();
+  buttons[Math.max(0, Math.min(buttons.length - 1, buttons.indexOf(document.activeElement) + offset))].focus();
+});
+document.addEventListener('pointerdown', (event) => {
+  if (variantAnchor && !variantPopup.contains(event.target) && !variantAnchor.contains(event.target)) hideEmojiVariants();
+});
+window.addEventListener('resize', () => { if (variantAnchor) positionEmojiVariants(); });
 $('#list').addEventListener('scroll', ({ currentTarget: list }) => {
+  if (variantAnchor) {
+    const cell = variantAnchor.getBoundingClientRect();
+    const view = list.getBoundingClientRect();
+    if (cell.bottom <= view.top || cell.top >= view.bottom) hideEmojiVariants();
+    else positionEmojiVariants();
+  }
   if (!$('#emoji-tip').hidden) {
     const hovered = list.querySelector('.emoji-entry:hover');
     if (hovered) showEmojiTip(hovered);

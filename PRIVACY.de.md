@@ -14,6 +14,7 @@ Alles, was Tabwerk speichert, liegt in `chrome.storage.local` in deinem Chrome-P
 - der Verlauf deiner Fenster, Tabs und Gruppen
 - benannte Sitzungen, Notizen, geschlummerte Tabs
 - je ausgewähltem Emoji die Anzahl erfolgreicher Auswahlen und den Zeitpunkt der letzten Nutzung für Favoriten und Statistik
+- die Hauttöne, die du als Standard für einzelne Emojis festlegst
 - Wächter und der zuletzt gelesene Text der beobachteten Seiten
 - gespeicherte Formulare, verschlüsselt mit AES-GCM. Den Schlüssel erzeugt Tabwerk selbst und legt ihn nicht auslesbar in deinem Chrome-Profil ab. Das schützt vor einem Blick in die Profildateien, nicht vor Schadsoftware auf deinem Rechner. Passwort-, Karten-, Konto-, IBAN- und TAN-Felder speichert Tabwerk nur, wenn du den Schalter „Auch geschützte Felder speichern“ einschaltest. Im Export stehen Formulare lesbar.
 - die Liste der Websites, auf denen Tabwerk Kopieren immer erlaubt

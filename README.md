@@ -93,6 +93,7 @@ Groups, sorting, duplicates, undo and history work in the window where you open 
 - Typing searches in code, fuzzy: “gh tabw” finds “GitHub … tabwerk”. Accents and ß do not matter.
 - Filters: `/t` tabs, `/a` actions, `/b` bookmarks, `/h` history, `/n` notes, `/s` sessions, `/z` snoozed tabs, `/f` forms.
 - Type `:` to open the emoji catalog in a grid with categories. Hover to see names. Search in English or German, for example `:sweden`, `:schweden`, or `:thumbsup`. Select with the arrow keys and Enter or click an emoji. Before you type a search term, recent and most used emojis appear first. Under **Settings → Emojis**, choose the layout and whether to insert, copy, or both. Your local usage statistics are shown there too.
+- For emojis with skin tones, hover or press `Shift+Enter` to open the picker. Choose a tone to set the default for that emoji. Choose the neutral emoji to reset it. Searching for another skin tone leaves the default in place.
 - Note for the active tab: `/N` opens the note window. `/N text` saves the text right away. An existing note gets it as a new line.
 - Page search by meaning: `/F query` searches the active page with Jev at once. `/F` alone only opens the search bar. So you do not need a separate shortcut.
 - Color mode: automatic per site, follow the system, always light or always dark.

@@ -1692,6 +1692,18 @@
   "pal_emojiNoResults": {
     "message": "No matching emojis."
   },
+  "pal_emojiVariantHeading": {
+    "message": "Choose a default skin tone"
+  },
+  "pal_emojiVariantSaved": {
+    "message": "$1 saved as the default."
+  },
+  "pal_emojiVariantFailed": {
+    "message": "Couldn’t save the skin tone."
+  },
+  "pal_kbdEmojiVariants": {
+    "message": "choose skin tone"
+  },
   "pal_emojiScope": {
     "message": "Emojis"
   },
