@@ -18,13 +18,14 @@
     <ul class="list" id="list" role="listbox" aria-label="Treffer" data-i18n-aria-label="pal_resultsLabel"></ul>
     <div class="status" id="status" aria-live="polite" hidden></div>
     <footer class="keys mono">
-      <span><kbd>↑</kbd><kbd>↓</kbd> <span data-i18n="pal_kbdSelect">wählen</span></span>
-      <span><kbd>↵</kbd> <span data-i18n="pal_kbdOpen">öffnen</span></span>
-      <span><kbd>⌘</kbd><kbd>⌫</kbd> <span data-i18n="pal_kbdCloseTab">Tab schließen</span></span>
+      <span><span id="horizontal-keys" hidden><kbd>←</kbd><kbd>→</kbd></span><kbd>↑</kbd><kbd>↓</kbd> <span data-i18n="pal_kbdSelect">wählen</span></span>
+      <span><kbd>↵</kbd> <span id="enter-label" data-i18n="pal_kbdOpen">öffnen</span></span>
+      <span id="close-tab-key"><kbd>⌘</kbd><kbd>⌫</kbd> <span data-i18n="pal_kbdCloseTab">Tab schließen</span></span>
       <span id="jev-key" hidden><kbd>⇧</kbd><kbd>↵</kbd> <span data-i18n="pal_kbdJevSearch">mit Jev suchen</span></span>
-      <span class="filters">/t /a /h /n /N /F</span>
+      <span class="filters" id="palette-filters">/t /a /h /n /N /F <kbd data-i18n-title="pal_emojiScope">:</kbd></span>
     </footer>
   </div>
+  <div id="emoji-tip" class="emoji-tip" aria-hidden="true" hidden></div>
   <script type="module" src="palette.js"></script>
 </body>
 </html>

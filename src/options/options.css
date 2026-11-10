@@ -134,6 +134,20 @@ label.btn { display: inline-flex; align-items: center; min-height: 32px; padding
 .usage b { font: 600 20px/1.2 var(--mono); }
 .usage span { font-size: 12px; color: var(--ink-3); }
 
+.emoji-settings, .emoji-rankings { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 185px), 1fr)); gap: 12px; }
+.emoji-statistics { display: grid; gap: 10px; padding-top: 12px; border-top: 1px solid var(--line); }
+.emoji-statistics h3 { margin: 0; font-size: 14px; font-weight: 650; }
+.emoji-statistics p, .emoji-totals, .emoji-totals dd, .emoji-rankings h4 { margin: 0; }
+.emoji-totals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.emoji-totals div { display: grid; gap: 2px; padding: 8px 10px; border-radius: var(--r); background: var(--sunken); }
+.emoji-totals dt { font-size: 12px; color: var(--ink-2); }
+.emoji-totals dd { font: 600 20px/1.2 var(--mono); }
+.emoji-rankings h4 { font-size: 12px; font-weight: 600; }
+.emoji-rankings ol { list-style: none; padding: 0; margin: 4px 0 0; }
+.emoji-rankings li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--line); }
+.emoji-rankings .mono { color: var(--ink-2); font-size: 11px; text-align: right; }
+.emoji-stat-glyph { font: 19px/1.2 "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
+
 @media (max-width: 720px) {
   .feat.child { margin-left: 14px; }
   .controls { padding: 14px; }

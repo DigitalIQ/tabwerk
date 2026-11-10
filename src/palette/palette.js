@@ -9,7 +9,9 @@ import { normalize } from '../lib/fuzzy.js';
 import { normalizeUrl } from '../lib/url.js';
 import { scoreItem, parseQuery } from '../lib/fuzzy.js';
 import { hostOf } from '../lib/url.js';
-import { t, tp, fmtNumber, fmtDate, initI18n, localizeDom } from '../lib/i18n.js';
+import { t, tp, fmtNumber, fmtDate, initI18n, language, localizeDom } from '../lib/i18n.js';
+import { loadEmoji, searchEmoji } from './emoji.js';
+import { readEmojiUsage, rankEmojiUsage } from '../lib/emoji-usage.js';
 
 // Nur weiter, wenn Tabwerk die Suche selbst geöffnet hat. Eine fremde Seite, die palette.html
 // einrahmt, bekommt eine leere Fläche (siehe checkPaletteGrant in background.js).
@@ -51,11 +53,11 @@ function resolveTheme() {
 document.documentElement.dataset.theme = resolveTheme();
 const windowId = standalone ? Number(params.get('win')) : (await chrome.windows.getCurrent()).id;
 const jevOn = settings.paletteJev && hasKey(settings);
-$('#jev-key').hidden = !(jevOn || (isOn(settings, 'paletteHistoryJev') && hasKey(settings)));
+const jevKeyOn = jevOn || (isOn(settings, 'paletteHistoryJev') && hasKey(settings));
 
-function close() {
+function close(restoreFocus = false) {
   if (standalone) window.close();
-  else parent.postMessage({ tabwerk: 'close' }, '*');
+  else parent.postMessage({ tabwerk: 'close', restoreFocus: restoreFocus === true }, '*');
 }
 
 // ---------- Quellen laden ----------
@@ -238,6 +240,42 @@ function rank(raw) {
 
 let results = [];
 let selected = 0;
+let rendered = 0;
+let emojiCatalog;
+let emojiLoad;
+let emojiUsage;
+let emojiSections = new Map();
+let emojiRows;
+let choosingEmoji = false;
+const EMOJI_BATCH = 80;
+const emojiMode = () => $('#q').value.startsWith(':');
+const emojiGrid = () => emojiMode() && settings.emojiLayout !== 'list';
+
+function emojiResults(query) {
+  const matches = searchEmoji(emojiCatalog, query);
+  const groups = new Map();
+  if (!query.trim() && emojiUsage) {
+    const byEmoji = new Map(emojiCatalog.map((item) => [item.emoji, item]));
+    for (const key of ['recent', 'frequent']) {
+      groups.set(`emoji_${key}`, emojiUsage[key].map(([emoji]) => byEmoji.get(emoji)).filter(Boolean));
+    }
+  }
+  if (settings.emojiLayout === 'grouped') {
+    for (const item of matches) {
+      const key = `emoji_group_${item.group}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(item);
+    }
+  } else groups.set('', matches);
+  emojiSections = new Map();
+  const items = [];
+  for (const [key, group] of groups) {
+    if (!group.length) continue;
+    emojiSections.set(items.length, { label: key ? t(key) : '', end: items.length + group.length });
+    items.push(...group);
+  }
+  return items;
+}
 
 function lead(item) {
   let inner;
@@ -258,29 +296,92 @@ function kindLabel(item) {
   return KIND_LABEL[item.kind];
 }
 
-function render() {
+function resultAttrs(i) {
+  return {
+    id: `r${i}`, role: 'option', 'aria-selected': 'false',
+    onclick: () => { selected = i; choose(); },
+    onmousemove: () => { if (selected !== i) { selected = i; mark(!emojiGrid()); } },
+  };
+}
+
+function showEmojiTip(target) {
+  const tip = $('#emoji-tip');
+  tip.textContent = target.getAttribute('aria-label');
+  tip.hidden = false;
+  const cell = target.getBoundingClientRect();
+  const x = cell.left + (cell.width - tip.offsetWidth) / 2;
+  tip.style.left = `${Math.max(8, Math.min(x, innerWidth - tip.offsetWidth - 8))}px`;
+  tip.style.top = `${cell.bottom + tip.offsetHeight + 14 < innerHeight ? cell.bottom + 6 : cell.top - tip.offsetHeight - 6}px`;
+}
+
+function hideEmojiTip() {
+  $('#emoji-tip').hidden = true;
+}
+
+function appendEmojiRows(limit) {
   const list = $('#list');
-  list.replaceChildren(...results.map((item, i) => {
-    const li = h('li', {
+  for (; rendered < limit; rendered += 1) {
+    const section = emojiSections.get(rendered);
+    if (section) {
+      emojiRows = h('ul', { class: 'emoji-rows', role: 'presentation', 'data-start': rendered, 'data-end': section.end });
+      list.append(h('li', { class: 'emoji-group', role: 'group', 'aria-label': section.label || t('pal_emojiScope') },
+        section.label ? h('div', { class: 'emoji-group-title', 'aria-hidden': 'true' }, section.label) : null,
+        emojiRows));
+    }
+    const item = results[rendered];
+    const grid = emojiGrid();
+    emojiRows.append(h('li', {
+      ...resultAttrs(rendered), class: 'item emoji-entry', 'aria-label': item.title,
+      onmouseenter: grid ? (event) => showEmojiTip(event.currentTarget) : null,
+      onmouseleave: grid ? hideEmojiTip : null,
+    },
+    h('span', { class: 'emoji', 'aria-hidden': 'true' }, item.emoji),
+    grid ? null : h('span', { class: 'title' }, item.title)));
+  }
+}
+
+function appendRows(limit) {
+  if (emojiMode()) {
+    appendEmojiRows(Math.min(limit, results.length));
+    return;
+  }
+  const rows = results.slice(rendered, limit).map((item, offset) => {
+    const i = rendered + offset;
+    return h('li', {
+      ...resultAttrs(i),
       class: `item${item.action?.disabled ? ' disabled' : ''}`,
-      id: `r${i}`,
-      role: 'option',
-      'aria-selected': String(i === selected),
-      onclick: () => { selected = i; choose(); },
-      onmousemove: () => { if (selected !== i) { selected = i; mark(); } },
     },
     lead(item),
     h('span', { class: 'txt' }, h('span', { class: 'title' }, item.title), item.sub ? h('span', { class: 'sub' }, item.sub) : null),
     h('span', { class: `kind${item.kind === 'action' && item.action.jev ? ' jev' : ''}` }, item.jevP !== undefined ? t('pal_jevPercent', fmtNumber(Math.round(item.jevP * 100))) : kindLabel(item)));
-    return li;
-  }));
-  mark();
+  });
+  $('#list').append(...rows);
+  rendered += rows.length;
 }
 
-function mark() {
-  document.querySelectorAll('.item').forEach((el, i) => el.setAttribute('aria-selected', String(i === selected)));
+function render() {
+  const list = $('#list');
+  list.classList.toggle('emoji-list', emojiMode());
+  list.classList.toggle('emoji-grid', emojiGrid());
+  list.replaceChildren();
+  hideEmojiTip();
+  emojiRows = undefined;
+  rendered = 0;
+  appendRows(emojiMode() ? EMOJI_BATCH : results.length);
+  // Erst scrollen lassen, wenn das Raster den sichtbaren Bereich füllt.
+  while (emojiMode() && rendered < results.length && list.clientHeight && list.scrollHeight <= list.clientHeight) {
+    appendRows(rendered + EMOJI_BATCH);
+  }
+  if (selected === 0) list.scrollTop = 0;
+  mark(selected !== 0);
+}
+
+function mark(scroll = true) {
+  if (selected >= rendered && selected < results.length) appendRows(selected + EMOJI_BATCH);
+  $('#list [aria-selected="true"]')?.setAttribute('aria-selected', 'false');
   const el = document.getElementById(`r${selected}`);
-  el?.scrollIntoView({ block: 'nearest' });
+  el?.setAttribute('aria-selected', 'true');
+  if (scroll) el?.scrollIntoView({ block: 'nearest' });
   $('#q').setAttribute('aria-activedescendant', el ? el.id : '');
 }
 
@@ -292,17 +393,82 @@ function status(text, error = false) {
 }
 
 function update() {
-  results = rank($('#q').value);
+  const emoji = emojiMode();
+  $('#jev-key').hidden = emoji || !jevKeyOn;
+  $('#close-tab-key').hidden = emoji;
+  $('#palette-filters').hidden = emoji;
+  $('#horizontal-keys').hidden = !emojiGrid();
+  const emojiActionLabel = { both: 'pal_kbdEmoji', insert: 'pal_kbdEmojiInsert', copy: 'pal_kbdEmojiCopy' };
+  $('#enter-label').textContent = t(emoji ? emojiActionLabel[settings.emojiAction] ?? 'pal_kbdEmoji' : 'pal_kbdOpen');
+  if (emoji) {
+    $('#scope').hidden = false;
+    $('#scope').textContent = t('pal_emojiScope');
+    results = emojiCatalog ? emojiResults($('#q').value.slice(1)) : [];
+    status(emojiCatalog ? (results.length ? '' : t('pal_emojiNoResults')) : t('pal_emojiLoading'));
+    emojiLoad ??= Promise.all([loadEmoji(language()), readEmojiUsage().catch(() => ({}))]).then(([catalog, usage]) => {
+      emojiCatalog = catalog;
+      emojiUsage = rankEmojiUsage(usage);
+      if (emojiMode()) update();
+    }, () => {
+      emojiLoad = undefined;
+      if (emojiMode()) status(t('pal_emojiLoadFailed'), true);
+    });
+  } else {
+    results = rank($('#q').value);
+    status(results.length ? '' : jevOn ? t('pal_noResultsJev') : t('pal_noResults'));
+  }
   selected = 0;
-  status(results.length ? '' : jevOn ? t('pal_noResultsJev') : t('pal_noResults'));
   render();
 }
 
 // ---------- Auswählen ----------
 
+async function copyEmoji(emoji) {
+  try {
+    await navigator.clipboard.writeText(emoji);
+    return true;
+  } catch {
+    // Manche Seiten sperren die Clipboard API für eingebettete Frames.
+    const field = h('textarea', { style: { position: 'fixed', opacity: '0' } });
+    field.value = emoji;
+    document.body.append(field);
+    try {
+      field.select();
+      return document.execCommand('copy');
+    } catch {
+      return false;
+    } finally {
+      field.remove();
+      $('#q').focus();
+    }
+  }
+}
+
+async function chooseEmoji(emoji) {
+  choosingEmoji = true;
+  const shouldCopy = settings.emojiAction !== 'insert';
+  const shouldInsert = settings.emojiAction !== 'copy';
+  const copied = shouldCopy && await copyEmoji(emoji);
+  let inserted = false;
+  if (framed && shouldInsert) {
+    const reply = await chrome.tabs.sendMessage(auth.tabId, { type: 'paletteInsertEmoji', token, emoji }, { frameId: 0 }).catch(() => null);
+    inserted = Boolean(reply?.inserted);
+  }
+  if (copied || inserted) {
+    await send('recordEmojiUse', { emoji }).catch(() => {});
+    if (inserted && (!shouldCopy || copied)) return close();
+    status(t(copied ? 'pal_emojiCopied' : 'pal_emojiCopyFailed'), !copied);
+    setTimeout(() => close(!inserted), copied ? 650 : 900);
+    return;
+  }
+  status(t(shouldCopy ? 'pal_emojiCopyFailed' : 'pal_emojiNoEditor'), true);
+  choosingEmoji = false;
+}
+
 async function choose() {
   const item = results[selected];
-  if (!item) return;
+  if (!item || choosingEmoji) return;
+  if (item.kind === 'emoji') return chooseEmoji(item.emoji);
   if (item.kind === 'tab') {
     chrome.runtime.sendMessage({ type: 'focusTab', payload: { tabId: item.tab.id, windowId: item.tab.windowId } });
     close();
@@ -395,6 +561,7 @@ async function closeSelectedTab() {
   if (item?.kind !== 'tab') return;
   await chrome.tabs.remove(item.tab.id).catch(() => {});
   sources.tabs = sources.tabs.filter((tab) => tab.id !== item.id);
+  if (emojiMode()) return;
   const keep = selected;
   results = rank($('#q').value);
   selected = Math.min(keep, results.length - 1);
@@ -407,12 +574,13 @@ async function askJev() {
     status(t('pal_jevSearchingHistory'));
     try {
       const { hits, period } = await send('findHistory', { query: text });
+      if (emojiMode()) return;
       results = hits.map((x) => ({ kind: 'history', id: `jh:${x.id}`, title: x.title || x.url, sub: `${hostOf(x.url)} · ${period}`, url: x.url, jevP: x.p }));
       selected = 0;
       status(results.length ? '' : t('pal_jevNoHistoryHits', period));
       render();
     } catch (error) {
-      status(error.message, true);
+      if (!emojiMode()) status(error.message, true);
     }
     return;
   }
@@ -420,24 +588,63 @@ async function askJev() {
   status(t('pal_jevSearchingTabs'));
   try {
     const { hits } = await send('find', { query: text });
+    if (emojiMode()) return;
     const byId = new Map(sources.tabs.map((tab) => [tab.tab.id, tab]));
     results = hits.filter((x) => !x.none && byId.has(x.id)).map((x) => ({ ...byId.get(x.id), jevP: x.p }));
     selected = 0;
     status(results.length ? '' : t('pal_jevNoTabHits'));
     render();
   } catch (error) {
-    status(error.message, true);
+    if (!emojiMode()) status(error.message, true);
   }
+}
+
+function verticalEmojiTarget(direction) {
+  const rows = document.getElementById(`r${selected}`).parentElement;
+  const columns = getComputedStyle(rows).gridTemplateColumns.split(' ').length;
+  const { start, end } = rows.dataset;
+  const column = (selected - Number(start)) % columns;
+  const target = selected + direction * columns;
+  if (target >= Number(start) && target < Number(end)) return target;
+  if (direction > 0) {
+    if (target - column < Number(end)) return Number(end) - 1;
+    const next = emojiSections.get(Number(end));
+    return next ? Math.min(Number(end) + column, next.end - 1) : selected;
+  }
+  const previousRows = rows.parentElement.previousElementSibling?.lastElementChild;
+  if (!previousRows) return selected;
+  const last = Number(start) - 1;
+  const lastRowStart = last - (last - Number(previousRows.dataset.start)) % columns;
+  return Math.min(last, lastRowStart + column);
 }
 
 $('#q').addEventListener('input', update);
 $('#q').addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowDown') { e.preventDefault(); selected = Math.min(selected + 1, results.length - 1); mark(); }
-  else if (e.key === 'ArrowUp') { e.preventDefault(); selected = Math.max(selected - 1, 0); mark(); }
-  else if (e.key === 'Enter' && e.shiftKey) { e.preventDefault(); askJev(); }
+  if (e.isComposing) return;
+  const vertical = e.key === 'ArrowDown' || e.key === 'ArrowUp';
+  const horizontal = emojiGrid() && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')
+    && !(e.metaKey || e.ctrlKey || e.altKey || e.shiftKey);
+  if (vertical || horizontal) {
+    e.preventDefault();
+    if (!results.length) return;
+    const direction = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : -1;
+    const target = vertical && emojiGrid() ? verticalEmojiTarget(direction) : selected + direction;
+    selected = Math.max(0, Math.min(target, results.length - 1));
+    hideEmojiTip();
+    mark();
+  }
+  else if (e.key === 'Enter' && e.shiftKey) { e.preventDefault(); if (!emojiMode()) askJev(); }
   else if (e.key === 'Enter') { e.preventDefault(); choose(); }
   else if (e.key === 'Escape') { e.preventDefault(); close(); }
   else if (e.key === 'Backspace' && (e.metaKey || e.ctrlKey) && results[selected]?.kind === 'tab') { e.preventDefault(); closeSelectedTab(); }
+});
+$('#list').addEventListener('scroll', ({ currentTarget: list }) => {
+  if (!$('#emoji-tip').hidden) {
+    const hovered = list.querySelector('.emoji-entry:hover');
+    if (hovered) showEmojiTip(hovered);
+    else hideEmojiTip();
+  }
+  if (rendered < results.length && list.scrollHeight - list.scrollTop < 2 * list.clientHeight) appendRows(rendered + EMOJI_BATCH);
 });
 $('#scrim').addEventListener('click', close);
 if (standalone) window.addEventListener('blur', () => setTimeout(close, 150));
@@ -456,6 +663,6 @@ $('#q').focus();
 if (on('paletteFulltext')) {
   send('tabTexts').then((list) => {
     texts = new Map(list.map((x) => [x.tabId, x.text]));
-    if ($('#q').value.trim()) update();
+    if ($('#q').value.trim() && !emojiMode()) update();
   }).catch(() => {});
 }

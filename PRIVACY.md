@@ -2,9 +2,9 @@
 
 English · [Deutsch](PRIVACY.de.md)
 
-Last updated: September 24, 2026
+Last updated: November 10, 2026
 
-Tabwerk is a Chrome extension without a server of its own. The provider of Tabwerk receives no data from you. There are no usage statistics, no tracking and no ads.
+Tabwerk is a Chrome extension without a server of its own. The provider of Tabwerk receives no data from you. Tabwerk has no tracking or ads.
 
 ## What stays on your computer
 
@@ -13,12 +13,13 @@ Everything Tabwerk stores lives in `chrome.storage.local` in your Chrome profile
 - settings and, if you entered one, your key for OpenRouter or TypeSafe
 - the history of your windows, tabs and groups
 - named sessions, notes, snoozed tabs
+- for each emoji you select, the number of successful selections and the time of last use for favorites and statistics
 - watchers and the last text read from each watched page
 - saved forms, encrypted with AES-GCM. Tabwerk creates the key itself and stores it non-extractable in your Chrome profile. This protects against someone looking into the profile files, not against malware on your computer. Password, card, account, IBAN and TAN fields are only saved if you turn on the switch “Also save protected fields”. Exports contain forms in readable form.
 - the list of sites where Tabwerk always allows copying
 - for learning: up to 1000 of your decisions on Jev suggestions, with the tab's title and site, Jev's suggestion, your choice and Jev's confidence. Sites on the exclusion list are left out. You can delete this in the settings under “Learning”.
 
-This data is not synced. You delete it by removing Tabwerk or by clearing the history in the settings.
+This data stays in your Chrome profile. Removing Tabwerk deletes it. You can also clear your history in the settings.
 
 ## What Tabwerk sends
 

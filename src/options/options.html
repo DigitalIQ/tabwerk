@@ -115,6 +115,44 @@
       </div>
     </section>
 
+    <section class="block" id="sec-emoji">
+      <div class="lede">
+        <h2 data-i18n="pal_emojiScope">Emojis</h2>
+        <p data-i18n="opt_emojiDesc">Öffne den Emoji-Katalog mit einem Doppelpunkt in der Schnellsuche.</p>
+        <p class="faint" data-i18n="opt_emojiPrivacy">Tabwerk speichert deine Emoji-Nutzung lokal für Favoriten und Statistik.</p>
+      </div>
+      <div class="controls">
+        <div class="emoji-settings">
+          <label class="field"><span data-i18n="opt_emojiLayout">Darstellung</span>
+            <select id="emoji-layout">
+              <option value="grouped" data-i18n="opt_emojiLayoutGrouped">Raster mit Kategorien</option>
+              <option value="grid" data-i18n="opt_emojiLayoutGrid">Raster ohne Kategorien</option>
+              <option value="list" data-i18n="opt_emojiLayoutList">Liste mit Namen</option>
+            </select>
+          </label>
+          <label class="field"><span data-i18n="opt_emojiAction">Bei Auswahl</span>
+            <select id="emoji-action">
+              <option value="both" data-i18n="opt_emojiActionBoth">Einfügen und kopieren</option>
+              <option value="insert" data-i18n="opt_emojiActionInsert">Nur einfügen</option>
+              <option value="copy" data-i18n="opt_emojiActionCopy">Nur kopieren</option>
+            </select>
+          </label>
+        </div>
+        <div class="emoji-statistics">
+          <h3 data-i18n="opt_emojiStatistics">Nutzungsstatistik</h3>
+          <dl class="emoji-totals">
+            <div><dt data-i18n="opt_emojiTotal">Auswahlen gesamt</dt><dd id="emoji-total">0</dd></div>
+            <div><dt data-i18n="opt_emojiUnique">Verschiedene Emojis</dt><dd id="emoji-unique">0</dd></div>
+          </dl>
+          <p class="help" id="emoji-empty" data-i18n="opt_emojiEmpty">Hier erscheinen deine häufigsten und zuletzt genutzten Emojis.</p>
+          <div class="emoji-rankings" id="emoji-rankings" hidden>
+            <div><h4 data-i18n="emoji_frequent">Am häufigsten verwendet</h4><ol id="emoji-frequent"></ol></div>
+            <div><h4 data-i18n="emoji_recent">Zuletzt verwendet</h4><ol id="emoji-recent"></ol></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="block" id="sec-groups">
       <div class="lede">
         <h2 data-i18n="opt_groupsTitle">Gruppen</h2>
@@ -166,7 +204,7 @@
       </div>
       <div class="controls">
         <label class="field"><span data-i18n="opt_excludedLabel">Diese Websites nie an Jev schicken</span>
-          <textarea id="excluded" class="mono" placeholder="meinebank.de&#10;*.intranet.example"></textarea>
+          <textarea id="excluded" class="mono" placeholder="meinebank.example&#10;*.intranet.example" data-i18n-placeholder="opt_excludedPlaceholder"></textarea>
         </label>
         <p class="help" data-i18n="opt_excludedHelp">Eine Website pro Zeile. Subdomains zählen mit.</p>
       </div>

@@ -2,9 +2,9 @@
 
 [English](PRIVACY.de.md) · Deutsch
 
-Stand: 24. September 2026
+Stand: 10. November 2026
 
-Tabwerk ist eine Chrome-Erweiterung ohne eigenen Server. Der Anbieter von Tabwerk erhält keine Daten von dir. Es gibt keine Nutzungsstatistik, kein Tracking und keine Werbung.
+Tabwerk ist eine Chrome-Erweiterung ohne eigenen Server. Der Anbieter von Tabwerk erhält keine Daten von dir. Tabwerk hat kein Tracking und keine Werbung.
 
 ## Was auf deinem Rechner bleibt
 
@@ -13,12 +13,13 @@ Alles, was Tabwerk speichert, liegt in `chrome.storage.local` in deinem Chrome-P
 - Einstellungen und, falls eingetragen, dein Schlüssel für OpenRouter oder TypeSafe
 - der Verlauf deiner Fenster, Tabs und Gruppen
 - benannte Sitzungen, Notizen, geschlummerte Tabs
+- je ausgewähltem Emoji die Anzahl erfolgreicher Auswahlen und den Zeitpunkt der letzten Nutzung für Favoriten und Statistik
 - Wächter und der zuletzt gelesene Text der beobachteten Seiten
 - gespeicherte Formulare, verschlüsselt mit AES-GCM. Den Schlüssel erzeugt Tabwerk selbst und legt ihn nicht auslesbar in deinem Chrome-Profil ab. Das schützt vor einem Blick in die Profildateien, nicht vor Schadsoftware auf deinem Rechner. Passwort-, Karten-, Konto-, IBAN- und TAN-Felder speichert Tabwerk nur, wenn du den Schalter „Auch geschützte Felder speichern“ einschaltest. Im Export stehen Formulare lesbar.
 - die Liste der Websites, auf denen Tabwerk Kopieren immer erlaubt
 - beim Lernen: bis zu 1000 deiner Entscheidungen zu Jev-Vorschlägen, mit Titel und Website des Tabs, Jevs Vorschlag, deiner Wahl und Jevs Sicherheit. Websites auf der Ausschlussliste fehlen. Du löschst das in den Einstellungen unter „Lernen“.
 
-Diese Daten werden nicht synchronisiert. Du löschst sie, indem du Tabwerk entfernst oder in den Einstellungen den Verlauf leerst.
+Diese Daten bleiben in deinem Chrome-Profil und werden beim Entfernen von Tabwerk gelöscht. Den Verlauf kannst du auch in den Einstellungen leeren.
 
 ## Was Tabwerk verschickt
 

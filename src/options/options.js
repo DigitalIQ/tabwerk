@@ -3,7 +3,9 @@ import { getSettings, saveSettings, getUsage, CHROME_COLORS, PROVIDERS, connecti
 import { FEATURES, FEATURE_DEFAULTS, isOn } from '../lib/flags.js';
 import { toBookmarkHtml } from '../lib/bookmarkfile.js';
 import { HIDEABLE, cleanHidden, parseKeywords } from '../lib/declutter.js';
-import { t, tp, fmtDate, fmtNumber, initI18n, localizeDom, LANGUAGES } from '../lib/i18n.js';
+import { t, tp, fmtDate, fmtNumber, initI18n, language, localizeDom, LANGUAGES } from '../lib/i18n.js';
+import { loadEmoji } from '../palette/emoji.js';
+import { EMOJI_USAGE_KEY, readEmojiUsage, rankEmojiUsage } from '../lib/emoji-usage.js';
 
 await initI18n();
 localizeDom();
@@ -250,7 +252,7 @@ const EXTRAS = {
       h('div', { class: 'inline' }, saveOwn),
       h('p', { class: 'help' }, t('opt_declutterOwnHelp')),
       h('label', { class: 'field' }, h('span', {}, t('opt_declutterNeverLabel')),
-        h('textarea', { class: 'mono', placeholder: 'spiegel.de', onchange: (e) => save({ declutterNever: lines(e.target.value).map((x) => x.replace(/^https?:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, '').toLowerCase()) }) }, (settings.declutterNever || []).join('\n'))),
+        h('textarea', { class: 'mono', placeholder: t('opt_declutterNeverPlaceholder'), onchange: (e) => save({ declutterNever: lines(e.target.value).map((x) => x.replace(/^https?:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, '').toLowerCase()) }) }, (settings.declutterNever || []).join('\n'))),
       h('p', { class: 'help' }, t('opt_declutterNeverHelp')),
     ];
   },
@@ -402,6 +404,41 @@ $('#p-theme').value = settings.paletteTheme;
 $('#p-theme').addEventListener('change', (e) => save({ paletteTheme: e.target.value }));
 $('#p-jev').addEventListener('change', (e) => save({ paletteJev: e.target.checked }));
 
+// ---------- Emojis ----------
+
+for (const [id, key] of [['#emoji-layout', 'emojiLayout'], ['#emoji-action', 'emojiAction']]) {
+  const select = $(id);
+  select.value = settings[key];
+  select.addEventListener('change', () => save({ [key]: select.value }));
+}
+
+let emojiNames;
+let emojiStatsVersion = 0;
+async function renderEmojiStats(usage) {
+  const version = ++emojiStatsVersion;
+  const { total, unique, frequent, recent } = rankEmojiUsage(usage, 6);
+  if (total) emojiNames ??= loadEmoji(language()).then((rows) => new Map(rows.map((row) => [row.emoji, row.title]))).catch(() => new Map());
+  const names = total ? await emojiNames : null;
+  if (version !== emojiStatsVersion) return;
+
+  $('#emoji-total').textContent = fmtNumber(total);
+  $('#emoji-unique').textContent = fmtNumber(unique);
+  $('#emoji-empty').hidden = Boolean(total);
+  $('#emoji-rankings').hidden = !total;
+  for (const [id, rows, detail] of [
+    ['#emoji-frequent', frequent, ({ count }) => tp('opt_emojiUses', count)],
+    ['#emoji-recent', recent, ({ lastUsed }) => fmtDate(lastUsed, { dateStyle: 'short', timeStyle: 'short' })],
+  ]) {
+    $(id).replaceChildren(...rows.map(([emoji, data]) => h('li', {},
+      h('span', { class: 'emoji-stat-glyph', title: names?.get(emoji), 'aria-label': names?.get(emoji) }, emoji),
+      h('span', { class: 'mono' }, detail(data)))));
+  }
+}
+readEmojiUsage().then((usage) => { if (!emojiStatsVersion) renderEmojiStats(usage); }).catch(() => {});
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'local' && EMOJI_USAGE_KEY in changes) renderEmojiStats(changes[EMOJI_USAGE_KEY].newValue ?? {});
+});
+
 // ---------- Kategorien ----------
 
 function renderCats() {
@@ -414,13 +451,16 @@ function renderCats() {
     const card = h('div', { class: 'cat', style: { '--c': CHROME_COLORS[cat.color] } });
     const tab = h('span', { class: 'reiter', 'data-c': cat.color, style: { '--c': CHROME_COLORS[cat.color] } }, cat.name || t('opt_categoryNoName'));
     const swatches = h('div', { class: 'swatches', role: 'group', 'aria-label': t('opt_colorGroupLabel') },
-      ...Object.entries(CHROME_COLORS).map(([name, hex]) => h('button', {
-        style: { '--sw': hex },
-        title: name,
-        'aria-label': t('opt_colorAriaLabel', name),
-        'aria-pressed': String(name === cat.color),
-        onclick: () => { update(i, { color: name }); renderCats(); },
-      })));
+      ...Object.entries(CHROME_COLORS).map(([name, hex]) => {
+        const label = t(`opt_colorName_${name}`);
+        return h('button', {
+          style: { '--sw': hex },
+          title: label,
+          'aria-label': t('opt_colorAriaLabel', label),
+          'aria-pressed': String(name === cat.color),
+          onclick: () => { update(i, { color: name }); renderCats(); },
+        });
+      }));
     const nameInput = h('input', { type: 'text', class: 'name', value: cat.name, 'aria-label': t('opt_groupNameAriaLabel'),
       oninput: (e) => { tab.textContent = e.target.value || t('opt_categoryNoName'); },
       onchange: (e) => update(i, { name: e.target.value.trim() }) });

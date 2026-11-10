@@ -28,3 +28,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+The emoji catalog (src/palette/emoji-data.json) combines Unicode Emoji 17.0
+with English and German CLDR 48.2 names and keywords:
+https://www.unicode.org/Public/17.0.0/emoji/emoji-test.txt
+https://github.com/unicode-org/cldr-json/tree/48.2.0
+Unicode Emoji data: Copyright © 2025 Unicode, Inc.
+CLDR JSON data: Copyright © 2015-2024 Unicode, Inc.
+The Unicode License v3 is included in assets/unicode-license.txt.

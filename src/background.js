@@ -12,6 +12,7 @@ import * as U from './lib/unlock.js';
 import * as Learn from './lib/learn.js';
 import * as PS from './lib/pagesearchbg.js';
 import * as DC from './lib/declutterbg.js';
+import { recordEmojiUse } from './lib/emoji-usage.js';
 import { decide } from './lib/jev.js';
 import { getUsage, getSettings } from './lib/settings.js';
 import { isOn } from './lib/flags.js';
@@ -35,6 +36,7 @@ const handlers = {
   undo: H.undoLastAction,
   lastAction: H.getLastAction,
   paletteActions: A.listActions,
+  recordEmojiUse,
   runAction: A.runAction,
   listSnapshots: H.listSnapshots,
   getSnapshot: ({ id }) => H.getSnapshot(id),
@@ -110,7 +112,10 @@ const handlers = {
 chrome.runtime.onMessage.addListener((message, sender, reply) => {
   if (message?.target === 'offscreen') return false;
   if (message?.type === 'paletteAuth') {
-    checkPaletteGrant(sender, message.payload?.token).then((ok) => reply({ ok }), () => reply({ ok: false }));
+    checkPaletteGrant(sender, message.payload?.token).then(
+      (ok) => reply(ok ? { ok, tabId: sender.tab.id } : { ok }),
+      () => reply({ ok: false }),
+    );
     return true;
   }
   const handler = handlers[message?.type];

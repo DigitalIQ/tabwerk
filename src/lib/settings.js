@@ -89,6 +89,8 @@ export const DEFAULTS = {
   paletteHistory: false,
   // site: hell oder dunkel wie die Seite dahinter. system, light, dark.
   paletteTheme: 'site',
+  emojiLayout: 'grouped',
+  emojiAction: 'both',
   // Schalter pro Funktion, siehe flags.js.
   features: {},
   // Neue Tabs einsortieren: eine Regel pro Zeile, „domain = Gruppe“.
@@ -122,6 +124,8 @@ export async function getSettings() {
   if (!PROVIDERS.openrouter.models[settings.model]) settings.model = DEFAULTS.model;
   if (!PROVIDERS.typesafe.models[settings.typesafeModel]) settings.typesafeModel = DEFAULTS.typesafeModel;
   if (!PROVIDERS[settings.provider]) settings.provider = DEFAULTS.provider;
+  if (!['grouped', 'grid', 'list'].includes(settings.emojiLayout)) settings.emojiLayout = DEFAULTS.emojiLayout;
+  if (!['both', 'insert', 'copy'].includes(settings.emojiAction)) settings.emojiAction = DEFAULTS.emojiAction;
   return settings;
 }
 

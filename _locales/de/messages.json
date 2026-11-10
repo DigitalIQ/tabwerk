@@ -514,6 +514,42 @@
   "dur_minutes_other": {
     "message": "$1 Minuten"
   },
+  "emoji_frequent": {
+    "message": "Am häufigsten verwendet"
+  },
+  "emoji_group_activities": {
+    "message": "Aktivitäten"
+  },
+  "emoji_group_animals": {
+    "message": "Tiere und Natur"
+  },
+  "emoji_group_component": {
+    "message": "Hauttöne und Haare"
+  },
+  "emoji_group_flags": {
+    "message": "Flaggen"
+  },
+  "emoji_group_food": {
+    "message": "Essen und Trinken"
+  },
+  "emoji_group_objects": {
+    "message": "Gegenstände"
+  },
+  "emoji_group_people": {
+    "message": "Menschen und Körper"
+  },
+  "emoji_group_smileys": {
+    "message": "Smileys und Emotionen"
+  },
+  "emoji_group_symbols": {
+    "message": "Symbole"
+  },
+  "emoji_group_travel": {
+    "message": "Reisen und Orte"
+  },
+  "emoji_recent": {
+    "message": "Zuletzt verwendet"
+  },
   "extActionTitle": {
     "message": "Tabwerk"
   },
@@ -1052,6 +1088,33 @@
   "opt_colorModeLabel": {
     "message": "Farbmodus"
   },
+  "opt_colorName_blue": {
+    "message": "Blau"
+  },
+  "opt_colorName_cyan": {
+    "message": "Türkis"
+  },
+  "opt_colorName_green": {
+    "message": "Grün"
+  },
+  "opt_colorName_grey": {
+    "message": "Grau"
+  },
+  "opt_colorName_orange": {
+    "message": "Orange"
+  },
+  "opt_colorName_pink": {
+    "message": "Pink"
+  },
+  "opt_colorName_purple": {
+    "message": "Violett"
+  },
+  "opt_colorName_red": {
+    "message": "Rot"
+  },
+  "opt_colorName_yellow": {
+    "message": "Gelb"
+  },
   "opt_confidenceHelp": {
     "message": "Darunter markiert Tabwerk den Tab mit „prüfen“ und wählt ihn ab."
   },
@@ -1107,6 +1170,9 @@
   "opt_declutterNeverLabel": {
     "message": "Nie aufräumen auf"
   },
+  "opt_declutterNeverPlaceholder": {
+    "message": "nachrichten.example"
+  },
   "opt_declutterOwnHelp": {
     "message": "Die Stichwörter helfen, passende Elemente zu finden, etwa Teile von Klassennamen. Nach einer Änderung die Seite neu analysieren."
   },
@@ -1137,6 +1203,54 @@
   "opt_dupeGuardSwitch": {
     "message": "Zum offenen Tab springen"
   },
+  "opt_emojiAction": {
+    "message": "Bei Auswahl"
+  },
+  "opt_emojiActionBoth": {
+    "message": "Einfügen und kopieren"
+  },
+  "opt_emojiActionCopy": {
+    "message": "Nur kopieren"
+  },
+  "opt_emojiActionInsert": {
+    "message": "Nur einfügen"
+  },
+  "opt_emojiDesc": {
+    "message": "Öffne den Emoji-Katalog mit einem Doppelpunkt in der Schnellsuche."
+  },
+  "opt_emojiEmpty": {
+    "message": "Hier erscheinen deine häufigsten und zuletzt genutzten Emojis."
+  },
+  "opt_emojiLayout": {
+    "message": "Darstellung"
+  },
+  "opt_emojiLayoutGrid": {
+    "message": "Raster ohne Kategorien"
+  },
+  "opt_emojiLayoutGrouped": {
+    "message": "Raster mit Kategorien"
+  },
+  "opt_emojiLayoutList": {
+    "message": "Liste mit Namen"
+  },
+  "opt_emojiPrivacy": {
+    "message": "Tabwerk speichert deine Emoji-Nutzung lokal für Favoriten und Statistik."
+  },
+  "opt_emojiStatistics": {
+    "message": "Nutzungsstatistik"
+  },
+  "opt_emojiTotal": {
+    "message": "Auswahlen gesamt"
+  },
+  "opt_emojiUnique": {
+    "message": "Verschiedene Emojis"
+  },
+  "opt_emojiUses_one": {
+    "message": "$1 Nutzung"
+  },
+  "opt_emojiUses_other": {
+    "message": "$1 Nutzungen"
+  },
   "opt_enterKey": {
     "message": "Trag einen Schlüssel ein."
   },
@@ -1145,6 +1259,9 @@
   },
   "opt_excludedLabel": {
     "message": "Diese Websites nie an Jev schicken"
+  },
+  "opt_excludedPlaceholder": {
+    "message": "meinebank.example\n*.intranet.example"
   },
   "opt_exportAll": {
     "message": "Alles exportieren"
@@ -1550,6 +1667,36 @@
   },
   "pal_dialogLabel": {
     "message": "Schnellsuche"
+  },
+  "pal_emojiCopied": {
+    "message": "Emoji in die Zwischenablage kopiert."
+  },
+  "pal_emojiCopyFailed": {
+    "message": "Emoji konnte nicht in die Zwischenablage kopiert werden."
+  },
+  "pal_emojiLoadFailed": {
+    "message": "Emoji-Katalog konnte nicht geladen werden."
+  },
+  "pal_emojiLoading": {
+    "message": "Emojis werden geladen …"
+  },
+  "pal_emojiNoEditor": {
+    "message": "Kein Textfeld zum Einfügen verfügbar."
+  },
+  "pal_kbdEmojiCopy": {
+    "message": "kopieren"
+  },
+  "pal_kbdEmojiInsert": {
+    "message": "einfügen"
+  },
+  "pal_emojiNoResults": {
+    "message": "Keine passenden Emojis."
+  },
+  "pal_emojiScope": {
+    "message": "Emojis"
+  },
+  "pal_kbdEmoji": {
+    "message": "einfügen und kopieren"
   },
   "pal_fieldsCount_one": {
     "message": "$1 Feld"

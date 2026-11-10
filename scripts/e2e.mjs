@@ -111,7 +111,10 @@ const server = createServer((req, res) => {
     return;
   }
   if (req.url.startsWith('/form')) {
-    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.writeHead(200, {
+      'Content-Type': 'text/html; charset=utf-8',
+      ...(req.url === '/form-emoji-restricted' ? { 'Permissions-Policy': 'clipboard-write=()' } : {}),
+    });
     res.end(`<!doctype html><title>Kontakt – Beispiel</title><body><form>
       <label for="vn">Vorname</label><input id="vn" name="vorname">
       <label>E-Mail <input name="email" type="email"></label>
@@ -466,6 +469,176 @@ await host.screenshot({ path: join(out, '9b-schnellsuche-overlay.png') });
 await frame.press('#q', 'Escape');
 await host.waitForTimeout(200);
 check('Overlay schließt mit Esc', (await host.$('#tabwerk-palette-host')) === null);
+
+const emojiPage = await context.newPage();
+await emojiPage.goto(`${local}/form-emoji`);
+await emojiPage.bringToFront();
+await context.grantPermissions(['clipboard-read'], { origin: local });
+await emojiPage.fill('#vn', 'ABC');
+await emojiPage.locator('#vn').evaluate((el) => el.setSelectionRange(1, 2));
+await injectPalette('/form-emoji');
+const emojiFrame = emojiPage.frameLocator('#tabwerk-palette-host iframe');
+const emojiQuery = emojiFrame.locator('#q');
+const emojiRows = emojiFrame.locator('#list .item');
+const firstEmoji = emojiRows.first().locator('.emoji');
+await emojiQuery.fill(':');
+await firstEmoji.waitFor();
+const initialEmojiRows = await emojiRows.count();
+check('Emoji-Modus lädt den Katalog in Abschnitten', initialEmojiRows >= 80 && initialEmojiRows <= 240);
+const emojiList = emojiFrame.locator('#list');
+check('Standard ist ein Raster mit Kategorien und ohne sichtbare Namen',
+  await emojiList.evaluate((el) => el.classList.contains('emoji-grid') && !el.querySelector('.item .title'))
+  && (await emojiFrame.locator('.emoji-group-title').first().textContent()) === 'Smileys und Emotionen');
+const gridColumns = await emojiFrame.locator('.emoji-rows').first().evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(' ').length);
+await emojiQuery.press('ArrowDown');
+check('Pfeil nach unten wählt dieselbe Spalte in der nächsten Zeile', gridColumns > 1
+  && await emojiQuery.getAttribute('aria-activedescendant') === `r${gridColumns}`);
+await emojiQuery.press('ArrowUp');
+await emojiRows.nth(2).hover();
+const emojiTip = emojiFrame.locator('#emoji-tip');
+check('Name erscheint nur beim Hover als Tooltip', await emojiTip.isVisible()
+  && (await emojiTip.textContent()) === (await emojiRows.nth(2).getAttribute('aria-label')));
+await emojiQuery.hover();
+check('Tooltip schließt außerhalb des Emojis', !(await emojiTip.isVisible()));
+await emojiFrame.locator('#list').evaluate((el) => { el.scrollTop = el.scrollHeight; });
+await emojiRows.nth(initialEmojiRows).waitFor();
+for (const [query, glyph] of [[':schweden', '🇸🇪'], [':sweden', '🇸🇪'], [':daumenhoch', '👍'], [':thumbsup:', '👍']]) {
+  await emojiQuery.fill(query);
+  check(`Emoji-Suche ${query}`, await firstEmoji.textContent() === glyph);
+}
+await emojiQuery.press('ArrowRight');
+check('Pfeil nach rechts wählt nächsten Emoji-Treffer', await emojiQuery.getAttribute('aria-activedescendant') === 'r1');
+await emojiQuery.press('ArrowLeft');
+await emojiQuery.press('Enter');
+await emojiPage.locator('#tabwerk-palette-host').waitFor({ state: 'detached' });
+check('Enter ersetzt die markierte Stelle im Textfeld und kopiert',
+  await emojiPage.inputValue('#vn') === 'A👍C' && await emojiPage.evaluate(() => navigator.clipboard.readText()) === '👍');
+
+await emojiPage.evaluate(() => {
+  const editor = document.createElement('div');
+  editor.id = 'emoji-editor';
+  editor.contentEditable = 'true';
+  editor.innerHTML = '<strong>AB</strong>C';
+  document.body.append(editor);
+  editor.focus();
+  getSelection().collapse(editor.querySelector('strong').firstChild, 1);
+});
+await injectPalette('/form-emoji');
+await emojiQuery.fill(':sweden');
+await firstEmoji.click();
+await emojiPage.locator('#tabwerk-palette-host').waitFor({ state: 'detached' });
+check('Mausklick fügt in formatierten Editor ein und kopiert',
+  await emojiPage.locator('#emoji-editor').evaluate((el) => el.innerHTML) === '<strong>A🇸🇪B</strong>C'
+  && await emojiPage.evaluate(() => navigator.clipboard.readText()) === '🇸🇪');
+
+await emojiPage.evaluate(() => {
+  const editorFrame = document.createElement('iframe');
+  editorFrame.id = 'emoji-editor-frame';
+  editorFrame.srcdoc = '<textarea>AB</textarea>';
+  document.body.append(editorFrame);
+});
+const nestedEditor = emojiPage.frameLocator('#emoji-editor-frame').locator('textarea');
+await nestedEditor.focus();
+await nestedEditor.evaluate((el) => el.setSelectionRange(1, 1));
+await injectPalette('/form-emoji');
+await emojiQuery.fill(':sweden');
+await firstEmoji.waitFor();
+await emojiQuery.press('Enter');
+await emojiPage.locator('#tabwerk-palette-host').waitFor({ state: 'detached' });
+check('Emoji an der Cursorposition im gleich-originigen Frame', await nestedEditor.inputValue() === 'A🇸🇪B');
+
+await emojiPage.goto(`${local}/form-emoji-restricted`);
+await emojiPage.locator('#vn').focus();
+await injectPalette('/form-emoji-restricted');
+await emojiQuery.fill(':orca');
+await firstEmoji.waitFor();
+await emojiQuery.press('Enter');
+await emojiPage.locator('#tabwerk-palette-host').waitFor({ state: 'detached' });
+check('Emoji kopieren bei gesperrter Clipboard API',
+  await emojiPage.inputValue('#vn') === '🫍' && await emojiPage.evaluate(() => navigator.clipboard.readText()) === '🫍');
+
+const emojiWindow = await openPalettePage(`standalone=1&win=${win1}`);
+await emojiWindow.bringToFront();
+await emojiWindow.fill('#q', ':daumenhoch');
+await Promise.all([emojiWindow.waitForEvent('close'), emojiWindow.locator('#list .item .emoji').first().click()]);
+await emojiPage.bringToFront();
+check('Emoji ohne Textfeld aus separatem Fenster kopieren', await emojiPage.evaluate(() => navigator.clipboard.readText()) === '👍');
+
+const emojiOptions = await context.newPage();
+await emojiOptions.goto(`chrome-extension://${id}/src/options/options.html`);
+await emojiOptions.locator('#emoji-frequent li').first().waitFor();
+check('Emoji-Nutzung zählt jede erfolgreiche Auswahl einmal',
+  await emojiOptions.textContent('#emoji-total') === '5' && await emojiOptions.textContent('#emoji-unique') === '3');
+
+async function setEmojiOptions(layout, action) {
+  await emojiOptions.selectOption('#emoji-layout', layout);
+  await emojiOptions.selectOption('#emoji-action', action);
+  await emojiOptions.waitForFunction(async ([layout, action]) => {
+    const settings = await chrome.storage.local.get(['emojiLayout', 'emojiAction']);
+    return settings.emojiLayout === layout && settings.emojiAction === action;
+  }, [layout, action]);
+}
+
+await setEmojiOptions('list', 'copy');
+await emojiPage.bringToFront();
+await emojiPage.fill('#vn', 'AB');
+await injectPalette('/form-emoji-restricted');
+await emojiQuery.fill(':sweden');
+await firstEmoji.waitFor();
+check('Liste zeigt den Namen dauerhaft', await emojiRows.first().locator('.title').isVisible());
+await firstEmoji.click();
+await emojiPage.locator('#tabwerk-palette-host').waitFor({ state: 'detached' });
+check('Nur kopieren lässt den Editor unverändert', await emojiPage.inputValue('#vn') === 'AB'
+  && await emojiPage.evaluate(() => document.activeElement?.id === 'vn' && navigator.clipboard.readText()) === '🇸🇪');
+
+await setEmojiOptions('grid', 'insert');
+await emojiPage.bringToFront();
+await emojiPage.locator('#vn').evaluate((el) => { el.focus(); el.setSelectionRange(1, 1); });
+await injectPalette('/form-emoji-restricted');
+await emojiQuery.fill(':orca');
+await firstEmoji.waitFor();
+check('Ungruppiertes Raster zeigt gefilterte Emojis ohne Kategorie',
+  await emojiList.evaluate((el) => el.classList.contains('emoji-grid') && !el.querySelector('.emoji-group-title')));
+await emojiQuery.press('Enter');
+await emojiPage.locator('#tabwerk-palette-host').waitFor({ state: 'detached' });
+check('Nur einfügen lässt die Zwischenablage unverändert', await emojiPage.inputValue('#vn') === 'A🫍B'
+  && await emojiPage.evaluate(() => navigator.clipboard.readText()) === '🇸🇪');
+await emojiOptions.waitForFunction(() => document.querySelector('#emoji-total').textContent === '7');
+check('Statistik sortiert nach Häufigkeit und letzter Nutzung',
+  await emojiOptions.textContent('#emoji-frequent li:first-child .emoji-stat-glyph') === '🇸🇪'
+  && await emojiOptions.textContent('#emoji-recent li:first-child .emoji-stat-glyph') === '🫍');
+await setEmojiOptions('grouped', 'both');
+
+if (process.env.EMOJI_VISUAL_QA) {
+  for (const [size, viewport] of [['wide', { width: 1100, height: 850 }], ['narrow', { width: 390, height: 850 }]]) {
+    await emojiOptions.setViewportSize(viewport);
+    await emojiOptions.locator('#sec-emoji').screenshot({ path: join(out, `emoji-options-${size}.png`) });
+  }
+}
+await emojiOptions.close();
+for (const [size, viewport, theme] of [['wide', { width: 1100, height: 800 }, 'light'], ['narrow', { width: 390, height: 680 }, 'dark']]) {
+  await emojiPage.setViewportSize(viewport);
+  await popup.evaluate((paletteTheme) => chrome.storage.local.set({ paletteTheme }), theme);
+  await emojiPage.bringToFront();
+  await injectPalette('/form-emoji-restricted');
+  await emojiQuery.fill(':');
+  await firstEmoji.waitFor();
+  check(`Favoriten im Emoji-Raster bei ${viewport.width} px`,
+    await emojiFrame.locator('.emoji-group').nth(0).locator('.emoji').first().textContent() === '🫍'
+    && await emojiFrame.locator('.emoji-group').nth(1).locator('.emoji').first().textContent() === '🇸🇪'
+    && await emojiList.evaluate((el) => el.scrollWidth <= el.clientWidth
+      && el.querySelector('.emoji-group-title').getBoundingClientRect().top >= el.getBoundingClientRect().top));
+  if (process.env.EMOJI_VISUAL_QA) {
+    const cell = await emojiRows.nth(8).boundingBox();
+    await emojiPage.mouse.move(cell.x + cell.width / 2, cell.y + cell.height / 2);
+    await emojiTip.waitFor();
+    await emojiPage.screenshot({ path: join(out, `emoji-picker-${size}.png`) });
+  }
+  await emojiQuery.press('Escape');
+  await emojiPage.locator('#tabwerk-palette-host').waitFor({ state: 'detached' });
+}
+await popup.evaluate(() => chrome.storage.local.set({ paletteTheme: 'site' }));
+await emojiPage.close();
 
 // Eine fremde Seite rahmt die Schnellsuche selbst ein. Ohne Freigabe bleibt sie leer.
 const framer = await context.newPage();
@@ -864,6 +1037,7 @@ check('Import führt zusammen, ohne zu verdoppeln', imported.sessions === export
 await setFeatures({ paletteFulltext: true });
 const fullPage = await context.newPage();
 await fullPage.goto('https://github.com/example/dark-theme-test?volltext');
+await popup.waitForFunction(async (url) => (await chrome.tabs.query({ status: 'complete' })).some((tab) => tab.url === url), fullPage.url());
 const texts = await call('tabTexts');
 check('Volltext: Seitentext wird gelesen', texts.some((t) => /consectetur adipiscing/.test(t.text)));
 const pal2 = await openPalettePage(`standalone=1&win=${win1}`);
@@ -975,6 +1149,22 @@ const overflow = await options.evaluate(() => {
   return wide.length ? wide.slice(0, 3).map((el) => `${el.tagName}.${el.className}`).join(', ') : false;
 });
 check('Einstellungen ohne seitliches Scrollen bei 390 px', !overflow, overflow || '');
+
+for (const { lang, title, host, color } of [
+  { lang: 'en', title: 'Tabwerk settings', host: 'mybank.example', color: 'Color Blue' },
+  { lang: 'de', title: 'Tabwerk Einstellungen', host: 'meinebank.example', color: 'Farbe Blau' },
+]) {
+  await Promise.all([
+    options.waitForEvent('load'),
+    options.selectOption('#ui-language', lang),
+  ]);
+  await options.waitForSelector('.cat');
+  check(`Einstellungen wechseln zu ${lang}`,
+    (await options.locator('html').getAttribute('lang')) === lang
+    && (await options.title()) === title
+    && (await options.locator('#excluded').getAttribute('placeholder')).startsWith(`${host}\n`)
+    && (await options.getByRole('button', { name: color, exact: true }).count()) > 0);
+}
 
 check('Keine Fehler in der Konsole', errors.length === 0, errors.join(' | '));
 

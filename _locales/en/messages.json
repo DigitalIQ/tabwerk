@@ -514,6 +514,42 @@
   "dur_minutes_other": {
     "message": "$1 minutes"
   },
+  "emoji_frequent": {
+    "message": "Most used"
+  },
+  "emoji_group_activities": {
+    "message": "Activities"
+  },
+  "emoji_group_animals": {
+    "message": "Animals & nature"
+  },
+  "emoji_group_component": {
+    "message": "Skin tones & hair"
+  },
+  "emoji_group_flags": {
+    "message": "Flags"
+  },
+  "emoji_group_food": {
+    "message": "Food & drink"
+  },
+  "emoji_group_objects": {
+    "message": "Objects"
+  },
+  "emoji_group_people": {
+    "message": "People & body"
+  },
+  "emoji_group_smileys": {
+    "message": "Smileys & emotion"
+  },
+  "emoji_group_symbols": {
+    "message": "Symbols"
+  },
+  "emoji_group_travel": {
+    "message": "Travel & places"
+  },
+  "emoji_recent": {
+    "message": "Recently used"
+  },
   "extActionTitle": {
     "message": "Tabwerk"
   },
@@ -1052,6 +1088,33 @@
   "opt_colorModeLabel": {
     "message": "Color mode"
   },
+  "opt_colorName_blue": {
+    "message": "Blue"
+  },
+  "opt_colorName_cyan": {
+    "message": "Cyan"
+  },
+  "opt_colorName_green": {
+    "message": "Green"
+  },
+  "opt_colorName_grey": {
+    "message": "Gray"
+  },
+  "opt_colorName_orange": {
+    "message": "Orange"
+  },
+  "opt_colorName_pink": {
+    "message": "Pink"
+  },
+  "opt_colorName_purple": {
+    "message": "Purple"
+  },
+  "opt_colorName_red": {
+    "message": "Red"
+  },
+  "opt_colorName_yellow": {
+    "message": "Yellow"
+  },
   "opt_confidenceHelp": {
     "message": "Below that, Tabwerk marks the tab “check” and deselects it."
   },
@@ -1107,6 +1170,9 @@
   "opt_declutterNeverLabel": {
     "message": "Never declutter on"
   },
+  "opt_declutterNeverPlaceholder": {
+    "message": "news.example"
+  },
   "opt_declutterOwnHelp": {
     "message": "Keywords help find matching elements, for example parts of class names. Re-analyze the page after a change."
   },
@@ -1137,6 +1203,54 @@
   "opt_dupeGuardSwitch": {
     "message": "Jump to the open tab"
   },
+  "opt_emojiAction": {
+    "message": "On selection"
+  },
+  "opt_emojiActionBoth": {
+    "message": "Insert and copy"
+  },
+  "opt_emojiActionCopy": {
+    "message": "Copy only"
+  },
+  "opt_emojiActionInsert": {
+    "message": "Insert only"
+  },
+  "opt_emojiDesc": {
+    "message": "Type a colon in Quick Search to open the emoji catalog."
+  },
+  "opt_emojiEmpty": {
+    "message": "Your most used and recently used emojis will appear here."
+  },
+  "opt_emojiLayout": {
+    "message": "Layout"
+  },
+  "opt_emojiLayoutGrid": {
+    "message": "Grid without categories"
+  },
+  "opt_emojiLayoutGrouped": {
+    "message": "Grid with categories"
+  },
+  "opt_emojiLayoutList": {
+    "message": "List with names"
+  },
+  "opt_emojiPrivacy": {
+    "message": "Tabwerk stores emoji usage on this device for favorites and statistics."
+  },
+  "opt_emojiStatistics": {
+    "message": "Usage statistics"
+  },
+  "opt_emojiTotal": {
+    "message": "Total selections"
+  },
+  "opt_emojiUnique": {
+    "message": "Distinct emojis"
+  },
+  "opt_emojiUses_one": {
+    "message": "$1 use"
+  },
+  "opt_emojiUses_other": {
+    "message": "$1 uses"
+  },
   "opt_enterKey": {
     "message": "Enter a key."
   },
@@ -1145,6 +1259,9 @@
   },
   "opt_excludedLabel": {
     "message": "Never send these websites to Jev"
+  },
+  "opt_excludedPlaceholder": {
+    "message": "mybank.example\n*.intranet.example"
   },
   "opt_exportAll": {
     "message": "Export everything"
@@ -1550,6 +1667,36 @@
   },
   "pal_dialogLabel": {
     "message": "Quick search"
+  },
+  "pal_emojiCopied": {
+    "message": "Emoji copied to clipboard."
+  },
+  "pal_emojiCopyFailed": {
+    "message": "Couldn’t copy the emoji to the clipboard."
+  },
+  "pal_emojiLoadFailed": {
+    "message": "Couldn’t load the emoji catalog."
+  },
+  "pal_emojiLoading": {
+    "message": "Loading emojis …"
+  },
+  "pal_emojiNoEditor": {
+    "message": "There’s no text field to insert into."
+  },
+  "pal_kbdEmojiCopy": {
+    "message": "copy"
+  },
+  "pal_kbdEmojiInsert": {
+    "message": "insert"
+  },
+  "pal_emojiNoResults": {
+    "message": "No matching emojis."
+  },
+  "pal_emojiScope": {
+    "message": "Emojis"
+  },
+  "pal_kbdEmoji": {
+    "message": "insert and copy"
   },
   "pal_fieldsCount_one": {
     "message": "$1 field"
