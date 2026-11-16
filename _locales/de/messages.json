@@ -708,6 +708,12 @@
   "ft_copyUnlock_label": {
     "message": "Kopieren erlauben"
   },
+  "ft_googleMaps_label": {
+    "message": "Google-Maps-Button in der Suche"
+  },
+  "ft_googleMaps_hint": {
+    "message": "Ergänzt den fehlenden Maps-Link in der Google-Suche und öffnet den aktuellen Suchbegriff in Google Maps. Für google.com, google.de, google.at und google.ch. Braucht Zugriff auf diese Websites, keinen Jev-Schlüssel."
+  },
   "ft_declutter_hint": {
     "message": "Jev findet Werbung, Cookie-Banner und andere Störer. Tabwerk merkt sich das pro Seitentyp und blendet sie danach ohne weitere Anfrage aus. Braucht Zugriff auf alle Websites."
   },

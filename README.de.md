@@ -39,6 +39,8 @@ Alles, was sich exakt berechnen lässt, erledigt Code. Für semantische Fragen n
 
 Jede Funktion lässt sich in den Einstellungen einzeln ausschalten. Abhängige Funktionen hängen an der übergeordneten.
 
+Unter Einstellungen → Funktionen → Seiten ergänzt **Google-Maps-Button in der Suche** den fehlenden Maps-Link in Googles Suchnavigation. Er öffnet den aktuellen Suchbegriff in Google Maps und funktioniert auf `www.google.com`, `www.google.de`, `www.google.at` und `www.google.ch`. Vorhandene Maps-Links bleiben unverändert. Beim Einschalten fragt Chrome nach dem Zugriff auf diese Websites. Die Funktion braucht keinen Jev-Schlüssel und stellt keine API-Anfragen. Der Link nutzt Googles [Maps-URL-Format](https://developers.google.com/maps/documentation/urls/get-started). Ändert Google sein Layout und Tabwerk erkennt die Navigation nicht mehr, bleibt die Seite unverändert.
+
 ## Sprachen
 
 Tabwerk spricht Deutsch und Englisch. Es folgt der Sprache des Browsers. In den Einstellungen unter „Sprache“ lässt sich die Sprache fest wählen. Datum, Uhrzeit, Zahlen, Beträge und Mehrzahl formatiert Tabwerk passend zur Sprache über `Intl`. Testdaten für Formulare gibt es als deutsche und als US-amerikanische Adressen.

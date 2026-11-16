@@ -3,6 +3,7 @@
 // jev: braucht einen Schlüssel für Jev. perm: braucht eine optionale Chrome-Erlaubnis.
 
 import { t } from './i18n.js';
+import { GOOGLE_SEARCH_ORIGINS } from './googlemaps-config.js';
 
 export const FEATURES = [
   { id: 'palette', get area() { return t('ft_area_search'); }, get label() { return t('ft_palette_label'); }, get hint() { return t('ft_palette_hint'); }, def: true },
@@ -37,6 +38,7 @@ export const FEATURES = [
   { id: 'watchDiff', parent: 'watches', get area() { return t('ft_area_watch'); }, get label() { return t('ft_watchDiff_label'); }, get hint() { return t('ft_watchDiff_hint'); }, def: true },
   { id: 'watchNumbers', parent: 'watches', get area() { return t('ft_area_watch'); }, get label() { return t('ft_watchNumbers_label'); }, get hint() { return t('ft_watchNumbers_hint'); }, def: true, jev: true },
 
+  { id: 'googleMaps', get area() { return t('ft_area_pages'); }, get label() { return t('ft_googleMaps_label'); }, get hint() { return t('ft_googleMaps_hint'); }, def: false, perm: { origins: GOOGLE_SEARCH_ORIGINS } },
   { id: 'copyUnlock', get area() { return t('ft_area_bookmarksForms'); }, get label() { return t('ft_copyUnlock_label'); }, get hint() { return t('ft_copyUnlock_hint'); }, def: true },
   { id: 'bookmarkFolder', get area() { return t('ft_area_bookmarksForms'); }, get label() { return t('ft_bookmarkFolder_label'); }, get hint() { return t('ft_bookmarkFolder_hint'); }, def: false, jev: true, perm: { permissions: ['bookmarks'] } },
   { id: 'forms', get area() { return t('ft_area_bookmarksForms'); }, get label() { return t('ft_forms_label'); }, get hint() { return t('ft_forms_hint'); }, def: true },

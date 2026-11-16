@@ -48,6 +48,7 @@ Tabwerk fragt Rechte erst an, wenn eine Funktion sie braucht:
 - Lesezeichen und Verlauf erst, wenn du die Suche darin einschaltest
 - Leserecht für alle Websites nur für die Volltext-Suche und für „Seite aufräumen“. Bei der Volltext-Suche bleibt der gelesene Text im Browser. Beim Aufräumen gehen nur die Beschreibungen aus der Tabelle oben an Jev, und nur bei einer Analyse. Schaltest du „Seite aufräumen“ aus, gibt Tabwerk das Recht zurück, sofern die Volltext-Suche aus ist.
 - Leserecht für eine Website, wenn du dort Kopieren immer erlauben willst
+- Zugriff auf `www.google.com`, `www.google.de`, `www.google.at` und `www.google.ch`, wenn du den Maps-Button einschaltest. Tabwerk liest den Suchbegriff aus der Seiten-URL und ergänzt den Link lokal. Erst beim Öffnen des Links geht der Suchbegriff an Google Maps. Diese Funktion speichert ihn nicht und sendet ihn nicht an Jev.
 
 ## Kontakt
 

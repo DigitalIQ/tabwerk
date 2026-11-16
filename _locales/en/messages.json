@@ -708,6 +708,12 @@
   "ft_copyUnlock_label": {
     "message": "Allow copying"
   },
+  "ft_googleMaps_label": {
+    "message": "Google Maps button in Search"
+  },
+  "ft_googleMaps_hint": {
+    "message": "Restores the missing Maps link in Google Search and opens the current search query in Google Maps. Supports google.com, google.de, google.at and google.ch. Needs access to these websites, no Jev key."
+  },
   "ft_declutter_hint": {
     "message": "Jev finds ads, cookie banners and other clutter. Tabwerk remembers the result per page type and hides it from then on without another request. Needs access to all websites."
   },

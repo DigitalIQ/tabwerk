@@ -13,7 +13,6 @@
 import { chromium } from 'playwright';
 import { createServer } from 'node:http';
 import { cpSync, mkdtempSync, readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, chmodSync } from 'node:fs';
-import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { chromePath } from './chrome.mjs';
@@ -37,7 +36,8 @@ let price = '349,00 €';
 let jevCalls = 0;
 let jevCost = 0;
 let lastJevBody = null;
-const tmp = mkdtempSync(join(tmpdir(), 'tabwerk-e2e-'));
+mkdirSync(join(root, '.tmp'), { recursive: true });
+const tmp = mkdtempSync(join(root, '.tmp', 'tabwerk-e2e-'));
 chmodSync(tmp, 0o700);
 
 // Seite aufräumen: offline ordnet der Stub nach den Klassennamen der Testseite zu.
@@ -160,7 +160,10 @@ const local = `http://127.0.0.1:${port}`;
 // ---------- Extension-Kopie mit Testanpassungen ----------
 
 const ext = join(tmp, 'ext');
-cpSync(root, ext, { recursive: true, filter: (src) => !/node_modules|test-results|\.git(\/|$)/.test(src) });
+mkdirSync(ext);
+for (const name of ['src', '_locales', 'assets', 'icons', 'packages', 'manifest.json']) {
+  cpSync(join(root, name), join(ext, name), { recursive: true });
+}
 const manifest = JSON.parse(readFileSync(join(ext, 'manifest.json'), 'utf8'));
 manifest.host_permissions.push('http://127.0.0.1/*', 'https://*/*', 'http://*/*');
 // Optionale Rechte fest vergeben, weil der Test keine Chrome-Rückfrage bestätigen kann.

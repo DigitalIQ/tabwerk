@@ -39,6 +39,8 @@ Anything that can be computed exactly is done in code. For semantic questions Ta
 
 Every feature can be switched off on its own in the settings. Dependent features follow their parent.
 
+Enable **Google Maps button in Search** under Settings → Features → Pages to restore a missing Maps link in Google's search navigation. It opens the current query in Google Maps, works on `www.google.com`, `www.google.de`, `www.google.at` and `www.google.ch`, and leaves existing Maps links alone. Chrome asks for access to these sites when you enable it. No Jev key or API request is needed. The link uses Google's [Maps URL format](https://developers.google.com/maps/documentation/urls/get-started). Google can change its search layout; unrecognized navigation is left unchanged.
+
 Every action saves the current state first. “Undo” in the popup or `Alt+Shift+Z` jumps right back to it.
 
 What Jev does well and where it is weak is described in [docs/jev-im-browser.md](docs/jev-im-browser.md) (German).

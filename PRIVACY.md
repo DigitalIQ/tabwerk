@@ -48,6 +48,7 @@ Tabwerk only asks for permissions when a feature needs them:
 - bookmarks and history only when you turn on searching them
 - read access to all sites only for full-text search and for “Declutter page”. With full-text search the text read stays in the browser. With decluttering only the descriptions from the table above go to Jev, and only during an analysis. If you turn “Declutter page” off, Tabwerk gives the permission back, as long as full-text search is off too.
 - read access to a site when you want to always allow copying there
+- access to `www.google.com`, `www.google.de`, `www.google.at` and `www.google.ch` when you enable the Maps button. Tabwerk reads the search query from the page URL and adds a link locally. The query goes to Google Maps only when you follow that link; it is not sent to Jev or stored by this feature.
 
 ## Contact
 

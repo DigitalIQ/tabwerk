@@ -12,6 +12,7 @@ import * as U from './lib/unlock.js';
 import * as Learn from './lib/learn.js';
 import * as PS from './lib/pagesearchbg.js';
 import * as DC from './lib/declutterbg.js';
+import * as GM from './lib/googlemaps.js';
 import { recordEmojiUse } from './lib/emoji-usage.js';
 import { decide } from './lib/jev.js';
 import { getUsage, getSettings } from './lib/settings.js';
@@ -88,6 +89,7 @@ const handlers = {
   pageSearch: PS.evaluate,
   openPageSearch: ({ windowId, query }) => PS.openPageSearch({ windowId, query }),
   declutterStatus: DC.status,
+  googleMapsState: GM.state,
   declutterAnalyze: DC.analyzeTab,
   declutterToggle: DC.toggle,
   declutterRule: DC.setRule,
@@ -133,6 +135,7 @@ chrome.tabs.onCreated.addListener((tab) => F.trackOpened(tab.id));
 
 chrome.tabs.onUpdated.addListener((tabId, change, tab) => {
   if (change.url) {
+    GM.refreshTab(tab).catch(() => {});
     X.guardDuplicate(tabId, change.url).catch(() => {});
     X.guardFocus(tabId, change.url).catch(() => {});
   }
@@ -278,6 +281,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 // Menü neu bauen, wenn sich Schalter oder Rechte ändern.
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'local' && changes.features) createMenus();
+  if (area === 'local' && changes.features) GM.syncGoogleMaps().catch(() => {});
   if (area === 'local' && (changes.features || changes.unlockHosts)) U.syncUnlockScripts().catch(() => {});
   if (area === 'local' && changes.features) DC.syncDeclutterScript().catch(() => {});
   else if (area === 'local' && (changes.declutterHidden || changes.declutterNever || changes.excludedHosts)) DC.refreshAll().catch(() => {});
@@ -288,8 +292,11 @@ chrome.storage.onChanged.addListener((changes, area) => {
 });
 chrome.permissions.onAdded.addListener(() => { createMenus(); U.syncUnlockScripts().catch(() => {}); DC.syncDeclutterScript().catch(() => {}); });
 chrome.permissions.onRemoved.addListener(() => { createMenus(); U.syncUnlockScripts().catch(() => {}); DC.syncDeclutterScript().catch(() => {}); });
+chrome.permissions.onAdded.addListener(() => { GM.syncGoogleMaps().catch(() => {}); });
+chrome.permissions.onRemoved.addListener(() => { GM.syncGoogleMaps().catch(() => {}); });
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
+  GM.syncGoogleMaps().catch(() => {});
   await createMenus();
   await W.rescheduleAll();
   await ensureAlarms();
@@ -301,6 +308,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
 });
 
 chrome.runtime.onStartup.addListener(async () => {
+  GM.syncGoogleMaps().catch(() => {});
   await createMenus();
   await W.rescheduleAll();
   await ensureAlarms();
